@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import MainPage from './pages/MainPage';
 import MenuPage from './pages/MenuPage';
@@ -11,10 +11,13 @@ import InquiryPage from './pages/InquiryPage';
 import NoticesPage from './pages/NoticesPage';
 import EventsPage from './pages/EventsPage';
 
-function App() {
+function AppWrapper() {
+  const location = useLocation();
+  const hideHeaderPaths = ['/service-info'];
+
   return (
-    <Router>
-      <Header />
+    <>
+      {!hideHeaderPaths.includes(location.pathname) && <Header />}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/menu" element={<MenuPage />} />
@@ -27,6 +30,14 @@ function App() {
         <Route path="/notices" element={<NoticesPage />} />
         <Route path="/events" element={<EventsPage />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppWrapper />
     </Router>
   );
 }
