@@ -10,10 +10,13 @@ import FaqPage from './pages/FaqPage';
 import InquiryPage from './pages/InquiryPage';
 import NoticesPage from './pages/NoticesPage';
 import EventsPage from './pages/EventsPage';
+import StationMapPage from './pages/StationMapPage';
+import RentalItemsPage from './pages/RentalItemsPage';
+import QrScanPage from './pages/QrScanPage';
 
 function AppWrapper() {
   const location = useLocation();
-  const hideHeaderPaths = ['/service-info'];
+  const hideHeaderPaths = ['/service-info', '/menu'];
 
   return (
     <>
@@ -29,6 +32,9 @@ function AppWrapper() {
         <Route path="/inquiry" element={<InquiryPage />} />
         <Route path="/notices" element={<NoticesPage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/station-map" element={<StationMapPage />} />
+        <Route path="/rental-items" element={<RentalItemsPage />} />
+        <Route path="/qr-scan" element={<QrScanPage />} />
       </Routes>
     </>
   );
