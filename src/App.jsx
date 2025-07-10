@@ -5,6 +5,8 @@ import MenuPage from './pages/MenuPage';
 import MyPage from './pages/MyPage';
 import ServiceInfoPage from './pages/ServiceInfoPage';
 import HistoryPage from './pages/HistoryPage';
+import HistoryDetailPage from './pages/HistoryDetailPage';
+import ReturnPage from './pages/ReturnPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
 import AccountDeleteSurveyPage from './pages/AccountDeleteSurveyPage';
 import FaqPage from './pages/FaqPage';
@@ -30,6 +32,8 @@ function AppWrapper() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/service-info" element={<ServiceInfoPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/history/:id" element={<HistoryDetailPage />} />
+        <Route path="/return/:id" element={<ReturnPage />} />
         <Route path="/account-settings" element={<AccountSettingsPage />} />
         <Route path="/account-delete-survey" element={<AccountDeleteSurveyPage />} />
         <Route path="/faq" element={<FaqPage />} />

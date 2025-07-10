@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "status": "대여중",
+    "itemName": "C타입 충전기",
+    "stationName": "건물A 1층",
+    "returnStation": null,
+    "startTime": "2025-07-10 13:00",
+    "expectedReturnTime": "2025-07-10 15:00",
+    "returnTime": null,
+    "rentalTimeHour": "2시간",
+    "price": 1500,
+    "paymentMethod": "카드",
+    "paymentTime": "2025-07-10 13:00",
+    "serialNumber": "CT123456",
+    "expectedPayment": 1500
+  },
+  {
+    "id": 2,
+    "status": "반납",
+    "itemName": "USB 허브",
+    "stationName": "도서관 정문",
+    "returnStation": "기숙사 2층",
+    "startTime": "2025-07-08 10:00",
+    "expectedReturnTime": "2025-07-08 13:00",
+    "returnTime": "2025-07-08 12:50",
+    "rentalTimeHour": "3시간",
+    "price": 2000,
+    "paymentMethod": "카카오페이",
+    "paymentTime": "2025-07-08 10:00",
+    "serialNumber": "USBHUB2025",
+    "expectedPayment": 2000
+  },
+  {
+    "id": 3,
+    "status": "연체",
+    "itemName": "HDMI 케이블",
+    "stationName": "제2공학관",
+    "returnStation": null,
+    "startTime": "2025-07-07 14:00",
+    "expectedReturnTime": "2025-07-07 16:00",
+    "returnTime": null,
+    "rentalTimeHour": "6시간",
+    "overdueTime": "2시간",
+    "price": 3000,
+    "paymentMethod": "네이버페이",
+    "paymentTime": "2025-07-07 14:00",
+    "serialNumber": "HDMI-2025-07",
+    "expectedPayment": 4000
+  }
+]
