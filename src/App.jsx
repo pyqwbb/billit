@@ -15,10 +15,11 @@ import EventsPage from './pages/EventsPage';
 import StationMapPage from './pages/StationMapPage';
 import RentalItemsPage from './pages/RentalItemsPage';
 import QrScanPage from './pages/QrScanPage';
+import RentalOrReturn from './pages/RentalOrReturn';
 
 function AppWrapper() {
   const location = useLocation();
-  const hideHeaderPaths = ['/service-info', '/menu'];
+  const hideHeaderPaths = ['/service-info', '/menu', '/rental-or-return'];
 
   return (
     <>
@@ -39,6 +40,7 @@ function AppWrapper() {
         <Route path="/station-map" element={<StationMapPage />} />
         <Route path="/rental-items" element={<RentalItemsPage />} />
         <Route path="/qr-scan" element={<QrScanPage />} />
+        <Route path="/rental-or-return" element={<RentalOrReturn />} />
       </Routes>
     </>
   );
