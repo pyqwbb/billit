@@ -27,10 +27,9 @@ const MoreButton = styled.button`
   width: 100%;
   margin-top: 20px;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 30px;
   border: none;
   background-color: #ddd;
-  font-weight: bold;
   cursor: pointer;
 `;
 
