@@ -2,26 +2,39 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Header from './components/Header';
 import MainPage from './pages/MainPage';
 import MenuPage from './pages/MenuPage';
-import MyPage from './pages/MyPage';
-import ServiceInfoPage from './pages/ServiceInfoPage';
-import HistoryPage from './pages/HistoryPage';
-import HistoryDetailPage from './pages/HistoryDetailPage';
-import ReturnPage from './pages/ReturnPage';
-import AccountSettingsPage from './pages/AccountSettingsPage';
-import AccountDeleteSurveyPage from './pages/AccountDeleteSurveyPage';
-import FaqPage from './pages/FaqPage';
-import InquiryPage from './pages/InquiryPage';
-import NoticesPage from './pages/NoticesPage';
-import NoticeDetailPage from './pages/NoticeDetailPage';
-import EventsPage from './pages/EventsPage';
-import StationMapPage from './pages/StationMapPage';
-import RentalItemsPage from './pages/RentalItemsPage';
-import QrScanPage from './pages/QrScanPage';
-import RentalOrReturn from './pages/RentalOrReturn';
+import MyPage from './pages/Member/MyPage';
+import ServiceInfoPage from './pages/CustomerSupport/service/ServiceInfoPage';
+import TermsPage from './pages/CustomerSupport/service/TermsPage';
+import PrivacyPage from './pages/CustomerSupport/service/PrivacyPage';
+import LicensePage from './pages/CustomerSupport/service/LicensePage';
+import VersionPage from './pages/CustomerSupport/service/VersionPage';
+import HistoryPage from './pages/Rental/HistoryPage';
+import HistoryDetailPage from './pages/Rental/HistoryDetailPage';
+import ReturnPage from './pages/Rental/ReturnPage';
+import AccountSettingsPage from './pages/Member/AccountSettingsPage';
+import AccountDeleteSurveyPage from './pages/Member/AccountDeleteSurveyPage';
+import FaqPage from './pages/CustomerSupport/FaqPage';
+import InquiryPage from './pages/CustomerSupport/InquiryPage';
+import NoticesPage from './pages/CustomerSupport/NoticesPage';
+import NoticeDetailPage from './pages/CustomerSupport/NoticeDetailPage';
+import EventsPage from './pages/CustomerSupport/EventsPage';
+import StationMapPage from './pages/RentalStations/StationMapPage';
+import RentalItemsPage from './pages/RentalItems/RentalItemsPage';
+import QrScanPage from './pages/Rental/QrScanPage';
+import RentalOrReturn from './pages/Rental/RentalOrReturn';
 
 function AppWrapper() {
   const location = useLocation();
-  const hideHeaderPaths = ['/service-info', '/menu', '/rental-or-return'];
+  
+  const hideHeaderPaths = [
+    '/menu',
+    '/rental-or-return',
+    '/service-info',
+    '/service-info/terms',
+    '/service-info/privacy',
+    '/service-info/license',
+    '/service-info/version',
+  ];
 
   return (
     <>
@@ -31,6 +44,10 @@ function AppWrapper() {
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/service-info" element={<ServiceInfoPage />} />
+        <Route path="/service-info/terms" element={<TermsPage />} />
+        <Route path="/service-info/privacy" element={<PrivacyPage />} />
+        <Route path="/service-info/license" element={<LicensePage />} />
+        <Route path="/service-info/version" element={<VersionPage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/history/:id" element={<HistoryDetailPage />} />
         <Route path="/return/:id" element={<ReturnPage />} />

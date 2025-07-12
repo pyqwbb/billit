@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import rentalData from '../data/mock/history.json';
+import rentalData from '../../data/mock/history.json';
 
 const Container = styled.div`
   padding: 24px;

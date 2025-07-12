@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import noticeData from '../data/mock/notices.json';
+import noticeData from '../../data/mock/notices.json';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 

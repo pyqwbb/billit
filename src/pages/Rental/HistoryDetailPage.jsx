@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import rentalData from '../data/mock/history.json';
+import rentalData from '../../data/mock/history.json';
 import styled from 'styled-components';
 
 const Container = styled.div`

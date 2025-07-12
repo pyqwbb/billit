@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import faqData from '../data/faq.json';
+import faqData from '../../data/faq.json';
 import styled from 'styled-components';
 import { FiSearch, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 

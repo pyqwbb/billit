@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import noticeData from '../data/mock/notices.json';
+import noticeData from '../../data/mock/notices.json';
 import styled from 'styled-components';
 
 const Container = styled.div`
