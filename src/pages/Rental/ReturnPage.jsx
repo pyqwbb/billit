@@ -7,6 +7,9 @@ const Container = styled.div`
 `;
 
 const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 16px;
 `;
 

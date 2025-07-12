@@ -51,6 +51,7 @@ function MenuPage() {
         <ListItem onClick={() => navigate('/rental-items')}>대여 물품</ListItem>
         <ListItem onClick={() => navigate('/qr-scan')}>QR 스캔</ListItem>
         <ListItem onClick={() => navigate('/rental-or-return')}>(디버깅) 대여/반납 선택</ListItem>
+        <ListItem onClick={() => navigate('/rental-time')}>(디버깅) 대여 시간 선택</ListItem>
       </ListMenu>
 
       <BottomMenu>

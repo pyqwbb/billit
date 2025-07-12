@@ -7,6 +7,9 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   background-color: #f7f7f7;
   border-radius: 12px;
   padding: 20px;

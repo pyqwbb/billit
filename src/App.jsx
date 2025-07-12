@@ -22,6 +22,10 @@ import StationMapPage from './pages/RentalStations/StationMapPage';
 import RentalItemsPage from './pages/RentalItems/RentalItemsPage';
 import QrScanPage from './pages/Rental/QrScanPage';
 import RentalOrReturn from './pages/Rental/RentalOrReturn';
+import RentalTimePage from './pages/Rental/RentalTimePage';
+import OrderConfirmPage from './pages/Rental/OrderConfirmPage';
+import RentalCompletePage from './pages/Rental/RentalCompletePage';
+import ReturnCompletePage from './pages/Rental/ReturnCompletePage';
 
 function AppWrapper() {
   const location = useLocation();
@@ -62,6 +66,10 @@ function AppWrapper() {
         <Route path="/rental-items" element={<RentalItemsPage />} />
         <Route path="/qr-scan" element={<QrScanPage />} />
         <Route path="/rental-or-return" element={<RentalOrReturn />} />
+        <Route path="/rental-time" element={<RentalTimePage />} />
+        <Route path="/order-confirm" element={<OrderConfirmPage />} />
+        <Route path="/rental-complete" element={<RentalCompletePage />} />
+        <Route path="/return-complete" element={<ReturnCompletePage />} />
       </Routes>
     </>
   );
