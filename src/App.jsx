@@ -27,6 +27,7 @@ import RentalTimePage from './pages/Rental/RentalTimePage';
 import OrderConfirmPage from './pages/Rental/OrderConfirmPage';
 import RentalCompletePage from './pages/Rental/RentalCompletePage';
 import ReturnCompletePage from './pages/Rental/ReturnCompletePage';
+import TermsAgreementPage from './pages/Member/TermsAgreementPage';
 
 function AppWrapper() {
   const location = useLocation();
@@ -72,6 +73,7 @@ function AppWrapper() {
         <Route path="/order-confirm" element={<OrderConfirmPage />} />
         <Route path="/rental-complete" element={<RentalCompletePage />} />
         <Route path="/return-complete" element={<ReturnCompletePage />} />
+        <Route path="/terms-agreement" element={<TermsAgreementPage />} />
       </Routes>
     </>
   );
