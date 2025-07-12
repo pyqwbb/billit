@@ -18,6 +18,7 @@ import InquiryPage from './pages/CustomerSupport/InquiryPage';
 import NoticesPage from './pages/CustomerSupport/NoticesPage';
 import NoticeDetailPage from './pages/CustomerSupport/NoticeDetailPage';
 import EventsPage from './pages/CustomerSupport/EventsPage';
+import EventDetailPage from './pages/CustomerSupport/EventDetailPage';
 import StationMapPage from './pages/RentalStations/StationMapPage';
 import RentalItemsPage from './pages/RentalItems/RentalItemsPage';
 import QrScanPage from './pages/Rental/QrScanPage';
@@ -62,6 +63,7 @@ function AppWrapper() {
         <Route path="/notices" element={<NoticesPage />} />
         <Route path="/notices/:id" element={<NoticeDetailPage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/events/:id" element={<EventDetailPage />} />
         <Route path="/station-map" element={<StationMapPage />} />
         <Route path="/rental-items" element={<RentalItemsPage />} />
         <Route path="/qr-scan" element={<QrScanPage />} />
