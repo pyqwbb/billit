@@ -1,3 +1,18 @@
+:root {
+  --main-color: #85FF6A;
+  --main-color-ver2: #53CF38;
+  --side-color-1: #EEF2FA;
+  --side-color-2: #D5DAE4;
+  --side-color-3: #9BA5B7;
+  --side-color-4: #545F71;
+  --white: #FFFFFF;
+  --black: #000000;
+  --gradation: linear-gradient(
+    rgba(213, 228, 227, 0.9),
+    rgba(133, 255, 106, 0.4)
+  );
+}
+
 * {
   margin: 0;
   padding: 0;
