@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import GlobalStyles from './styles/GlobalStyles';
 import Header from './components/Header';
 import MainPage from './pages/MainPage';
 import MenuPage from './pages/MenuPage';
@@ -44,6 +45,7 @@ function AppWrapper() {
 
   return (
     <>
+      <GlobalStyles />
       {!hideHeaderPaths.includes(location.pathname) && <Header />}
       <Routes>
         <Route path="/" element={<MainPage />} />
