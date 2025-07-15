@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { HiOutlineCog, HiOutlineUserCircle, HiOutlineQuestionMarkCircle, HiOutlineChatAlt, HiOutlineBell, HiOutlineSparkles } from "react-icons/hi";
+import profileImg from '../../assets/billit-profile.png';
+import HeaderGradient from '../../components/header/HeaderGradient';
+import couponIcon from '../../assets/icon/coupon.png';
+import historyIcon from '../../assets/icon/history.png';
+import membershipIcon from '../../assets/icon/membership.png';
+import pointIcon from '../../assets/icon/point.png';
 
 const Container = styled.div`
   padding: 16px;
@@ -11,26 +16,25 @@ const Header = styled.div`
   position: relative;
 `;
 
-const CogButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
+const ProfileImage = styled.img`
+  width: 146px;
+  height: 146px;
+  margin: 30px 0 13px 0;
 `;
 
-const ProfileImage = styled.div`
-  width: 80px;
-  height: 80px;
-  background: #ddd;
-  border-radius: 50%;
-  margin: 0 auto;
+const ProfileName = styled.div`
+  font-size: 14px;
+  font-family: 'NanumSquareRoundOTFB';
+  font-size: 24px;
+  font-family: 'NanumSquareRoundOTFEB';
+
+  span {
+    color: var(--main-color);
+  }
 `;
 
 const WelcomeText = styled.p`
-  margin: 30px 0;
+  margin: 2px 0 30px 0;
   font-size: 16px;
 `;
 
@@ -39,17 +43,25 @@ const GridButtons = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin: 25px 0;
+  justify-content: center;
 `;
 
 const GridButton = styled.button`
-  padding: 12px;
   margin: auto;
-  width: 100%;
-  border-radius: 12px;
-  background-color: #f5f5f5;
-  font-size: 15px;
+  width: 170px;
+  height: 72px;
+  border-radius: 15px;
+  border: none;
+  background-color: #EEF2FA;
+  font-size: 14px;
+  font-family: 'NanumSquareRoundOTFB';
   cursor: pointer;
-  border: solid 1px #ccc;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 23px;
+  padding-right: 20px;
 `;
 
 const ListMenu = styled.ul`
@@ -62,24 +74,22 @@ const ListMenu = styled.ul`
 const ListItem = styled.li`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  font-size: 15px;
+  padding: 13px 0;
+  font-size: 16px;
+  font-family: 'NanumSquareRoundOTFR';
 `;
 
 const LogoutButton = styled.button`
   width: 30%;
   padding: 12px;
-  background-color: #ff5b5b;
-  color: white;
+  color: var(--side-color-3);
+  font-family: 'NanumSquareRoundOTFR';
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
+  background: none;
+  font-size: 14px;
   display: block;
   margin: 0 auto;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
+  text-decoration: underline;
 `;
 
 function MyPage() {
@@ -90,42 +100,54 @@ function MyPage() {
   };
 
   return (
+    <>
+    <HeaderGradient title="마이페이지"/>
     <Container>
       <Header>
-        <CogButton onClick={() => navigate('/service-info')}>
-          <HiOutlineCog />
-        </CogButton>
-        <ProfileImage />
-        <WelcomeText>환영합니다, 홍길동님!</WelcomeText>
+        <ProfileImage src={profileImg}/>
+        <ProfileName><span>우주</span>님</ProfileName>
+        <WelcomeText>오늘도 빌릿과 함께 스마트하게!</WelcomeText>
       </Header>
 
       <GridButtons>
-        <GridButton onClick={() => navigate('/history')}>이용내역</GridButton>
-        <GridButton onClick={handleNotReady}>멤버십</GridButton>
-        <GridButton onClick={handleNotReady}>포인트</GridButton>
-        <GridButton onClick={handleNotReady}>쿠폰</GridButton>
+        <GridButton onClick={() => navigate('/history')}>
+          <img src={historyIcon}/>이용내역
+        </GridButton>
+        <GridButton onClick={handleNotReady}>
+          <img src={membershipIcon}/>멤버십
+        </GridButton>
+        <GridButton onClick={handleNotReady}>
+          <img src={pointIcon}/>포인트
+        </GridButton>
+        <GridButton onClick={handleNotReady}>
+          <img src={couponIcon}/>쿠폰
+        </GridButton>
       </GridButtons>
 
       <ListMenu>
         <ListItem onClick={() => navigate('/account-settings')}>
-          <HiOutlineUserCircle /> 계정 설정
+          내 정보
         </ListItem>
         <ListItem onClick={() => navigate('/faq')}>
-          <HiOutlineQuestionMarkCircle /> 자주 묻는 질문
+          자주 묻는 질문
         </ListItem>
         <ListItem onClick={() => navigate('/inquiry')}>
-          <HiOutlineChatAlt /> 1:1 문의
+          1:1 문의
         </ListItem>
         <ListItem onClick={() => navigate('/notices')}>
-          <HiOutlineBell /> 공지사항
+          공지사항
         </ListItem>
         <ListItem onClick={() => navigate('/events')}>
-          <HiOutlineSparkles /> 이벤트
+          이벤트
+        </ListItem>
+        <ListItem onClick={() => navigate('/service-info')}>
+          서비스 정보
         </ListItem>
       </ListMenu>
 
       <LogoutButton>로그아웃</LogoutButton>
     </Container>
+    </>
   );
 }
 
