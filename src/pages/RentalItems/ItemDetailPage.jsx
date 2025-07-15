@@ -89,7 +89,7 @@ function ItemDetailPage() {
 
   return (
     <>
-      <Header/>
+      <Header stname = '건국대학교 제1학생회관' state = '영업중' time = '08:00~22:00'/>
       <Container>
         <Image src={product.image} alt={product.name} />
         <Title>{product.name}</Title>

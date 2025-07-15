@@ -52,12 +52,8 @@ const OpenDot = styled.span`
   margin-right: 4px;
 `;
 
-function HeaderStation() {
+function HeaderStation({stname, state, time}) {
   const navigate = useNavigate();
-
-  const stname = '건국대학교 제1학생회관';
-  const state = '영업중';
-  const time = '08:00~22:00';
 
   return (
     <StyledHeader>
@@ -74,7 +70,12 @@ function HeaderStation() {
               {state}&nbsp;
             </p>
           )}
-          {time && <p>({time})</p>}
+          {time && (
+            <p>
+              {time === '영업중' && <OpenDot />}
+              {time}&nbsp;
+            </p>
+          )}
         </div>
       </TitleTimeWrapper>
 
