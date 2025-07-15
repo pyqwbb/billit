@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import eventData from '../../data/mock/events.json';
+import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
   padding: 24px;
@@ -21,34 +22,38 @@ const SortButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   color: #333;
+  font-size: 12px;
+  font-family: 'NanumSquareRoundOTFR';
 `;
 
 const FilterButton = styled.button`
-  background-color: #eee;
+  background-color: #fff;
   border: none;
-  border-radius: 20px;
-  padding: 6px 12px;
+  padding: 6px;
   cursor: pointer;
   margin-left: 8px;
+  font-weight: ${props => (props.active ? 'bold' : 'normal')};
+  font-size: 12px;
+  font-family: 'NanumSquareRoundOTFR';  
 `;
 
 const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 40px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Card = styled.div`
   border-radius: 8px;
-  overflow: hidden;
-  background-color: #f5f5f5;
+  background-color: #fff;
   cursor: pointer;
 `;
 
 const Thumbnail = styled.img`
   width: 100%;
-  height: 120px;
+  height: 104px;
   object-fit: cover;
+  border-radius: 30px;
 `;
 
 const Info = styled.div`
@@ -67,13 +72,36 @@ const TitleRow = styled.div`
   overflow: hidden;
 `;
 
+const Content  = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 19px;
+  font-family: 'NanumSquareRoundOTFB';
+
+  p {
+    font-size: 16px;
+    font-family: 'NanumSquareRoundOTFR';
+  }
+`;
+
 const Status = styled.span`
   font-size: 12px;
-  color: white;
-  background-color: ${props => props.status === '진행중' ? '#22c55e' : '#aaa'};
-  padding: 2px 8px;
-  border-radius: 12px;
+  color: black;
+  background-color: ${props => props.status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
+  border-radius: 30px;
   margin-left: 8px;
+  width: 66px;
+  height: 25px;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'NanumSquareRoundOTFR';  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const MoreButton = styled.button`
@@ -104,16 +132,19 @@ function EventsPage() {
   const paged = sorted.slice(0, limit)
 
   return (
+    <>
+    <HeaderGradient title="이벤트"/>
     <Container>
       <ControlBox>
         <SortButton onClick={() => setSortAsc(prev => !prev)}>
           시작일자 정렬: {sortAsc ? '오름차순 ▲' : '내림차순 ▼'}
         </SortButton>
-        <div>
-          <FilterButton onClick={() => setFilter('전체')}>전체</FilterButton>
-          <FilterButton onClick={() => setFilter('진행중')}>진행중</FilterButton>
-          <FilterButton onClick={() => setFilter('마감')}>마감</FilterButton>
-        </div>
+        <FilterButton
+          onClick={() => setFilter(prev => prev === '진행중' ? '전체' : '진행중')}
+          active={filter === '진행중'}
+        >
+          마감 제외
+        </FilterButton>
       </ControlBox>
 
       <Grid>
@@ -121,13 +152,14 @@ function EventsPage() {
           <Card key={event.id} onClick={() => navigate(`/events/${event.id}`)}>
             <Thumbnail src={event.thumnail} alt="썸네일" />
             <Info>
-              <TitleRow>
-                <strong style={{ flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '14px' }}>
+              <Content>
+                <TitleRow>
                   {event.title}
-                </strong>
-                <Status status={event.status}>{event.status}</Status>
-              </TitleRow>
-              <div style={{fontSize: '12px'}}>{event.startDate} ~ {event.endDate}</div>
+                  <Status status={event.status}>{event.status}</Status>
+                </TitleRow>
+                <p>{event.content}</p>
+              </Content>
+              <div style={{fontFamily: 'NanumSquareRoundOTFR', fontSize: '12px', textAlign: 'right', marginTop: '6px'}}>{event.startDate} ~ {event.endDate}</div>
             </Info>
           </Card>
         ))}
@@ -139,6 +171,7 @@ function EventsPage() {
         </MoreButton>
       )}
     </Container>
+    </>
   );
 }
 

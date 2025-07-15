@@ -1,26 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Header from '../../components/header/HeaderSub';
 import { SlArrowRight, SlArrowUp, SlArrowDown } from "react-icons/sl";
+import { FaCheck } from 'react-icons/fa';
 
 const Container = styled.div`
-  padding: 24px;
+  padding: 20px;
 `;
 
 const Title = styled.div`
-  font-size: 24px;
+  font-size: 32px;
+  font-family: 'NanumSquareRoundOTFEB';
   margin: 16px 0 24px 0;
   line-height: 1.5;
-  font-weight: 600;
   span {
-    color: #888;
-    font-weight: bolder;
+    color: #9BA5B7;
   }
 `;
 
 const AgreementGroup = styled.div`
-  border-bottom: 1px solid #ccc;
   padding: 12px 0;
+  font-size: 14px;
+  font-family: 'NanumSquareRoundOTFR';
 `;
 
 const AgreementRow = styled.div`
@@ -30,23 +32,20 @@ const AgreementRow = styled.div`
   cursor: pointer;
 `;
 
-const Checkbox = styled.input.attrs({ type: 'checkbox' })`
-  margin-right: 8px;
-`;
-
 const Detail = styled.div`
-  padding-left: 24px;
   margin-top: 12px;
-  font-size: 14px;
-  color: #666;
   line-height: 2;
+  opacity: 0.5;
 `;
 
 const NextButton = styled.button`
   width: 100%;
+  height: 52px;
   padding: 16px;
-  background-color: ${({ disabled }) => (disabled ? '#ddd' : '#000')};
-  color: white;
+  background-color: ${({ disabled }) => (disabled ? '#ddd' : 'var(--main-color)')};
+  font-size: 19px;
+  font-family: 'NanumSquareRoundOTFB';
+  color: black;
   border: none;
   border-radius: 302px;
   font-size: 16px;
@@ -54,8 +53,28 @@ const NextButton = styled.button`
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `;
 
+const Option = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+`;
+
+const IconWrapper = styled.span`
+  width: 18px;
+  height: 18px;
+  border: 2.3px solid #555;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${props => (props.checked ? '#85FF6A' : 'transparent')};
+  color: ${props => (props.selected ? '#000' : '#555')};
+`;
+
 function TermsAgreementPage() {
   const navigate = useNavigate();
+
   const [agreements, setAgreements] = useState({
     terms: false,
     privacy: false,
@@ -73,23 +92,22 @@ function TermsAgreementPage() {
       if (key === 'marketing') {
         const checked = !prev.marketing;
         return {
-            ...prev,
-            marketing: checked,
-            marketingAd: checked,
-            marketingEvent: checked,
+          ...prev,
+          marketing: checked,
+          marketingAd: checked,
+          marketingEvent: checked,
         };
       }
 
       if (key === 'marketingAd' || key === 'marketingEvent') {
         const newValue = !prev[key];
         const otherKey = key === 'marketingAd' ? 'marketingEvent' : 'marketingAd';
-
         const newMarketing = newValue && prev[otherKey];
 
         return {
-            ...prev,
-            [key]: newValue,
-            marketing: newMarketing,
+          ...prev,
+          [key]: newValue,
+          marketing: newMarketing,
         };
       }
 
@@ -97,77 +115,72 @@ function TermsAgreementPage() {
     });
   };
 
-
   const requiredAgreed = agreements.terms && agreements.privacy;
 
   return (
-    <Container>
-      <Title>
-        서비스 이용을 위한<br/><span>약관 동의</span>가 필요해요
-      </Title>
+    <>
+      <Header />
+      <Container>
+        <Title>
+          빌릿<br /><span>약관 동의</span>가 필요해요
+        </Title>
 
-      <AgreementGroup>
-        <AgreementRow onClick={() => handleCheck('terms')}>
-          <label>
-            <Checkbox checked={agreements.terms} />
-            빌릿 서비스 이용약관 (필수)
-          </label>
-          <SlArrowRight
-            onClick={(e) => {
+        <AgreementGroup>
+          <AgreementRow onClick={() => handleCheck('terms')}>
+            <Option>
+              <IconWrapper checked={agreements.terms}><FaCheck size={10} /></IconWrapper>
+              빌릿 서비스 이용약관 (필수)
+            </Option>
+            <SlArrowRight
+              onClick={(e) => {
                 e.stopPropagation();
                 navigate('/service-info/terms');
-            }}
-          />
-        </AgreementRow>
-      </AgreementGroup>
+              }}
+            />
+          </AgreementRow>
+        </AgreementGroup>
 
-      <AgreementGroup>
-        <AgreementRow onClick={() => handleCheck('privacy')}>
-          <label>
-            <Checkbox checked={agreements.privacy} />
-            개인정보 수집 이용 동의 (필수)
-          </label>
-          <SlArrowRight
-            onClick={(e) => {
+        <AgreementGroup>
+          <AgreementRow onClick={() => handleCheck('privacy')}>
+            <Option>
+              <IconWrapper checked={agreements.privacy}><FaCheck size={10} /></IconWrapper>
+              개인정보 수집 이용 동의 (필수)
+            </Option>
+            <SlArrowRight
+              onClick={(e) => {
                 e.stopPropagation();
                 navigate('/service-info/privacy');
-            }}
-          />
-        </AgreementRow>
-      </AgreementGroup>
+              }}
+            />
+          </AgreementRow>
+        </AgreementGroup>
 
-      <AgreementGroup>
-        <AgreementRow onClick={() => setOpen((o) => ({ ...o, marketing: !o.marketing }))}>
-          <label>
-            <Checkbox checked={agreements.marketing} onChange={() => handleCheck('marketing')} />
-            마케팅 이용에 대한 동의 (선택)
-          </label>
-          <span>{open.marketing ? <SlArrowUp/> : <SlArrowDown/>}</span>
-        </AgreementRow>
+        <AgreementGroup>
+          <AgreementRow onClick={() => setOpen((o) => ({ ...o, marketing: !o.marketing }))}>
+            <Option onClick={(e) => { e.stopPropagation(); handleCheck('marketing'); }}>
+              <IconWrapper checked={agreements.marketing}><FaCheck size={10} /></IconWrapper>
+              마케팅 이용에 대한 동의 (선택)
+            </Option>
+            <span>{open.marketing ? <SlArrowUp /> : <SlArrowDown />}</span>
+          </AgreementRow>
 
-        {open.marketing && (
-          <Detail>
-            <label>
-              <Checkbox
-                checked={agreements.marketingAd}
-                onChange={() => handleCheck('marketingAd')}
-              />
-              혜택/이벤트 광고 수신
-            </label>
-            <br />
-            <label>
-              <Checkbox
-                checked={agreements.marketingEvent}
-                onChange={() => handleCheck('marketingEvent')}
-              />
-              이벤트 참여를 위한 개인정보 수집 및 이용 동의
-            </label>
-          </Detail>
-        )}
-      </AgreementGroup>
+          {open.marketing && (
+            <Detail>
+              <Option onClick={() => handleCheck('marketingAd')}>
+                <IconWrapper checked={agreements.marketingAd}><FaCheck size={10} /></IconWrapper>
+                혜택/이벤트 광고 수신
+              </Option>
+              <Option onClick={() => handleCheck('marketingEvent')}>
+                <IconWrapper checked={agreements.marketingEvent}><FaCheck size={10} /></IconWrapper>
+                이벤트 참여를 위한 개인정보 수집 및 이용
+              </Option>
+            </Detail>
+          )}
+        </AgreementGroup>
 
-      <NextButton disabled={!requiredAgreed}>다음</NextButton>
-    </Container>
+        <NextButton disabled={!requiredAgreed}>다음</NextButton>
+      </Container>
+    </>
   );
 }
 

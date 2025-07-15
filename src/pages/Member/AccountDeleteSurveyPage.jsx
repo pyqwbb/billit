@@ -1,59 +1,66 @@
 import styled from 'styled-components';
+import HeaderGradient from '../../components/header/HeaderGradient';
+import CustomRadioGroup from '../../components/common/CustomRadioGroup'; // ✅ import
+import { useState } from 'react';
 
 const Container = styled.div`
   padding: 24px;
   max-width: 480px;
   margin: 0 auto;
+
+  h2 {
+    font-size: 24px;
+    font-family: 'NanumSquareRoundOTFEB';
+  }
+
+  p {
+    font-size: 16px;
+    font-family: 'NanumSquareRoundOTFR';
+  }
 `;
 
-const RadioGroup = styled.div`
-  margin-top: 25px;
+const InfoText = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-`;
-
-const TextArea = styled.textarea`
-  width: 100%;
-  height: 100px;
-  margin-top: 20px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 30px;
+  gap: 2px;
+  margin-bottom: 31px;
 `;
 
 const Button = styled.button`
+  position: fixed;
+  bottom: 36px;
+  left: 0;
+  right: 0;
+  width: 360px;
+  margin: 0 auto;
   padding: 12px;
-  background-color: #ddd;
+  background-color: #F13E1F;
+  color: white;
   border: none;
   border-radius: 30px;
   cursor: pointer;
+  font-size: 19px;
+  font-family: 'NanumSquareRoundOTFB';
 `;
 
 function AccountDeleteSurveyPage() {
+  const [selectedReason, setSelectedReason] = useState('');
+  
   return (
+    <>
+    <HeaderGradient title="회원탈퇴"/>
     <Container>
-      <h2>회원 탈퇴</h2><br />
-      <p>회원 탈퇴를 원하시는 이유를 선택해 주세요.</p>
-      <p>선택하신 사유는 서비스 개선에만 사용됩니다.</p>
-      <RadioGroup>
-        <label><input type="radio" name="reason" /> 사용 빈도가 낮아서 </label>
-        <label><input type="radio" name="reason" /> 원하는 기능이나 물품이 부족해서 </label>
-        <label><input type="radio" name="reason" /> 사용하기 불편해서 (UI/UX 등) </label>
-        <label><input type="radio" name="reason" /> 다른 서비스를 이용하기 위해 </label>
-        <label><input type="radio" name="reason" /> 기타 (직접 작성) </label>
-      </RadioGroup>
-      <TextArea placeholder="기타 사유를 입력하세요" />
-      <ButtonWrapper>
-        <Button>회원 탈퇴</Button>
-      </ButtonWrapper>
+      <InfoText>
+        <h2>회원탈퇴</h2>
+        <p>회원을 탈퇴하시는 이유가 무엇인가요?</p>
+      </InfoText>
+      <CustomRadioGroup
+            selected={selectedReason}
+            setSelected={setSelectedReason}
+          />
+      <Button>탈퇴하기</Button>
     </Container>
+    </>
   );
 }
 

@@ -1,8 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import GlobalStyles from './styles/GlobalStyles';
-import Header from './components/Header';
 import MainPage from './pages/MainPage';
-import MenuPage from './pages/MenuPage';
+import LoginPage from './pages/Member/LoginPage';
 import MyPage from './pages/Member/MyPage';
 import ServiceInfoPage from './pages/CustomerSupport/service/ServiceInfoPage';
 import TermsPage from './pages/CustomerSupport/service/TermsPage';
@@ -22,6 +21,7 @@ import EventsPage from './pages/CustomerSupport/EventsPage';
 import EventDetailPage from './pages/CustomerSupport/EventDetailPage';
 import StationMapPage from './pages/RentalStations/StationMapPage';
 import RentalItemsPage from './pages/RentalItems/RentalItemsPage';
+import ItemDetailPage from './pages/RentalItems/ItemDetailPage';
 import QrScanPage from './pages/Rental/QrScanPage';
 import RentalOrReturn from './pages/Rental/RentalOrReturn';
 import RentalTimePage from './pages/Rental/RentalTimePage';
@@ -31,25 +31,12 @@ import ReturnCompletePage from './pages/Rental/ReturnCompletePage';
 import TermsAgreementPage from './pages/Member/TermsAgreementPage';
 
 function AppWrapper() {
-  const location = useLocation();
-  
-  const hideHeaderPaths = [
-    '/menu',
-    '/rental-or-return',
-    '/service-info',
-    '/service-info/terms',
-    '/service-info/privacy',
-    '/service-info/license',
-    '/service-info/version',
-  ];
-
   return (
     <>
       <GlobalStyles />
-      {!hideHeaderPaths.includes(location.pathname) && <Header />}
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/menu" element={<MenuPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/service-info" element={<ServiceInfoPage />} />
         <Route path="/service-info/terms" element={<TermsPage />} />
@@ -69,6 +56,7 @@ function AppWrapper() {
         <Route path="/events/:id" element={<EventDetailPage />} />
         <Route path="/station-map" element={<StationMapPage />} />
         <Route path="/rental-items" element={<RentalItemsPage />} />
+        <Route path="/rental-items/detail" element={<ItemDetailPage />} />
         <Route path="/qr-scan" element={<QrScanPage />} />
         <Route path="/rental-or-return" element={<RentalOrReturn />} />
         <Route path="/rental-time" element={<RentalTimePage />} />

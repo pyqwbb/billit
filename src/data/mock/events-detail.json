@@ -5,6 +5,7 @@
     "content": "무더운 여름! 시원한 할인 혜택과 함께하세요.",
     "startDate": "2025-07-01",
     "endDate": "2025-07-31",
+    "status": "진행중",
     "images": [
       { "order": 1, "image": "/images/billit-black.jpg" },
       { "order": 2, "image": "/images/billit-black.jpg" }
@@ -16,6 +17,7 @@
     "content": "신규 가입자라면 첫 대여 50% 할인!",
     "startDate": "2025-06-01",
     "endDate": "2025-06-30",
+    "status": "종료",
     "images": [
       { "order": 1, "image": "/images/billit-black.jpg" }
     ]
@@ -26,6 +28,7 @@
     "content": "소중한 후기를 남겨주시면 추첨을 통해 경품을 드려요!",
     "startDate": "2025-07-10",
     "endDate": "2025-08-10",
+    "status": "종료",
     "images": [
       { "order": 1, "image": "/images/billit-black.jpg" },
       { "order": 2, "image": "/images/billit-black.jpg" },
