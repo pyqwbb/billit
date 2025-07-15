@@ -6,14 +6,10 @@ import CustomRadioGroup from '../../components/common/CustomRadioGroup';
 
 const Container = styled.div`
   padding: 24px;
-  max-width: 480px;
-  margin: 0 auto;
-
   h2 {
     font-size: 24px;
     font-family: 'NanumSquareRoundOTFEB';
   }
-
   p {
     font-size: 16px;
     font-family: 'NanumSquareRoundOTFR';
@@ -27,14 +23,18 @@ const InfoText = styled.div`
   margin-bottom: 31px;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0 60px; /* 버튼 위아래 여백 */
+`;
+
 const Button = styled.button`
-  position: fixed;
-  bottom: 36px;
-  left: 0;
-  right: 0;
-  width: 360px;
-  margin: 0 auto;
-  padding: 12px;
+  width: 100%;
+  max-width: 360px;
+  padding: 12px 0;
+  margin-top: 240px;
   background-color: #F13E1F;
   color: white;
   border: none;
@@ -42,6 +42,7 @@ const Button = styled.button`
   cursor: pointer;
   font-size: 19px;
   font-family: 'NanumSquareRoundOTFB';
+  box-sizing: border-box;
 `;
 
 function AccountDeleteSurveyPage() {
@@ -59,8 +60,10 @@ function AccountDeleteSurveyPage() {
       <CustomRadioGroup
             selected={selectedReason}
             setSelected={setSelectedReason}
-          />
-      <Button onClick={() => navigate('/complete-delete-account')}>탈퇴하기</Button>
+       />
+      <ButtonWrapper>
+        <Button onClick={() => navigate('/complete-delete-account')}>탈퇴하기</Button>  
+      </ButtonWrapper>
     </Container>
     </>
   );

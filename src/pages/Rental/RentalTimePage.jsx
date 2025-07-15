@@ -1,24 +1,49 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Header from '../../components/header/HeaderStation';
+import PlusIcon from '../../assets/icon/plus.png';
+import MinusIcon from '../../assets/icon/minus.png';
 
 const Container = styled.div`
   padding: 24px;
 `;
 
 const ImageBox = styled.div`
-  background-color: #e5e5e5;
+  background-color: var(--side-color-3);
   width: 330px;
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
-  margin-bottom: 24px;
+  border-radius: 30px;
+  margin-bottom: 9px;
 `;
 
 const InfoRow = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  flex-direction: column;
+  margin: 16px;
   font-size: 16px;
+  gap: 12px;
+`;
+
+const NameInfo = styled.p`
+  font-family: 'NanumSquareRoundOTFEB';
+  font-size: 24px;
+`;
+
+const PriceInfo = styled.p`
+  font-family: 'NanumSquareRoundOTFR';
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+
+  p {
+    font-family: 'NanumSquareRoundOTFB';
+  }
+
+  span {
+    color: var(--main-color)
+  }
 `;
 
 const TimeControl = styled.div`
@@ -26,27 +51,65 @@ const TimeControl = styled.div`
   justify-content: center;
   align-items: center;
   gap: 32px;
-  font-size: 24px;
-  margin: 8px 0 26px 0;
+  font-size: 32px;
+  margin: 18px 0 42px 0;
+  padding-top: 27px;
+  border-radius: 0px;
+  border-top: 1px solid var(--side-color-4);
+
+  p {
+    font-family: 'NanumSquareRoundOTFR';
+    margin-left: -30px;
+  }
+
+  span {
+    font-family: 'NanumSquareRoundOTFB';
+    color: var(--main-color);
+  }
 `;
 
 const Button = styled.button`
-  font-size: 20px;
+  font-size: 33px;
   width: 40px;
   height: 40px;
-  border: 1px solid #aaa;
-  border-radius: 50%;
-  background-color: white;
+  border: none;
   cursor: pointer;
+  background-color: white;
+`;
+
+const PayInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+
+  p {
+    font-family: 'NanumSquareRoundOTFB';
+    font-size: 20px;
+  }
+
+  span {
+    font-family: 'NanumSquareRoundOTFB';
+    font-size: 24px;
+    display: flex;
+    flex-direction: row;
+
+    p {
+      font-family: 'NanumSquareRoundOTFB';
+      font-size: 24px;
+      color: var(--main-color);
+    }
+  }
 `;
 
 const RentButton = styled.button`
   width: 100%;
-  margin-top: 24px;
+  margin-top: 20px;
   padding: 16px;
+  font-family: 'NanumSquareRoundOTFB';
   font-size: 16px;
   border-radius: 30px;
-  background-color: #ddd;
+  background-color: var(--main-color);
   border: none;
 `;
 
@@ -63,25 +126,32 @@ function RentalTimePage() {
   const estimatedPrice = hours * mockItem.pricePerHour;
 
   return (
+    <>
+    <Header stname = '건국대학교 제1학생회관' />
     <Container>
       <div style={{display: 'flex', justifyContent: 'center'}}>
         <ImageBox />
       </div>
       <InfoRow>
-        <p>{mockItem.name}</p>
-        <p>{mockItem.pricePerHour.toLocaleString()}원</p>
+        <NameInfo>{mockItem.name}</NameInfo>
+        <PriceInfo><p><span>{mockItem.pricePerHour.toLocaleString()}원</span></p>/시간</PriceInfo>
       </InfoRow>
 
-      <div style={{textAlign:'left'}}><strong>대여시간</strong></div>
       <TimeControl>
-        <Button onClick={() => setHours(prev => Math.max(1, prev - 1))}>-</Button>
-        <span>{hours} 시간</span>
-        <Button onClick={() => setHours(prev => prev + 1)}>+</Button>
+        <Button onClick={() => setHours(prev => Math.max(1, prev - 1))}><img src={MinusIcon}/></Button>
+        <span>{hours}</span>
+        <p>시간</p>
+        <Button onClick={() => setHours(prev => prev + 1)}><img src={PlusIcon}/></Button>
       </TimeControl>
+
+      <PayInfo>
+        <p>결제 예정 금액</p>
+        <span><p>{estimatedPrice.toLocaleString()}</p>원</span>
+      </PayInfo>
       
-      <div style={{textAlign:'right'}}><strong>결제 예정 금액:</strong> {estimatedPrice.toLocaleString()}원</div>
-      <RentButton onClick={() => navigate('/order-confirm')}>대여하기</RentButton>
+      <RentButton onClick={() => navigate('/order-confirm')}>대여시작</RentButton>
     </Container>
+    </>
   );
 }
 
