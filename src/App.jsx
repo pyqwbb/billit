@@ -13,6 +13,7 @@ import HistoryDetailPage from './pages/Rental/HistoryDetailPage';
 import ReturnPage from './pages/Rental/ReturnPage';
 import AccountSettingsPage from './pages/Member/AccountSettingsPage';
 import AccountDeleteSurveyPage from './pages/Member/AccountDeleteSurveyPage';
+import CompleteDeleteAccountPage from './pages/Member/CompleteDeleteAccountPage';
 import FaqPage from './pages/CustomerSupport/FaqPage';
 import InquiryPage from './pages/CustomerSupport/InquiryPage';
 import NoticesPage from './pages/CustomerSupport/NoticesPage';
@@ -48,6 +49,7 @@ function AppWrapper() {
         <Route path="/return/:id" element={<ReturnPage />} />
         <Route path="/account-settings" element={<AccountSettingsPage />} />
         <Route path="/account-delete-survey" element={<AccountDeleteSurveyPage />} />
+        <Route path="/complete-delete-account" element={<CompleteDeleteAccountPage />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/inquiry" element={<InquiryPage />} />
         <Route path="/notices" element={<NoticesPage />} />

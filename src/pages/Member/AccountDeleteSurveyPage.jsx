@@ -1,7 +1,8 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import HeaderGradient from '../../components/header/HeaderGradient';
-import CustomRadioGroup from '../../components/common/CustomRadioGroup'; // ✅ import
-import { useState } from 'react';
+import CustomRadioGroup from '../../components/common/CustomRadioGroup';
 
 const Container = styled.div`
   padding: 24px;
@@ -44,6 +45,7 @@ const Button = styled.button`
 `;
 
 function AccountDeleteSurveyPage() {
+  const navigate = useNavigate();
   const [selectedReason, setSelectedReason] = useState('');
   
   return (
@@ -58,7 +60,7 @@ function AccountDeleteSurveyPage() {
             selected={selectedReason}
             setSelected={setSelectedReason}
           />
-      <Button>탈퇴하기</Button>
+      <Button onClick={() => navigate('/complete-delete-account')}>탈퇴하기</Button>
     </Container>
     </>
   );
