@@ -35,7 +35,7 @@ const ProfileName = styled.div`
     border: none;
     background-color: #fff;
     font-size: 12px;
-    font-family: 'NanumSquareRoundOTFER';
+    font-family: 'NanumSquareRoundOTFR';
     color: var(--side-color-3);
     text-decoration: underline;
     padding-bottom: 2px;
