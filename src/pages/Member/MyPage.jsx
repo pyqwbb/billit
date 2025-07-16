@@ -23,8 +23,6 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileName = styled.div`
-  font-size: 14px;
-  font-family: 'NanumSquareRoundOTFB';
   font-size: 24px;
   font-family: 'NanumSquareRoundOTFEB';
 
@@ -35,7 +33,8 @@ const ProfileName = styled.div`
 
 const WelcomeText = styled.p`
   margin: 2px 0 30px 0;
-  font-size: 16px;
+  font-size: 14px;
+  font-family: 'NanumSquareRoundOTFR';
 `;
 
 const GridButtons = styled.div`

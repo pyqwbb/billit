@@ -48,6 +48,7 @@ const LogoWrapper = styled.div`
 const Logo = styled.img`
   height: 30px;
   cursor: pointer;
+  margin: 15px 0 0 0;
 `;
 
 const ListMenu = styled.ul`
@@ -116,7 +117,7 @@ function MenuDrawer({ onClose }) {
           <ListItem onClick={() => handleNavigate('/station-map')}>주변 스테이션</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-items')}>대여 물품</ListItem>
           <ListItem onClick={() => handleNavigate('/qr-scan')}>QR 스캔</ListItem>
-          <ListItem onClick={() => handleNavigate('/rental-or-return')}>(디버깅) 대여/반납 선택</ListItem>
+          <ListItem onClick={() => handleNavigate('/rental-or-return')}>(Debug) 대여/반납 선택</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-time')}>(디버깅) 대여 시간 선택</ListItem>
           <ListItem onClick={() => handleNavigate('/terms-agreement')}>(디버깅) 이용약관 동의</ListItem>
           <ListItem onClick={() => handleNavigate('/login')}>(디버깅) 로그인</ListItem>
