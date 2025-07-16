@@ -1,48 +1,86 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import rentalData from '../../data/mock/history.json';
+import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+`;
+
+const CardWrapper = styled.div`
+  border-radius: 30px;
+  background-color: var(--side-color-2);
+  &:hover {
+    background-color: #ccc;
+  }
 `;
 
 const Card = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background-color: #f7f7f7;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-
-  strong {
-    margin-bottom: 8px;
+  border-radius: 30px;
+  padding: 25px;
+  background-color: ${({ status }) =>
+    status === '대여중' ? '#85FF6A' : 'var(--side-color-2)'};
+  p {
+    font-size: 19px;
+    font-family: 'NanumSquareRoundOTFEB';
   }
 `;
 
 const Status = styled.span`
-  font-size: 12px;
+  font-size: 16px;
+  font-family: 'NanumSquareRoundOTFEB';
   color: white;
-  background-color: ${({ status }) =>
-    status === '대여중' ? '#22c55e' :
-    status === '반납' ? '#999' : '#ef4444'};
   padding: 2px 8px;
   border-radius: 8px;
   margin-left: 8px;
+  color: ${({ status }) =>
+    status === '대여중' ? 'black' : 'var(--side-color-4)'};
 `;
 
-const ReturnButton = styled.button`
-  margin-top: 12px;
-  padding: 8px 16px;
-  background-color: #ddd;
+const CardInfo = styled.div`
+  margin-top: 40px;
+  p {
+    font-size: 14px;
+    font-family: 'NanumSquareRoundOTFR';
+  }
+  div {
+    height: 20px;
+  }
+`;
+
+const RentalTime = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  font-size: 19px;
+  font-family: 'NanumSquareRoundOTFB';
+  margin-top: 10px;
+  position: relative;
+`;
+
+const BottomBar = styled.div`
+  height: 9px;
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  margin-top: 24px;
+`;
+
+const ReturnButton = styled.div`
+  padding: 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 0 0 30px 30px ;
   cursor: pointer;
   width: 100%;
-
-  &:hover {
-    background-color: #ccc;
-  }
+  font-size: 19px;
+  font-family: 'NanumSquareRoundOTFB';
+  text-align: center;
 `;
 
 function HistoryPage() {
@@ -57,30 +95,48 @@ function HistoryPage() {
   };
 
   return (
+    <>
+    <HeaderGradient title="이용내역"/>
     <Container>
       {rentalData.map((rental) => (
-        <Card key={rental.id} onClick={() => handleCardClick(rental.id)}>
+        <CardWrapper>
+          <Card status={rental.status} key={rental.id} onClick={() => handleCardClick(rental.id)}>
           <div style={{ display: 'flex',justifyContent: 'space-between', alignItems: 'center' }}>
-            <strong>{rental.itemName}</strong>
-            <Status status={rental.status}>{rental.status}</Status>
+            <p>{rental.itemName}</p>
+            {rental.status === '반납' ? (
+              <Status status={rental.status}>{rental.status}완료</Status>
+            ) : <Status status={rental.status}>{rental.status}</Status>}
           </div>
-          <div>{rental.stationName}</div>
-          <div>시작 시간: {rental.startTime}</div>
-          <div>결제 금액: {rental.price.toLocaleString()}원</div>
+          <div style={{fontFamily: 'NanumSquareRoundOTFR', fontSize: '14px'}}>{rental.stationName}</div>
+          <CardInfo>
+            <div style={{ display: 'flex',justifyContent: 'space-between'}}>
+              <p style={{color: 'var(--side-color-4)'}}>대여시작</p>
+              <p>{rental.startTime}</p>
+            </div>
+            <div style={{ display: 'flex',justifyContent: 'space-between'}}>
+              <p style={{color: 'var(--side-color-4)'}}>결제금액</p>
+              <p>{rental.price.toLocaleString()}원</p>
+            </div>
+          </CardInfo>
           {rental.status !== '반납' && (
-            <>
-              <div>잔여 시간/대여 시간</div>
-              <ReturnButton onClick={(e) => {
-                e.stopPropagation();
-                handleReturnClick(rental.id);
-              }}>
-                반납하기
-              </ReturnButton>
-            </>
+            <RentalTime>
+              3시간/3시간
+              <BottomBar />
+            </RentalTime>
           )}
         </Card>
+        {rental.status !== '반납' && (
+          <ReturnButton onClick={(e) => {
+            e.stopPropagation();
+              handleReturnClick(rental.id);
+          }}>
+            반납하기
+          </ReturnButton>
+        )}
+        </CardWrapper>
       ))}
     </Container>
+    </>
   );
 }
 

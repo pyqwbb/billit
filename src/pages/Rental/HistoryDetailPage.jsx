@@ -1,30 +1,74 @@
 import { useParams } from 'react-router-dom';
 import rentalData from '../../data/mock/history.json';
 import styled from 'styled-components';
+import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
-  padding: 10px;
-  margin: 25px 25px 0 25px;
-  background-color: #f5f5f5;
-  border-radius: 12px 12px 0 0;
+  padding: 20px;
 `;
 
-const Section = styled.div`
-  margin-bottom: 24px;
-  padding: 16px;
-  border-radius: 12px;
+const Box = styled.div`
+  padding: 21px 0 0 0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
 `;
 
-const Title = styled.h3`
-  margin-bottom: 10px;
+const InBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 22px;
+  p {
+    font-size: 16px;
+    font-family: NanumSquareRoundOTFB;
+  }
 `;
 
-const Label = styled.div`
-  font-weight: bold;
+const ImageBox = styled.img`
+  background-color: var(--side-color-3);
+  width: 130px;
+  aspect-ratio: 1 / 1;
+  border-radius: 15px;
 `;
 
-const Value = styled.div`
-  margin-bottom: 8px;
+const StatusBox = styled.div`
+  font-size: 16px;
+  font-family: NanumSquareRoundOTFB;
+  width: 100px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  background-color: var(--main-color);
+`;
+
+const ReturnInfo = styled.div`
+  font-size: 14px;
+  font-family: NanumSquareRoundOTFR;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 17px;
+`;
+
+const ReturnInfoDetail = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 22px;
+  span {
+    color: var(--side-color-4);
+  }
+`;
+
+const Title = styled.p`
+  font-size: 19px;
+  font-family: NanumSquareRoundOTFB;
+  margin: 23px 0 18px;
 `;
 
 function HistoryDetailPage() {
@@ -34,49 +78,78 @@ function HistoryDetailPage() {
   if (!rental) return <Container>존재하지 않는 내역입니다.</Container>;
 
   return (
+    <>
+    <HeaderGradient title="이용내역"/>
     <Container>
-      <Section style={{ borderBottom: '1px solid #333', borderRadius: '0' }}>
-        <Title>대여 물품 정보</Title>
-        <Label>대여 시간</Label>
-        <Value>{rental.rentalTimeHour}</Value>
-        <Label>대여 시작 시간</Label>
-        <Value>{rental.startTime}</Value>
-        <Label>예정 반납 시간</Label>
-        <Value>{rental.expectedReturnTime ?? '없음'}</Value>
-        {rental.returnTime && (
-          <>
-            <Label>반납 시간</Label>
-            <Value>{rental.returnTime}</Value>
-          </>
-        )}
-        <Label>대여 스테이션</Label>
-        <Value>{rental.stationName}</Value>
-        {rental.returnStation && (
-          <>
-            <Label>반납 스테이션</Label>
-            <Value>{rental.returnStation}</Value>
-          </>
-        )}
-      </Section>
+        <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
+        <Box>
+          <InBox>
+            <ImageBox />
+            <StatusBox>{rental.status}</StatusBox>
+          </InBox>
+          <p style={{ fontSize: '19px', fontFamily: 'NanumSquareRoundOTFB', marginBottom: '4px' }}>{rental.itemName}</p>
+          <p style={{ fontSize: '14px', fontFamily: 'NanumSquareRoundOTFR', marginBottom: '24px' }}>{rental.stationName}</p>
+          <p style={{ fontSize: '16px', fontFamily: 'NanumSquareRoundOTFB', marginBottom: '4px' }}>
+            대여시간 <span style={{ color: 'var(--main-color)' }}>{rental.rentalTimeHour}</span>시간
+          </p>
+        </Box>
 
-      <Section style={{ borderBottom: '1px solid #333', borderRadius: '0' }}>
-        <Title>결제 정보</Title>
-        <Label>결제 수단</Label>
-        <Value>{rental.paymentMethod}</Value>
-        <Label>결제 승인 시간</Label>
-        <Value>{rental.paymentTime}</Value>
-        <Label>결제 금액</Label>
-        <Value>{rental.price.toLocaleString()}원</Value>
-      </Section>
+        <ReturnInfo style={{ borderBottom: '1px solid var(--side-color-4)' }}>
+          <ReturnInfoDetail>
+            <span>대여시작</span>
+            <p>{rental.startTime}</p>
+          </ReturnInfoDetail>
+          <ReturnInfoDetail>
+            <span>반납기간</span>
+            <p>{rental.expectedReturnTime}</p>
+          </ReturnInfoDetail>
+          {rental.returnTime && (
+            <ReturnInfoDetail>
+              <span>반납기간</span>
+              <p>{rental.returnTime}</p>
+            </ReturnInfoDetail>
+          )}
+          <ReturnInfoDetail>
+            <span>대여 스테이션</span>
+            <p>{rental.stationName}</p>
+          </ReturnInfoDetail>
+          {rental.returnStation && (
+            <ReturnInfoDetail>
+              <span>반납 스테이션</span>
+              <p>{rental.returnStation}</p>
+            </ReturnInfoDetail>
+          )}
+        </ReturnInfo>
 
-      <Section>
-        <Title>기기 정보</Title>
-        <Label>대여 물품 명</Label>
-        <Value>{rental.itemName}</Value>
-        <Label>시리얼 넘버</Label>
-        <Value>{rental.serialNumber}</Value>
-      </Section>
+        <ReturnInfo style={{ borderBottom: '1px solid var(--side-color-4)' }}>
+          <Title>결제 정보</Title>
+          <ReturnInfoDetail>
+            <span>결제 수단</span>
+            <p>{rental.paymentMethod}</p>
+          </ReturnInfoDetail>
+          <ReturnInfoDetail>
+            <span>결제 승인 시간</span>
+            <p>{rental.paymentTime}시간</p>
+          </ReturnInfoDetail>
+          <ReturnInfoDetail>
+            <span>결제 금액</span>
+            <p>{rental.price.toLocaleString()}원</p>
+          </ReturnInfoDetail>
+        </ReturnInfo>
+
+        <ReturnInfo>
+          <Title>기기 정보</Title>
+          <ReturnInfoDetail>
+            <span>대여물품명</span>
+            <p>{rental.itemName}</p>
+          </ReturnInfoDetail>
+          <ReturnInfoDetail>
+            <span>대여물품 시리얼 넘버</span>
+            <p>{rental.serialNumber}</p>
+          </ReturnInfoDetail>
+        </ReturnInfo>
     </Container>
+    </>
   );
 }
 
