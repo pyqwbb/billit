@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import LocationCard from './LocationCard';
 
 function NaverMap() {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const [selected, setSelected] = useState(false);
+  const location = useLocation();
+
+  const isStationMapPage = location.pathname === '/station-map';
 
   useEffect(() => {
     const clientId = import.meta.env.VITE_NAVER_MAP_CLIENT_ID;
@@ -43,6 +47,8 @@ function NaverMap() {
       markerRef.current = marker;
 
       naver.maps.Event.addListener(marker, 'click', () => {
+        if (!isStationMapPage) return;
+
         setSelected(true);
         marker.setIcon({
           url: '/marker/active.png',
@@ -56,7 +62,7 @@ function NaverMap() {
     return () => {
       document.head.removeChild(script);
     };
-  }, [location]);
+  }, [location.pathname]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
