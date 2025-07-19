@@ -11,7 +11,6 @@ const StyledHeader = styled.header`
   align-items: center;
   height: 60px;
   padding: 0 16px;
-  background-color: #fff;
   position: relative;
   z-index: 10;
 `;
