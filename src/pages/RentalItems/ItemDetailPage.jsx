@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
+import { useNavigate } from 'react-router-dom';
 
 const mockProduct = {
   name: '라이트닝 충전기, 어댑터',
@@ -85,6 +86,7 @@ const StationButton = styled.button`
 `;
 
 function ItemDetailPage() {
+  const navigate = useNavigate();
   const product = mockProduct;
 
   return (
@@ -99,7 +101,7 @@ function ItemDetailPage() {
           <Price2>/ 시간</Price2>
         </Price>
         <Desc>{product.description}</Desc>
-        <StationButton>대여 가능 스테이션 보기</StationButton>
+        <StationButton onClick={() => { navigate('/available-list');}}>대여 가능 스테이션 보기</StationButton>
       </Container>
     </>
   );
