@@ -62,7 +62,7 @@ function AppWrapper() {
         <Route path="/available-list" element={<AvailableListPage />} />
         <Route path="/available-station" element={<AvailableStationPage />} />
         <Route path="/rental-items" element={<RentalItemsPage />} />
-        <Route path="/rental-items/detail" element={<ItemDetailPage />} />
+        <Route path="/rental-items/:productName" element={<ItemDetailPage />} />
         <Route path="/qr-scan" element={<QrScanPage />} />
         <Route path="/rental-or-return" element={<RentalOrReturn />} />
         <Route path="/rental-time" element={<RentalTimePage />} />

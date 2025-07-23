@@ -1,14 +1,10 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
-import { useNavigate } from 'react-router-dom';
-
-const mockProduct = {
-  name: '라이트닝 충전기, 어댑터',
-  image: '/images/billit-black.jpg',
-  category: '보조배터리',
-  description: '애플 기기 전용 충전 장비입니다. 고속 충전을 지원하며, 안정적인 전원 공급이 가능합니다.',
-  pricePerHour: 1000
-};
+import HeaderBack from '../../components/header/HeaderBack';
 
 const Container = styled.div`
   padding: 16px;
@@ -22,6 +18,7 @@ const Image = styled.img`
   width: 330px;
   aspect-ratio: 1 / 1;
   border-radius: 8px;
+  background-color: var(--side-color-1);
 `;
 
 const Title = styled.h2`
@@ -87,20 +84,49 @@ const StationButton = styled.button`
 
 function ItemDetailPage() {
   const navigate = useNavigate();
-  const product = mockProduct;
+  const { productName } = useParams();
+  const [itemData, setItemData] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItem = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/products/${productName}`);
+        setItemData(response.data.data);
+      } catch (err) {
+        setError('상품 정보를 불러오는 데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchItem();
+  }, [productName]);
+
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>{error}</div>;
+  if (!itemData) return null; 
 
   return (
     <>
-      <Header stname = '건국대학교 제1학생회관' state = '영업중' time = '08:00~22:00'/>
+      { !itemData.stock ? (
+        <HeaderBack />
+      ) : (
+        <Header stname = '건국대학교 제1학생회관' state = '영업중' time = '08:00~22:00'/>
+      )}
       <Container>
-        <Image src={product.image} alt={product.name} />
-        <Title>{product.name}</Title>
-        <Category>잔여수량 3개</Category>    
+        <Image src={itemData.image} alt={itemData.name} />
+        <Title>{itemData.name}</Title>
+        { !itemData.stock ? (
+          <Category></Category> 
+        ) : (
+          <Category>잔여수량&nbsp;{itemData.stock}개</Category>
+        )}   
         <Price>
-          <Price1><span style={{color: '#53CF38'}}>{product.pricePerHour.toLocaleString()}</span>원</Price1>
+          <Price1><span style={{color: '#53CF38'}}>{itemData.pricePerHour.toLocaleString()}</span>원</Price1>
           <Price2>/ 시간</Price2>
         </Price>
-        <Desc>{product.description}</Desc>
+        <Desc>{itemData.description}</Desc>
         <StationButton onClick={() => { navigate('/available-list');}}>대여 가능 스테이션 보기</StationButton>
       </Container>
     </>

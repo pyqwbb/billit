@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components';
-import data from '../../data/mock/items.json';
 import Header from '../../components/header/HeaderMain';
 
 const Container = styled.div`
@@ -53,6 +53,7 @@ const ProductImage = styled.img`
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 8px;
+  background-color: var(--side-color-1);
 `;
 
 const ProductInfo = styled.div`
@@ -87,14 +88,29 @@ const ProductPrice = styled.span`
   }
 `;
 
-function RentalItemsPage() {
+const RentalItemsPage = () => {
   const navigate = useNavigate();
-  const categories = ['전체', ...new Set(data.products.map(p => p.category))];
   const [selected, setSelected] = useState('전체');
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
 
   const filtered = selected === '전체'
-    ? data.products
-    : data.products.filter(p => p.category === selected);
+  ? products
+  : products.filter(p => p.category === selected);
+
+  const categories = ['전체', ...new Set(products.map(p => p.category))];
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/products');
+        setProducts(response.data.data.products);
+      } catch (err) {
+        setError('상품을 불러오는 데 실패했습니다.');
+      }
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <>
@@ -114,12 +130,16 @@ function RentalItemsPage() {
 
       <Grid>
         {filtered.map(product => (
-          <ProductCard key={product.productModelId}
-            onClick={() => navigate(`/rental-items/detail`)}>
-            <ProductImage src={product.image} alt="item" />
+          <ProductCard key={product.name}
+            onClick={() => navigate(`/rental-items/${product.name}`)}>
+            <ProductImage src={product.image} alt={product.name} />
             <ProductInfo>
               <ProductName>{product.name}</ProductName>
-              <ProductStock>잔여수량&nbsp;{product.stock && <p>{product.stock}</p>}개</ProductStock>
+              { !product.stock ? (
+                <ProductStock></ProductStock> 
+              ) : (
+                <ProductStock>잔여수량&nbsp;{product.stock && <p>{product.stock}</p>}개</ProductStock>
+              )}
               <ProductPrice><span style={{color: "var(--main-color)"}}>{product.pricePerHour.toLocaleString()}</span>원<p>/시간</p></ProductPrice>
             </ProductInfo>
           </ProductCard>
