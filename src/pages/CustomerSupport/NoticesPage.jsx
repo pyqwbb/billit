@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import noticeData from '../../data/mock/notices.json';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/HeaderMain';
+import api from '../../api/axiosInstance';
 
 const Container = styled.div`
   display: flex;
@@ -99,13 +99,27 @@ const Footer = styled.div`
 
 function NoticesPage() {
   const navigate = useNavigate();
+  const [notices, setNotices] = useState([]);
   const [limit, setLimit] = useState(10);
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
-  const categories = ['전체', ...new Set(noticeData.map(n => n.type))];
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const response = await api.get('/api/v1/notices');
+        const data = response.data?.data?.noticeInfos?.content || [];
+        setNotices(data);
+      } catch (error) {
+        console.error('Failed to fetch notices:', error);
+      }
+    }
+    fetchNotices();
+  }, []);
 
-  const sortedData = [...noticeData]
+  const categories = ['전체', ...new Set(notices.map(n => n.type))];
+
+  const sortedData = [...notices]
     .filter(n => selectedCategory === '전체' || n.type === selectedCategory)
     .sort((a, b) => {
       const dateA = new Date(a.createdAt);
