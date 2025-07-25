@@ -100,24 +100,35 @@ const Footer = styled.div`
 function NoticesPage() {
   const navigate = useNavigate();
   const [notices, setNotices] = useState([]);
-  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(0);
+  const size = 10;
+  const [hasMore, setHasMore] = useState(true);
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
   useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const response = await api.get('/api/v1/notices');
-        const data = response.data?.data?.noticeInfos?.content || [];
-        setNotices(data);
-      } catch (error) {
-        console.error('Failed to fetch notices:', error);
-      }
-    }
-    fetchNotices();
+    fetchNotices(0);
   }, []);
 
-  const categories = ['전체', ...new Set(notices.map(n => n.type))];
+  const fetchNotices = async (pageNumber) => {
+    try {
+      const response = await api.get(`/api/v1/notices?page=${pageNumber}&size=${size}`);
+      const content = response.data?.data?.noticeInfos?.content || [];
+      const pageInfo = response.data?.data?.noticeInfos?.page;
+
+      setNotices((prev) => {
+        const ids = new Set(prev.map((n) => n.id));
+        const newNotices = content.filter((n) => !ids.has(n.id));
+        return [...prev, ...newNotices];
+      });
+      setPage(pageNumber + 1);
+      setHasMore(pageNumber + 1 < pageInfo.totalPages);
+    } catch (error) {
+      console.error('공지사항 불러오기 실패:', error);
+    }
+  };
+
+  const categories = ['전체', '시스템 점검', '일반', '당첨자 발표'];
 
   const sortedData = [...notices]
     .filter(n => selectedCategory === '전체' || n.type === selectedCategory)
@@ -145,9 +156,9 @@ function NoticesPage() {
           </div>
 
           <CategoryScroll>
-            {categories.map((cat, i) => (
+            {categories.map((cat) => (
               <CategoryButton
-                key={i}
+                key={cat}
                 selected={selectedCategory === cat}
                 onClick={() => setSelectedCategory(cat)}
               >
@@ -156,14 +167,16 @@ function NoticesPage() {
             ))}
           </CategoryScroll>
 
-          {sortedData.slice(0, limit).map((notice) => (
+          {sortedData.map((notice) => (
             <NoticeItem key={notice.id} onClick={() => handleClick(notice.id)}>
               <span>{notice.title}</span>
             </NoticeItem>
           ))}
 
-          {limit < sortedData.length && (
-            <MoreButton onClick={() => setLimit(prev => prev + 10)}>더보기</MoreButton>
+          {hasMore && (
+            <MoreButton onClick={() => fetchNotices(page)}>
+              더보기
+            </MoreButton>
           )}
         </ListContainer>
 
