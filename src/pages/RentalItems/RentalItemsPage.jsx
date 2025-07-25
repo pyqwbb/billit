@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderMain';
 
@@ -103,7 +103,7 @@ const RentalItemsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/products');
+        const response = await api.get('/api/v1/products');
         setProducts(response.data.data.products);
       } catch (err) {
         setError('상품을 불러오는 데 실패했습니다.');

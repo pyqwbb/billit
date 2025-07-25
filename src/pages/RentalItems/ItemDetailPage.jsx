@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
 import HeaderBack from '../../components/header/HeaderBack';
@@ -92,7 +92,7 @@ function ItemDetailPage() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/products/${productName}`);
+        const response = await api.get(`/api/v1/products/${productName}`);
         setItemData(response.data.data);
       } catch (err) {
         setError('상품 정보를 불러오는 데 실패했습니다.');
