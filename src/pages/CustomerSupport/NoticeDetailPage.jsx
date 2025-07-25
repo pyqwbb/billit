@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import noticeData from '../../data/mock/notices.json';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderGradient';
+import api from '../../api/axiosInstance';
 
 const Container = styled.div`
   padding: 24px;
@@ -33,15 +34,27 @@ const NoticeDate = styled.span`
 
 function NoticeDetailPage() {
   const { id } = useParams();
-  const notice = noticeData.find(n => n.id === parseInt(id));
+  const [fetchedNotice, setFetchedNotice] = useState({});
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      try {
+        const response = await api.get(`api/v1/notices/${id}`);
+        setFetchedNotice(response.data.data);
+      } catch (error) {
+        console.error('Error fetching notice:', error);
+      }
+    }
+    fetchNotice();
+  }, [id]);
 
   return (
     <>
     <Header title="공지사항"/>
     <Container>
-      <NoticeTitle>{notice.title}</NoticeTitle>
-      <NoticeContent>{notice.content}</NoticeContent>
-      <NoticeDate>{notice.createdAt}</NoticeDate>
+      <NoticeTitle>{fetchedNotice.title}</NoticeTitle>
+      <NoticeContent>{fetchedNotice.content}</NoticeContent>
+      <NoticeDate>{fetchedNotice.createdAt}</NoticeDate>
     </Container>
     </>
   );
