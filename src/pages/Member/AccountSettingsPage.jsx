@@ -39,6 +39,7 @@ const ProfileName = styled.div`
     color: var(--side-color-3);
     text-decoration: underline;
     padding-bottom: 2px;
+    cursor: pointer;
   }
 `;
 
@@ -48,26 +49,11 @@ const ProfileAddr = styled.p`
   font-family: 'NanumSquareRoundOTFEB';
 `;
 
-const ProfileTextArea = styled.div`
-  width: 100%;
-  height: 140px;
-  textarea {
-    padding: 20px;
-    border-radius: 30px;
-    background-color: var(--side-color-1);
-    border: none;
-    width: 100%;
-    height: 100%;
-    font-size: 16px;
-    font-family: 'NanumSquareRoundOTFER';
-  }
-  margin-bottom: 90px;
-`;
-
 const AccountInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 100px;
   gap: 13px;
   font-size: 16px;
   font-family: 'NanumSquareRoundOTFEB';
@@ -95,6 +81,9 @@ const DeleteButton = styled.button`
 function AccountSettingsPage() {
   const navigate = useNavigate();
 
+  const name = '우주';
+  const town = '화양동';
+
   return (
     <>
     <HeaderGradient title="내 정보"/>
@@ -102,14 +91,11 @@ function AccountSettingsPage() {
       <Header>
         <ProfileImage src={profileImg}/>
         <ProfileName>
-          <span>우주</span>
-          <button>수정</button>
+          <span>{name}</span>
+          <button onClick={() => navigate('/account-settings/edit')}>수정</button>
         </ProfileName>
-        <ProfileAddr>화양동</ProfileAddr>
+        <ProfileAddr>{town}</ProfileAddr>
       </Header>
-      <ProfileTextArea>
-        <textarea placeholder='우주님을 소개해주세요!'/>
-      </ProfileTextArea>
 
       <AccountInfo>
         <p>본인인증</p>
