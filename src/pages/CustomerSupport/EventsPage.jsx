@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import eventData from '../../data/mock/events.json';
 import HeaderGradient from '../../components/header/HeaderGradient';
+import api from '../../api/axiosInstance';
 
 const Container = styled.div`
   padding: 24px;
@@ -32,7 +32,7 @@ const FilterButton = styled.button`
   padding: 6px;
   cursor: pointer;
   margin-left: 8px;
-  font-weight: ${props => (props.active ? 'bold' : 'normal')};
+  font-weight: ${({ $active }) => ($active ? 'bold' : 'normal')};
   font-size: 12px;
   font-family: 'NanumSquareRoundOTFR';  
 `;
@@ -91,7 +91,7 @@ const Content  = styled.div`
 const Status = styled.span`
   font-size: 12px;
   color: black;
-  background-color: ${props => props.status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
+  background-color: ${({ $status }) => $status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
   border-radius: 30px;
   margin-left: 8px;
   width: 66px;
@@ -116,20 +116,37 @@ const MoreButton = styled.button`
 `;
 
 function EventsPage() {
+  const [events, setEvents] = useState([]);
   const [filter, setFilter] = useState('전체');
   const [sortAsc, setSortAsc] = useState(false);
-  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const size = 10;
   const navigate = useNavigate();
 
-  const filtered = eventData.filter(event => filter === '전체' || event.status === filter);
+  useEffect(() => {  
+    setEvents([]);
+    setPage(0);
+    fetchEvents(0, sortAsc);
+  }, [sortAsc]);
 
-  const sorted = [...filtered].sort((a, b) => {
-    const dateA = new Date(a.startDate);
-    const dateB = new Date(b.startDate);
-    return sortAsc ? dateA - dateB : dateB - dateA;
-  });
+  const fetchEvents = async (pageNumber, isAsc) => {
+    const sort = isAsc ? 'asc' : 'desc';
 
-  const paged = sorted.slice(0, limit)
+    try {
+      const response = await api.get(`/api/v1/events?page=${pageNumber}&size=${size}&sort=startDate,${sort}`);
+      const content = response.data?.data?.events?.content || [];
+      const pageInfo = response.data?.data?.events?.page;
+
+      setEvents(prev => [...prev, ...content]);
+      setPage(pageNumber + 1);
+      setHasMore(pageNumber + 1 < pageInfo.totalPages);
+    } catch (error) {
+      console.error('이벤트 불러오기 실패:', error);
+    }
+  };
+
+  const filtered = events.filter(event => filter === '전체' || event.status === filter);
 
   return (
     <>
@@ -141,21 +158,18 @@ function EventsPage() {
         </SortButton>
         <FilterButton
           onClick={() => setFilter(prev => prev === '진행중' ? '전체' : '진행중')}
-          active={filter === '진행중'}
-        >
-          마감 제외
-        </FilterButton>
+          $active={filter === '진행중'}>마감 제외</FilterButton>
       </ControlBox>
 
       <Grid>
-        {paged.map(event => (
+        {filtered.map((event) => (
           <Card key={event.id} onClick={() => navigate(`/events/${event.id}`)}>
-            <Thumbnail src={event.thumnail} alt="썸네일" />
+            <Thumbnail src={event.thumbnail} alt="썸네일" />
             <Info>
               <Content>
                 <TitleRow>
                   {event.title}
-                  <Status status={event.status}>{event.status}</Status>
+                  <Status $status={event.status}>{event.status}</Status>
                 </TitleRow>
                 <p>{event.content}</p>
               </Content>
@@ -165,8 +179,8 @@ function EventsPage() {
         ))}
       </Grid>
 
-      {limit < sorted.length && (
-        <MoreButton onClick={() => setLimit(prev => prev + 10)}>
+      {hasMore && (
+        <MoreButton onClick={() => fetchEvents(page, sortAsc)}>
           더보기
         </MoreButton>
       )}

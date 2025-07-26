@@ -1,16 +1,15 @@
+import { useState, useEffect } from 'react';
+import api from '../../api/axiosInstance';
 import { useParams } from 'react-router-dom';
-import eventData from '../../data/mock/events-detail.json';
 import styled from 'styled-components';
 import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
   padding: 24px;
-
   h2 {
     font-size: 24px;
     font-family: 'NanumSquareRoundOTFEB';
   }
-
   p {
     font-size: 16px;
     font-family: 'NanumSquareRoundOTFR';
@@ -51,13 +50,42 @@ const Img = styled.img`
   border-radius: 8px;
 `;
 
+const NoImageText = styled.div`
+  text-align: center;
+  font-size: 16px;
+  font-family: 'NanumSquareRoundOTFR';
+  color: var(--side-color-3);
+  margin: 26px 0;
+  background-color: var(--side-color-1);
+  border-radius: 16px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 function EventDetailPage() {
   const { id } = useParams();
-  const event = eventData.find(e => e.id === parseInt(id));
+  const [event, setEvent] = useState({});
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await api.get(`api/v1/events/${id}`);
+        setEvent(response.data.data);
+      } catch (error) {
+        console.error('이벤트 정보를 불러오는 데 실패했습니다:', error);
+      }
+    }
+    fetchEvent();
+  }, [id]);
 
   if (!event) return <Container>존재하지 않는 이벤트입니다.</Container>;
 
-  const sortedImages = [...event.images].sort((a, b) => a.order - b.order);
+  const sortedImages = Array.isArray(event.images)
+    ? [...event.images].sort((a, b) => a.order - b.order)
+    : [];
 
   return (
     <>
@@ -69,9 +97,13 @@ function EventDetailPage() {
         <Status status={event.status}>{event.status}</Status>
       </InfoBox>
       {event.content && <p>{event.content}</p>}
-      {sortedImages.map((img, i) => (
-        <Img key={i} src={img.image} alt={`event-image-${i}`} />
-      ))}
+      {sortedImages.length > 0 ? (
+        sortedImages.map((img, i) => (
+          <Img key={i} src={img.image} alt={`event-image-${i}`} />
+        ))
+      ) : (
+        <NoImageText>등록된 이미지가 없습니다.</NoImageText>
+      )}
     </Container>
     </>
   );
