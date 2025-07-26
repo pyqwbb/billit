@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import LocationCard from './LocationCard';
 import styled from 'styled-components';
+import { getCurrentPosition } from '../../utils/geolocation';
 
 const LocationCardWrapper = styled.div`
   position: fixed;
@@ -19,6 +20,8 @@ function NaverMap() {
   const markerRef = useRef(null);
   const [selected, setSelected] = useState(false);
   const location = useLocation();
+
+  const [userLocation, setUserLocation] = useState(null); // 사용자 위치 상태
 
   const [startY, setStartY] = useState(null);
   const [dragY, setDragY] = useState(0);
@@ -63,6 +66,20 @@ function NaverMap() {
   };
 
   useEffect(() => {
+    getCurrentPosition()
+      .then(({ latitude, longitude }) => {
+        setUserLocation({ latitude, longitude });
+      })
+      .catch((error) => {
+        console.error('사용자 위치 가져오기 실패:', error);
+        // 실패 시 기본 위치 지정
+        setUserLocation({ latitude: 37.542053, longitude: 127.078192 }); 
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!userLocation) return; // 위치 받아오기 전까지 대기
+
     const clientId = import.meta.env.VITE_NAVER_MAP_CLIENT_ID;
     if (!clientId) {
       console.error('Naver Map API key is missing!');
@@ -78,7 +95,7 @@ function NaverMap() {
       if (!window.naver || !mapRef.current) return;
 
       const naver = window.naver;
-      const center = new naver.maps.LatLng(37.551940, 127.076400);
+      const center = new naver.maps.LatLng(userLocation.latitude, userLocation.longitude);
 
       const map = new naver.maps.Map(mapRef.current, {
         center,
@@ -114,7 +131,7 @@ function NaverMap() {
     return () => {
       document.head.removeChild(script);
     };
-  }, [location.pathname]);
+  }, [userLocation, location.pathname]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
