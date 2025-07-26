@@ -1,6 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import LocationCard from './LocationCard';
+import styled from 'styled-components';
+
+const LocationCardWrapper = styled.div`
+  position: fixed;
+  bottom: 0px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 10;
+  touch-action: none;
+  transition: transform 0.3s ease;
+  will-change: transform;
+`;
 
 function NaverMap() {
   const mapRef = useRef(null);
@@ -8,7 +20,47 @@ function NaverMap() {
   const [selected, setSelected] = useState(false);
   const location = useLocation();
 
+  const [startY, setStartY] = useState(null);
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const wrapperRef = useRef(null);
+
   const isStationMapPage = location.pathname === '/station-map';
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      setStartY(e.touches[0].clientY);
+      setIsDragging(true);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || startY === null) return;
+
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - startY;
+
+    if (deltaY > 0) {
+      setDragY(deltaY);
+      wrapperRef.current.style.transform = `translate(-50%, ${deltaY}px)`;
+      e.preventDefault(); // 아래로 스크롤 막기
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (dragY > 100) {
+      setSelected(false);
+    } else {
+      if (wrapperRef.current) {
+        wrapperRef.current.style.transform = `translate(-50%, 0)`;
+      }
+    }
+
+    setStartY(null);
+    setDragY(0);
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     const clientId = import.meta.env.VITE_NAVER_MAP_CLIENT_ID;
@@ -51,7 +103,7 @@ function NaverMap() {
 
         setSelected(true);
         marker.setIcon({
-          url: '/marker/active.png',
+          url: `/marker/active.png`,
           size: new naver.maps.Size(45, 64),
           origin: new naver.maps.Point(0, 0),
           anchor: new naver.maps.Point(25, 70),
@@ -68,17 +120,14 @@ function NaverMap() {
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
       {selected && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: '0px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 10,
-          }}
+        <LocationCardWrapper
+          ref={wrapperRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <LocationCard />
-        </div>
+        </LocationCardWrapper>
       )}
     </div>
   );
