@@ -127,7 +127,9 @@ function ItemDetailPage() {
           <Price2>/ 시간</Price2>
         </Price>
         <Desc>{itemData.description}</Desc>
-        <StationButton onClick={() => { navigate('/available-list');}}>대여 가능 스테이션 보기</StationButton>
+        <StationButton onClick={() => navigate(`/rental-items/${productName}/station`, { state: { itemData } })}>
+          대여 가능 스테이션 보기
+        </StationButton>
       </Container>
     </>
   );

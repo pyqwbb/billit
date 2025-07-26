@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import ReactDOM from 'react-dom';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import api from '../../api/axiosInstance';
+import { getCurrentPosition } from '../../utils/geolocation';
 import styled from 'styled-components';
 import { FiSearch } from 'react-icons/fi';
 import Header from '../../components/header/HeaderMain.jsx';
+import map from '../../assets/icon/map.png';
 
 const Container = styled.div`
+  position: relative;
   padding: 16px;
 `;
 
@@ -19,6 +23,7 @@ const ItemImage = styled.img`
   width: 170px;
   height: 170px;
   border-radius: 15px;
+  background-color: var(--side-color-1);
 `;
 
 const ItemInfo = styled.div`
@@ -80,6 +85,7 @@ const StationImage = styled.img`
   width: 154px;
   height: 154px;
   border-radius: 15px;
+  background-color: var(--side-color-1);
 `;
 
 const StationInfo = styled.div`
@@ -102,8 +108,18 @@ const StationDetail = styled.div`
   }
 `;
 
-const Status = ({ state, openTime }) => {
-  const isOpen = state === '영업중';
+const MapIcon = styled.img`
+  position: absolute;
+  top: 530px;
+  left: 330px;
+  transform: translateX(-50%);
+  width: 71px;
+  aspectRatio: 1 / 1;
+  cursor: pointer;
+`;
+
+const Status = ({ status, openTime }) => {
+  const isOpen = status === '운영 중';
 
   return (
     <div
@@ -115,44 +131,52 @@ const Status = ({ state, openTime }) => {
       }}
     >
       <span style={{ color: isOpen ? 'var(--main-color)' : 'var(--side-color-4)' }}> ● </span>
-      {state} ({openTime})
+      {status} ({openTime})
     </div>
   );
 };
 
 function AvailableListPage() {
   const [searchText, setSearchText] = useState('');
+  const [stationData, setStationData] = useState([]);
+  const navigate = useNavigate();
+  const { productName } = useParams();
+  const location = useLocation();
+  const itemData = location.state?.itemData;
+  const [userLocation, setUserLocation] = useState(null); // 사용자 위치 상태
 
-  const itemData = {
-    id: 1,
-    name: "라이트닝 충전기, 어댑터",
-    pricePerHour: 1000,
-    imageUrl: `/images/billit-black.jpg`,
-  };
+  // 사용자 위치 가져오기
+  useEffect(() => {
+    getCurrentPosition()
+      .then(({ latitude, longitude }) => {
+        setUserLocation({ latitude, longitude });
+      })
+      .catch(() => {
+        setUserLocation({ latitude: 37.542053, longitude: 127.078192 });
+      });
+  }, []);
 
-  const stationData = [
-    {
-      id: 1,
-      stationName: "건국대학교 제1학생회관",
-      availableCount: 3,
-      distance: 324,
-      status: "영업중",
-      hours: "08:00~22:00",
-      imageUrl: `/images/billit-black.jpg`,
-    },
-    {
-      id: 2,
-      stationName: "엔제리너스 건대입구점",
-      availableCount: 5,
-      distance: 733,
-      status: "오늘휴무",
-      hours: "07:00~00:00",
-      imageUrl: `/images/billit-black.jpg`,
+  useEffect(() => {
+    if (!userLocation) return; // 위치 받아오기 전까지 대기
+
+    const fetchStations = async () => {
+      try {
+        const response = await api.get(`/api/v1/products/${productName}/stations`, {
+          params: {
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          },
+        });
+        setStationData(response.data.data.content);
+      } catch (error) {
+        console.error('Error fetching rental stations:', error);
+      }
     }
-  ];
+    fetchStations();
+  }, [userLocation]);
 
   const filteredStationData = stationData.filter(station =>
-    station.stationName.toLowerCase().includes(searchText.toLowerCase())
+    station.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
@@ -160,7 +184,7 @@ function AvailableListPage() {
       <Header />
       <Container>
         <ItemCard>
-          <ItemImage src={itemData.imageUrl} alt={itemData.name} />
+          <ItemImage src={itemData.image} alt={itemData.name} />
           <ItemInfo>
             <ItemName>{itemData.name}</ItemName>
             <ItemPrice>
@@ -183,16 +207,21 @@ function AvailableListPage() {
 
         {filteredStationData.map(station => (
           <StationCard key={station.id}>
-            <StationImage src={station.imageUrl} alt={station.stationName} />
+            <StationImage src={station.image} alt={station.name} />
             <StationInfo>
-              <StationName>{station.stationName}</StationName>
+              <StationName>{station.name}</StationName>
               <StationDetail>
-                <p>잔여수량 {station.availableCount}개 · {station.distance}m</p>
-                <Status state={station.status} openTime={station.hours} />
+                <p>잔여수량 {station.stock}개 · {station.distance}m</p>
+                <Status status={station.status} openTime={station.openTime} />
               </StationDetail>
             </StationInfo>
           </StationCard>
         ))}
+
+        <MapIcon
+          src={map}
+          onClick={() => navigate(`/rental-items/${productName}/map`, { state: { itemData } })}
+        />
       </Container>
     </>
   );
