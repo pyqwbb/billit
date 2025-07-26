@@ -20,9 +20,8 @@ const LocationCardWrapper = styled.div`
 
 function NaverMap() {
   const mapRef = useRef(null);
-  const markerRef = useRef(null);
+  const markerRefs = useRef([]);
   const [stations, setStations] = useState([]);
-  const [selected, setSelected] = useState(false);
   const [selectedStationId, setSelectedStationId] = useState(null);
 
   const location = useLocation();
@@ -59,7 +58,7 @@ function NaverMap() {
 
   const handleTouchEnd = () => {
     if (dragY > 100) {
-      setSelected(false);
+      setSelectedStationId(null);
     } else {
       if (wrapperRef.current) {
         wrapperRef.current.style.transform = `translate(-50%, 0)`;
@@ -77,10 +76,8 @@ function NaverMap() {
       .then(({ latitude, longitude }) => {
         setUserLocation({ latitude, longitude });
       })
-      .catch((error) => {
-        console.error('사용자 위치 가져오기 실패:', error);
-        // 실패 시 기본 위치 지정
-        setUserLocation({ latitude: 37.542053, longitude: 127.078192 }); 
+      .catch(() => {
+        setUserLocation({ latitude: 37.542053, longitude: 127.078192 });
       });
   }, []);
 
@@ -123,31 +120,32 @@ function NaverMap() {
         zoom: 16,
       });
 
-      stations.forEach((station) => {
+      markerRefs.current = [];
+
+      stations.forEach((station, idx) => {
+        const isActive = station.stationId === selectedStationId;
+        const iconUrl = isActive
+          ? '/marker/active.png'
+          : station.status === '운영 중'
+          ? '/marker/open.png'
+          : '/marker/close.png';
+
         const marker = new naver.maps.Marker({
           position: new naver.maps.LatLng(station.latitude, station.longitude),
           map,
           icon: {
-            url: `/marker/open.png`,
-            size: new naver.maps.Size(30, 43),
+            url: iconUrl,
+            size: isActive ? new naver.maps.Size(45, 64) : new naver.maps.Size(30, 43),
             origin: new naver.maps.Point(0, 0),
             anchor: new naver.maps.Point(22.5, 64),
           },
         });
 
-        markerRef.current = marker;
+        markerRefs.current.push(marker);
 
         naver.maps.Event.addListener(marker, 'click', () => {
           if (!isStationMapPage) return;
-
-          setSelected(true);
           setSelectedStationId(station.stationId);
-          marker.setIcon({
-            url: `/marker/active.png`,
-            size: new naver.maps.Size(45, 64),
-            origin: new naver.maps.Point(0, 0),
-            anchor: new naver.maps.Point(25, 70),
-          });
         });
       });
     };
@@ -157,10 +155,32 @@ function NaverMap() {
     };
   }, [userLocation, stations, location.pathname]);
 
+  // 마커 상태 업데이트 (선택된 스테이션 변경 시)
+  useEffect(() => {
+    if (!window.naver || markerRefs.current.length === 0) return;
+
+    markerRefs.current.forEach((marker, idx) => {
+      const station = stations[idx];
+      const isActive = station.stationId === selectedStationId;
+      const iconUrl = isActive
+        ? '/marker/active.png'
+        : station.status === '운영 중'
+        ? '/marker/open.png'
+        : '/marker/close.png';
+
+      marker.setIcon({
+        url: iconUrl,
+        size: isActive ? new naver.maps.Size(45, 64) : new naver.maps.Size(30, 43),
+        origin: new naver.maps.Point(0, 0),
+        anchor: new naver.maps.Point(22.5, 64),
+      });
+    });
+  }, [selectedStationId]);
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
-      {selected && (
+      {selectedStationId && (
         <LocationCardWrapper
           ref={wrapperRef}
           onTouchStart={handleTouchStart}
