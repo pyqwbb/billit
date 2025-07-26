@@ -1,4 +1,5 @@
-import mockImg from '../../../public/images/billit-black.jpg';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -21,10 +22,7 @@ const Thumbnail = styled.img`
 const Card = styled.div`
   width: 100%;
   border-radius: 30px 30px 0 0;
-  background: linear-gradient(
-    rgba(133, 255, 106, 0.4),
-    rgba(213, 228, 227, 0.9)
-  );
+  background: linear-gradient(rgba(133, 255, 106, 0.4), rgba(213, 228, 227, 0.9));
   padding: 20px;
   box-sizing: border-box;
 `;
@@ -63,16 +61,32 @@ const Label = styled.p`
 
 const ItemList = styled.div`
   display: flex;
+  justify-content: flex-start;
   gap: 12px;
   margin-bottom: 16px;
 `;
 
 const ItemBox = styled.div`
-  flex: 1;
+  width: 112px;
   height: 112px;
-  aspect-ratio: 1 / 1;
   background: var(--side-color-3);
   border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-sizing: border-box;
+  font-family: NanumSquareRoundOTFR;
+  font-size: 12px;
+  text-align: center;
+`;
+
+const ItemImage = styled.img`
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-bottom: 6px;
 `;
 
 const Button = styled.button`
@@ -89,8 +103,8 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const Status = ({ state, openTime }) => {
-  const isOpen = state === '영업중';
+const Status = ({ status, openTime, closeTime }) => {
+  const isOpen = status === '운영 중';
 
   return (
     <div
@@ -100,37 +114,59 @@ const Status = ({ state, openTime }) => {
         color: 'var(--side-color-4)',
       }}
     >
-      | <span style={{ color: isOpen ? 'var(--main-color)' : 'var(--side-color-4)' }}> ● </span>
-      {state} ({openTime})
+      |{' '}
+      <span style={{ color: isOpen ? 'var(--main-color)' : 'var(--side-color-4)' }}>
+        ●
+      </span>{' '}
+      {status} ({openTime}~{closeTime})
     </div>
   );
 };
 
-export default function LocationCard() {
-  const mockData = {
-    stName: '건국대학교 제1학생회관',
-    state: '영업중',
-    openTime: '08:00~22:00',
-    stDescribe: '대학교 부속건물',
-  };
+export default function LocationCard({ stationId }) {
+  const [station, setStation] = useState(null);
+
+  useEffect(() => {
+    const fetchStationData = async () => {
+      try {
+        const response = await api.get(`/api/v1/stations/${stationId}`);
+        setStation(response.data.data);
+      } catch (error) {
+        console.error('Error fetching station data:', error);
+      }
+    };
+    fetchStationData();
+  }, [stationId]);
+
+  if (!station) return null;
+
+  const products = station.popularProducts?.slice(0, 3) || [];
 
   return (
     <Container>
-      <Thumbnail src={mockImg} alt="건물 이미지" />
+      <Thumbnail src={station.image} alt="건물 이미지" />
       <Card>
         <TitleSection>
-          <Title>{mockData.stName}</Title>
-          <Status state={mockData.state} openTime={mockData.openTime} />
+          <Title>{station.name}</Title>
+          <Status
+            status={station.status}
+            openTime={station.openTime}
+            closeTime={station.closeTime}
+          />
         </TitleSection>
 
-        <Subtitle>{mockData.stDescribe}</Subtitle>
+        <Subtitle>{station.address}</Subtitle>
         <Divider />
 
         <Label>바로 대여 가능!</Label>
         <ItemList>
-          <ItemBox />
-          <ItemBox />
-          <ItemBox />
+          {products.slice(0, 3).map((item, index) => (
+            <ItemBox key={index}>
+              <ItemImage src={item.image} alt={item.name} />
+              <div>{item.name}</div>
+              <div>{item.count}개</div>
+            </ItemBox>
+          ))}
         </ItemList>
 
         <Button>대여 가능 물품 전체 조회</Button>
