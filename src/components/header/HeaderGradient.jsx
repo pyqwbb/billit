@@ -54,7 +54,7 @@ function HeaderGradient({ title }) {
       </IconButton>
 
       <LogoTitleWrapper>
-        <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
+        <Logo src={logo} alt="logo" />
         {title && <PageTitle>{title}</PageTitle>}
       </LogoTitleWrapper>
 

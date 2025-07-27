@@ -43,7 +43,7 @@ function HeaderBack() {
         <IconButton onClick={() => navigate(-1)}>
             <HiArrowLeft />
         </IconButton>
-        <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
+        <Logo src={logo} alt="logo"/>
         <IconButton/>
       </StyledHeader>
       {isMenuOpen && <MenuDrawer onClose={() => setIsMenuOpen(false)} />}

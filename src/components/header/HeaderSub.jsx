@@ -20,7 +20,7 @@ function HeaderSub() {
 
   return (
     <StyledHeader>
-      <Logo src={logo} alt="logo" onClick={() => navigate('/')}/>
+      <Logo src={logo} alt="logo"/>
     </StyledHeader>
   );
 }

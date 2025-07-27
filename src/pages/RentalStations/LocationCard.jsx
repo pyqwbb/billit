@@ -24,7 +24,7 @@ const Thumbnail = styled.img`
 const Card = styled.div`
   width: 100%;
   border-radius: 30px 30px 0 0;
-  background: linear-gradient(rgba(133, 255, 106, 0.4), rgba(213, 228, 227, 0.9));
+  background: linear-gradient(rgba(133, 255, 106, 0.7), rgba(213, 228, 227, 0.9));
   padding: 20px;
   box-sizing: border-box;
 `;
@@ -117,7 +117,7 @@ const Status = ({ status, openTime, closeTime }) => {
       }}
     >
       |{' '}
-      <span style={{ color: isOpen ? 'var(--main-color)' : 'var(--side-color-4)' }}>
+      <span style={{ color: isOpen ? '#51f12e' : 'var(--side-color-4)' }}>
         ●
       </span>{' '}
       {status} ({openTime}~{closeTime})
