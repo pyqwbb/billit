@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
 const Container = styled.div`
   display: flex;
@@ -125,6 +127,7 @@ const Status = ({ status, openTime, closeTime }) => {
 
 export default function LocationCard({ stationId }) {
   const [station, setStation] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStationData = async () => {
@@ -169,7 +172,27 @@ export default function LocationCard({ stationId }) {
           ))}
         </ItemList>
 
-        <Button>대여 가능 물품 전체 조회</Button>
+        <Button
+          onClick={() => {
+            // 1. 기존 쿠키 제거
+            Cookies.remove('recentStation');
+
+            // 2. 새 스테이션 정보 저장 (필요한 필드만 추려서)
+            Cookies.set('selectStation', JSON.stringify({
+              id: station.id,
+              name: station.name,
+              status: station.status,
+              openTime: station.openTime,
+              closeTime: station.closeTime
+            }), { expires: 1 }); // 1일 동안 유지
+
+            // 3. 페이지 이동
+            navigate('/rental-items', { state: { from: 'location', stationId: stationId } });
+          }}
+        >
+          대여 가능 물품 전체 조회
+        </Button>
+
       </Card>
     </Container>
   );

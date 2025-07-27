@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderMain';
@@ -92,7 +92,9 @@ const RentalItemsPage = () => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState('전체');
   const [products, setProducts] = useState([]);
-  const [error, setError] = useState(null);
+  const location = useLocation();
+  const from = location.state?.from || 'menu';
+  const stationId = location.state?.stationId;
 
   const filtered = selected === '전체'
   ? products
@@ -103,14 +105,21 @@ const RentalItemsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get('/api/v1/products');
+        let response;
+
+        if (from === 'menu') {
+        response = await api.get('/api/v1/products');
         setProducts(response.data.data.products);
+      } else if (from === 'location' && stationId) {
+        response = await api.get(`/api/v1/stations/${stationId}/products`);
+        setProducts(response.data.data.stationProducts);
+      }
       } catch (err) {
-        setError('상품을 불러오는 데 실패했습니다.');
+        console.error('상품을 불러오는 데 실패했습니다.', err);
       }
     };
     fetchProducts();
-  }, []);
+  }, [from, stationId]);
 
   return (
     <>
@@ -131,7 +140,7 @@ const RentalItemsPage = () => {
       <Grid>
         {filtered.map(product => (
           <ProductCard key={product.name}
-            onClick={() => navigate(`/rental-items/${product.name}`)}>
+            onClick={() => navigate(`/rental-items/${product.name}`, { state: { from: 'location', stationId: stationId} })}>
             <ProductImage src={product.image} alt={product.name} />
             <ProductInfo>
               <ProductName>{product.name}</ProductName>

@@ -52,7 +52,7 @@ const OpenDot = styled.span`
   margin-right: 4px;
 `;
 
-function HeaderStation({stname, state, time}) {
+function HeaderStation({stname, status, time}) {
   const navigate = useNavigate();
 
   return (
@@ -64,15 +64,15 @@ function HeaderStation({stname, state, time}) {
       <TitleTimeWrapper>
         {stname && <StationName>{stname}</StationName>}
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          {state && (
+          {status && (
             <p>
-              {state === '영업중' && <OpenDot />}
-              {state}&nbsp;
+              {status === '운영 중' && <OpenDot />}
+              {status}&nbsp;
             </p>
           )}
           {time && (
             <p>
-              {time === '영업중' && <OpenDot />}
+              {time === '운영 중' && <OpenDot />}
               {time}&nbsp;
             </p>
           )}

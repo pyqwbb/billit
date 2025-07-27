@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
 import HeaderBack from '../../components/header/HeaderBack';
+import Cookies from 'js-cookie';
 
 const Container = styled.div`
   padding: 16px;
@@ -85,14 +85,26 @@ const StationButton = styled.button`
 function ItemDetailPage() {
   const navigate = useNavigate();
   const { productName } = useParams();
+  const location = useLocation();
+  const from = location.state?.from || 'menu';
+  const stationId = location.state?.stationId;
   const [itemData, setItemData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const selectStation = JSON.parse(Cookies.get('selectStation') || '{}');
+  console.log(selectStation.name);
+
+
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const response = await api.get(`/api/v1/products/${productName}`);
+        let response;
+        if (from === 'location' && stationId) {
+          response = await api.get(`/api/v1/stations/${stationId}/products/${productName}`);
+        } else {
+          response = await api.get(`/api/v1/products/${productName}`);
+        }
         setItemData(response.data.data);
       } catch (err) {
         setError('상품 정보를 불러오는 데 실패했습니다.');
@@ -101,7 +113,7 @@ function ItemDetailPage() {
       }
     }
     fetchItem();
-  }, [productName]);
+  }, [from, stationId, productName]);
 
   if (loading) return <div>로딩 중...</div>;
   if (error) return <div>{error}</div>;
@@ -112,7 +124,7 @@ function ItemDetailPage() {
       { !itemData.stock ? (
         <HeaderBack />
       ) : (
-        <Header stname = '건국대학교 제1학생회관' state = '영업중' time = '08:00~22:00'/>
+        <Header stname={selectStation.name} status={selectStation.status} time={`${selectStation.openTime}~${selectStation.closeTime}`}/>
       )}
       <Container>
         <Image src={itemData.image} alt={itemData.name} />
@@ -127,9 +139,13 @@ function ItemDetailPage() {
           <Price2>/ 시간</Price2>
         </Price>
         <Desc>{itemData.description}</Desc>
-        <StationButton onClick={() => navigate(`/rental-items/${productName}/station`, { state: { itemData } })}>
-          대여 가능 스테이션 보기
-        </StationButton>
+        { !itemData.stock ? (
+          <StationButton onClick={() => navigate(`/rental-items/${productName}/station`, { state: { itemData } })}>
+            대여 가능 스테이션 보기
+          </StationButton>
+        ) : (
+          <div />
+        )}
       </Container>
     </>
   );
