@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import { SlArrowRight, SlArrowUp, SlArrowDown } from "react-icons/sl";
@@ -34,6 +35,7 @@ const AgreementRow = styled.div`
 
 const Detail = styled.div`
   margin-top: 12px;
+  margin-left: 30px;
   line-height: 2;
   opacity: 0.5;
 `;
@@ -43,12 +45,11 @@ const NextButton = styled.button`
   height: 52px;
   padding: 16px;
   background-color: ${({ disabled }) => (disabled ? '#ddd' : 'var(--main-color)')};
-  font-size: 19px;
+  font-size: 16px;
   font-family: 'NanumSquareRoundOTFB';
   color: black;
   border: none;
   border-radius: 302px;
-  font-size: 16px;
   margin-top: 28px;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `;
@@ -74,13 +75,13 @@ const IconWrapper = styled.span`
 
 function TermsAgreementPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const userInfoKey = location.state?.userInfoKey;
 
   const [agreements, setAgreements] = useState({
     terms: false,
     privacy: false,
     marketing: false,
-    marketingAd: false,
-    marketingEvent: false,
   });
 
   const [open, setOpen] = useState({
@@ -88,34 +89,38 @@ function TermsAgreementPage() {
   });
 
   const handleCheck = (key) => {
-    setAgreements((prev) => {
-      if (key === 'marketing') {
-        const checked = !prev.marketing;
-        return {
-          ...prev,
-          marketing: checked,
-          marketingAd: checked,
-          marketingEvent: checked,
-        };
-      }
-
-      if (key === 'marketingAd' || key === 'marketingEvent') {
-        const newValue = !prev[key];
-        const otherKey = key === 'marketingAd' ? 'marketingEvent' : 'marketingAd';
-        const newMarketing = newValue && prev[otherKey];
-
-        return {
-          ...prev,
-          [key]: newValue,
-          marketing: newMarketing,
-        };
-      }
-
-      return { ...prev, [key]: !prev[key] };
-    });
+    setAgreements((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   const requiredAgreed = agreements.terms && agreements.privacy;
+
+  const handleSubmit = async () => {
+    try {
+      const response = await api.post(
+        '/api/v1/auth/register',
+        {
+          userInfoKey,
+          thirdPartyDataSharingConsent: agreements.privacy,
+          marketingConsent: agreements.marketing,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.data.type === 'LOGIN_SUCCESS') {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        alert('회원가입이 완료되었습니다. 로그인합니다.');
+        navigate('/');
+      } else {
+        alert('예상치 못한 응답입니다. 다시 시도해주세요.');
+      }
+    } catch (err) {
+      console.error('회원가입 요청 실패:', err);
+      alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
 
   return (
     <>
@@ -166,19 +171,13 @@ function TermsAgreementPage() {
 
           {open.marketing && (
             <Detail>
-              <Option onClick={() => handleCheck('marketingAd')}>
-                <IconWrapper checked={agreements.marketingAd}><FaCheck size={10} /></IconWrapper>
-                혜택/이벤트 광고 수신
-              </Option>
-              <Option onClick={() => handleCheck('marketingEvent')}>
-                <IconWrapper checked={agreements.marketingEvent}><FaCheck size={10} /></IconWrapper>
-                이벤트 참여를 위한 개인정보 수집 및 이용
-              </Option>
+              <Option>혜택/이벤트 광고 수신</Option>
+              <Option>이벤트 참여를 위한 개인정보 수집 및 이용</Option>
             </Detail>
           )}
         </AgreementGroup>
 
-        <NextButton disabled={!requiredAgreed}>다음</NextButton>
+        <NextButton disabled={!requiredAgreed} onClick={handleSubmit}>다음</NextButton>
       </Container>
     </>
   );
