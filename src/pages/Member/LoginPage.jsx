@@ -9,7 +9,6 @@ const Container = styled.div`
   gap: 2px;
   text-align: center;
   align-items: center;
-
   p {
     font-family: 'NanumSquareRoundOTFR';
     font-size: 14px;
@@ -21,7 +20,6 @@ const LoginForm = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
-
   input {
     width: 288px;
     font-family: 'NanumSquareRoundOTFR';
@@ -70,6 +68,22 @@ const Logo = styled.img`
 `;
 
 function LoginPage() {
+
+  const handleKakaoLogin = () => {
+    const baseUrl = 'https://kauth.kakao.com/oauth/authorize';
+    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
+    const redirectUri = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid,profile_nickname,profile_image,account_email',
+    });
+
+    window.location.href = `${baseUrl}?${params.toString()}`;
+  };
+
   return (
     <Container>
         <Logo src={logo}/>
@@ -87,7 +101,7 @@ function LoginPage() {
         </LoginForm>
 
         <SocialLogin>
-            <img src={kakao}/>
+            <img src={kakao} onClick={handleKakaoLogin}/>
             <img src={google}/>
         </SocialLogin>
     </Container>

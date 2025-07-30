@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from '../../assets/billit.png';
 
@@ -16,8 +15,6 @@ const Logo = styled.img`
 `;
 
 function HeaderSub() {
-  const navigate = useNavigate();
-
   return (
     <StyledHeader>
       <Logo src={logo} alt="logo"/>

@@ -33,6 +33,7 @@ import OrderConfirmPage from './pages/Rental/OrderConfirmPage';
 import RentalCompletePage from './pages/Rental/RentalCompletePage';
 import ReturnCompletePage from './pages/Rental/ReturnCompletePage';
 import TermsAgreementPage from './pages/Member/TermsAgreementPage';
+import KakaoCallbackPage from './pages/Member/OAuth/KakaoCallbackPage';
 
 function AppWrapper() {
   return (
@@ -72,6 +73,7 @@ function AppWrapper() {
         <Route path="/rental-complete" element={<RentalCompletePage />} />
         <Route path="/return-complete" element={<ReturnCompletePage />} />
         <Route path="/terms-agreement" element={<TermsAgreementPage />} />
+        <Route path="/oauth2/callback/kakao" element={<KakaoCallbackPage />} />
       </Routes>
     </>
   );
