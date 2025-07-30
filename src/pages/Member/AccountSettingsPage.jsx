@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import profileImg from '../../assets/billit-profile.png';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
 import kakao from '../../assets/with-kakao.png';
 
@@ -17,6 +18,7 @@ const ProfileImage = styled.img`
   width: 146px;
   height: 146px;
   margin: 23px 0 13px 0;
+  border-radius: 50%;
 `;
 
 const ProfileName = styled.div`
@@ -80,18 +82,36 @@ const DeleteButton = styled.button`
 
 function AccountSettingsPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState({
+    email: '',
+    nickname: '',
+    profileImage: '',
+  });
 
-  const name = '우주';
   const town = '화양동';
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await api.get('/api/v1/users/me');
+        const { email, nickname, profileImage } = response.data.data;
+        setUser({ email, nickname, profileImage });
+      } catch (error) {
+        console.error('사용자 정보 가져오기 실패:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   return (
     <>
     <HeaderGradient title="내 정보"/>
     <Container>
       <Header>
-        <ProfileImage src={profileImg}/>
+        <ProfileImage src={user.profileImage}/>
         <ProfileName>
-          <span>{name}</span>
+          <span>{user.nickname}</span>
           <button onClick={() => navigate('/account-settings/edit')}>수정</button>
         </ProfileName>
         <ProfileAddr>{town}</ProfileAddr>

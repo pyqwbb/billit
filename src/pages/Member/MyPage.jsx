@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import profileImg from '../../assets/billit-profile.png';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
 import couponIcon from '../../assets/icon/coupon.png';
 import historyIcon from '../../assets/icon/history.png';
@@ -20,12 +21,12 @@ const ProfileImage = styled.img`
   width: 146px;
   height: 146px;
   margin: 30px 0 13px 0;
+  border-radius: 50%;
 `;
 
 const ProfileName = styled.div`
   font-size: 24px;
   font-family: 'NanumSquareRoundOTFEB';
-
   span {
     color: var(--main-color);
   }
@@ -93,18 +94,37 @@ const LogoutButton = styled.button`
 
 function MyPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState({
+    email: '',
+    nickname: '',
+    profileImage: '',
+  });
 
   const handleNotReady = () => {
     alert('서비스 준비 중입니다.');
   };
+
+  useEffect(() => {
+  const fetchUserInfo = async () => {
+    try {
+      const response = await api.get('/api/v1/users/me');
+      const { email, nickname, profileImage } = response.data.data;
+      setUser({ email, nickname, profileImage });
+    } catch (error) {
+      console.error('사용자 정보 가져오기 실패:', error);
+    }
+  };
+
+  fetchUserInfo();
+}, []);
 
   return (
     <>
     <HeaderGradient title="마이페이지"/>
     <Container>
       <Header>
-        <ProfileImage src={profileImg}/>
-        <ProfileName><span>우주</span>님</ProfileName>
+        <ProfileImage src={user.profileImage}/>
+        <ProfileName><span>{user.nickname}</span>님</ProfileName>
         <WelcomeText>오늘도 빌릿과 함께 스마트하게!</WelcomeText>
       </Header>
 

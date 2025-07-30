@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
-import rentalData from '../../data/mock/history.json';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import HeaderGradient from '../../components/header/HeaderGradient';
 
@@ -73,9 +74,32 @@ const Title = styled.p`
 
 function HistoryDetailPage() {
   const { id } = useParams();
-  const rental = rentalData.find(r => r.id.toString() === id);
+  const [rental, setRental] = useState(null);
+  const [payment, setPayment] = useState(null);
+
+  useEffect(() => {
+    const fetchRentalDetail = async () => {
+      try {
+        const response = await api.get(`/api/v1/users/me/rentals/${id}`);
+        const data = response.data.data;
+
+        setRental(data.rentalHistory);
+        setPayment(data.payments?.[0] || null);
+      } catch (error) {
+        console.error('이용내역 상세 조회 실패:', error);
+      }
+    };
+
+    fetchRentalDetail();
+  }, [id]);
 
   if (!rental) return <Container>존재하지 않는 내역입니다.</Container>;
+
+  const formatDateTime = (arr) => {
+    if (!arr || arr.length < 6) return '';
+    const [yyyy, mm, dd, hh, min] = arr;
+    return `${yyyy}-${String(mm).padStart(2, '0')}-${String(dd).padStart(2, '0')} ${String(hh).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+  };
 
   return (
     <>
@@ -87,8 +111,8 @@ function HistoryDetailPage() {
             <ImageBox />
             <StatusBox>{rental.status}</StatusBox>
           </InBox>
-          <p style={{ fontSize: '19px', fontFamily: 'NanumSquareRoundOTFB', marginBottom: '4px' }}>{rental.itemName}</p>
-          <p style={{ fontSize: '14px', fontFamily: 'NanumSquareRoundOTFR', marginBottom: '24px' }}>{rental.stationName}</p>
+          <p style={{ fontSize: '19px', fontFamily: 'NanumSquareRoundOTFB', marginBottom: '4px' }}>{rental.productName}</p>
+          <p style={{ fontSize: '14px', fontFamily: 'NanumSquareRoundOTFR', marginBottom: '24px' }}>{rental.rentalStationName}</p>
           <p style={{ fontSize: '16px', fontFamily: 'NanumSquareRoundOTFB', marginBottom: '4px' }}>
             대여시간 <span style={{ color: 'var(--main-color)' }}>{rental.rentalTimeHour}</span>시간
           </p>
@@ -97,51 +121,53 @@ function HistoryDetailPage() {
         <ReturnInfo style={{ borderBottom: '1px solid var(--side-color-4)' }}>
           <ReturnInfoDetail>
             <span>대여시작</span>
-            <p>{rental.startTime}</p>
+            <p>{rental.rentalStartTime}</p>
           </ReturnInfoDetail>
           <ReturnInfoDetail>
-            <span>반납기간</span>
+            <span>반납예정</span>
             <p>{rental.expectedReturnTime}</p>
           </ReturnInfoDetail>
           {rental.returnTime && (
             <ReturnInfoDetail>
-              <span>반납기간</span>
+              <span>반납시간</span>
               <p>{rental.returnTime}</p>
             </ReturnInfoDetail>
           )}
           <ReturnInfoDetail>
             <span>대여 스테이션</span>
-            <p>{rental.stationName}</p>
+            <p>{rental.rentalStationName}</p>
           </ReturnInfoDetail>
-          {rental.returnStation && (
+          {rental.returnStationName && (
             <ReturnInfoDetail>
               <span>반납 스테이션</span>
-              <p>{rental.returnStation}</p>
+              <p>{rental.returnStationName}</p>
             </ReturnInfoDetail>
           )}
         </ReturnInfo>
 
-        <ReturnInfo style={{ borderBottom: '1px solid var(--side-color-4)' }}>
-          <Title>결제 정보</Title>
-          <ReturnInfoDetail>
-            <span>결제 수단</span>
-            <p>{rental.paymentMethod}</p>
-          </ReturnInfoDetail>
-          <ReturnInfoDetail>
-            <span>결제 승인 시간</span>
-            <p>{rental.paymentTime}시간</p>
-          </ReturnInfoDetail>
-          <ReturnInfoDetail>
-            <span>결제 금액</span>
-            <p>{rental.price.toLocaleString()}원</p>
-          </ReturnInfoDetail>
-        </ReturnInfo>
+        {payment && (
+          <ReturnInfo style={{ borderBottom: '1px solid var(--side-color-4)' }}>
+            <Title>결제 정보</Title>
+            <ReturnInfoDetail>
+              <span>결제 수단</span>
+              <p>{payment.method}</p>
+            </ReturnInfoDetail>
+            <ReturnInfoDetail>
+              <span>결제 승인 시간</span>
+              <p>{formatDateTime(payment.paymentDate)}</p>
+            </ReturnInfoDetail>
+            <ReturnInfoDetail>
+              <span>결제 금액</span>
+              <p>{payment.amount.toLocaleString()}원</p>
+            </ReturnInfoDetail>
+          </ReturnInfo>
+        )}
 
         <ReturnInfo>
           <Title>기기 정보</Title>
           <ReturnInfoDetail>
             <span>대여물품명</span>
-            <p>{rental.itemName}</p>
+            <p>{rental.productName}</p>
           </ReturnInfoDetail>
           <ReturnInfoDetail>
             <span>대여물품 시리얼 넘버</span>

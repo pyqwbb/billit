@@ -1,7 +1,7 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import profileImg from '../../assets/billit-profile.png';
 import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
@@ -17,6 +17,7 @@ const ProfileImage = styled.img`
   width: 146px;
   height: 146px;
   margin: 23px 0 13px 0;
+  border-radius: 50%;
 `;
 
 const ProfileName = styled.div`
@@ -96,8 +97,12 @@ const AccountInfo = styled.div`
 
 function EditAccountPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState({
+    email: '',
+    nickname: '',
+    profileImage: '',
+  });
 
-  const [name, setName] = useState('우주');
   const [town, setTown] = useState('화양동');
 
   const handleSave = () => {
@@ -106,14 +111,28 @@ function EditAccountPage() {
     navigate('/account-settings');
   };
 
+  useEffect(() => {
+  const fetchUserInfo = async () => {
+    try {
+      const response = await api.get('/api/v1/users/me');
+      const { email, nickname, profileImage } = response.data.data;
+      setUser({ email, nickname, profileImage });
+    } catch (error) {
+      console.error('사용자 정보 가져오기 실패:', error);
+    }
+  };
+
+  fetchUserInfo();
+}, []);
+
   return (
     <>
       <HeaderGradient title="내 정보 수정" />
       <Container>
         <Header>
-          <ProfileImage src={profileImg}/>
+          <ProfileImage src={user.profileImage}/>
           <ProfileName>
-            <input value={name} onChange={(e) => setName(e.target.value)} />
+            <input value={user.nickname} onChange={(e) => setName(e.target.value)} />
           </ProfileName>
           <ProfileAddr>
             <input value={town} onChange={(e) => setTown(e.target.value)} />

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
-import rentalData from '../../data/mock/history.json';
 import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
@@ -85,6 +86,7 @@ const ReturnButton = styled.div`
 
 function HistoryPage() {
   const navigate = useNavigate();
+  const [rentalHistory, setRentalHistory] = useState([]);
 
   const handleCardClick = (id) => {
     navigate(`/history/${id}`);
@@ -94,48 +96,70 @@ function HistoryPage() {
     navigate(`/return/${id}`);
   };
 
+  useEffect(() => {
+    const fetchRentalHistory = async () => {
+      try {
+        const response = await api.get('/api/v1/users/me/rentals');
+        const rentals = response.data.data.rentals.content;
+        setRentalHistory(rentals);
+      } catch (error) {
+        console.error('Failed to fetch rental history:', error);
+      }
+    };
+    fetchRentalHistory();
+  }, []);
+
   return (
     <>
     <HeaderGradient title="이용내역"/>
     <Container>
-      {rentalData.map((rental) => (
-        <CardWrapper>
-          <Card status={rental.status} key={rental.id} onClick={() => handleCardClick(rental.id)}>
-          <div style={{ display: 'flex',justifyContent: 'space-between', alignItems: 'center' }}>
-            <p>{rental.itemName}</p>
-            {rental.status === '반납' ? (
-              <Status status={rental.status}>{rental.status}완료</Status>
-            ) : <Status status={rental.status}>{rental.status}</Status>}
-          </div>
-          <div style={{fontFamily: 'NanumSquareRoundOTFR', fontSize: '14px'}}>{rental.stationName}</div>
-          <CardInfo>
-            <div style={{ display: 'flex',justifyContent: 'space-between'}}>
-              <p style={{color: 'var(--side-color-4)'}}>대여시작</p>
-              <p>{rental.startTime}</p>
-            </div>
-            <div style={{ display: 'flex',justifyContent: 'space-between'}}>
-              <p style={{color: 'var(--side-color-4)'}}>결제금액</p>
-              <p>{rental.price.toLocaleString()}원</p>
-            </div>
-          </CardInfo>
-          {rental.status !== '반납' && (
-            <RentalTime>
-              3시간/3시간
-              <BottomBar />
-            </RentalTime>
-          )}
-        </Card>
-        {rental.status !== '반납' && (
-          <ReturnButton onClick={(e) => {
-            e.stopPropagation();
-              handleReturnClick(rental.id);
-          }}>
-            반납하기
-          </ReturnButton>
-        )}
-        </CardWrapper>
-      ))}
-    </Container>
+        {rentalHistory.map((rental) => (
+          <CardWrapper key={rental.rentalHistoryToken}>
+            <Card
+              status={rental.status}
+              onClick={() => handleCardClick(rental.rentalHistoryToken)}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p>{rental.productName}</p>
+                {rental.status === '반납' ? (
+                  <Status status={rental.status}>{rental.status} 완료</Status>
+                ) : (
+                  <Status status={rental.status}>{rental.status}</Status>
+                )}
+              </div>
+              <div style={{ fontFamily: 'NanumSquareRoundOTFR', fontSize: '14px' }}>
+                {rental.rentalStationName}
+              </div>
+              <CardInfo>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <p style={{ color: 'var(--side-color-4)' }}>대여시작</p>
+                  <p>{rental.rentalStartTime}</p>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <p style={{ color: 'var(--side-color-4)' }}>결제금액</p>
+                  <p>{rental.amount.toLocaleString()}원</p>
+                </div>
+              </CardInfo>
+              {rental.status !== '반납' && (
+                <RentalTime>
+                  {rental.rentalTimeHour}시간 / {rental.rentalTimeHour}시간
+                  <BottomBar />
+                </RentalTime>
+              )}
+            </Card>
+            {rental.status !== '반납' && (
+              <ReturnButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleReturnClick(rental.rentalHistoryToken);
+                }}
+              >
+                반납하기
+              </ReturnButton>
+            )}
+          </CardWrapper>
+        ))}
+      </Container>
     </>
   );
 }
