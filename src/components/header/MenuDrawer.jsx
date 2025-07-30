@@ -119,7 +119,6 @@ function MenuDrawer({ onClose }) {
           <ListItem onClick={() => handleNavigate('/qr-scan')}>QR 스캔</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-or-return')}>(Debug) 대여/반납 선택</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-time')}>(디버깅) 대여 시간 선택</ListItem>
-          <ListItem onClick={() => handleNavigate('/terms-agreement')}>(디버깅) 이용약관 동의</ListItem>
           <ListItem onClick={() => handleNavigate('/login')}>(디버깅) 로그인</ListItem>
         </ListMenu>
 

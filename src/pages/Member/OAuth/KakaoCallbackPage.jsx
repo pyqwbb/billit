@@ -24,11 +24,16 @@ function KakaoCallbackPage() {
 
       const data = response.data;
       console.log('Kakao login response:', data);
+
       if (data.type === 'LOGIN_SUCCESS') {
         localStorage.setItem('accessToken', data.accessToken);
         alert('로그인에 성공했습니다.');
-        navigate('/');
-      } else if (data.type === 'REGISTRATION_REQUIRED') {
+
+        // 로그인 성공 후 리다이렉트
+        const redirect = new URLSearchParams(window.location.search).get('redirect');
+        navigate(redirect || '/');
+      }
+      else if (data.type === 'REGISTRATION_REQUIRED') {
         const userInfoKey = data.userInfoKey;
         navigate('/terms-agreement', { state: { userInfoKey } });
       }
