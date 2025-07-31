@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header/HeaderGradient';
 import styled from 'styled-components';
 
@@ -108,6 +109,7 @@ function QrScanPage() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [scannedResult, setScannedResult] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     let animationId;
@@ -133,9 +135,33 @@ function QrScanPage() {
             const code = jsQR(imageData.data, imageData.width, imageData.height);
 
             if (code) {
-              console.log('✅ QR 인식 성공:', code.data);
-              setScannedResult(code.data);
-              return;
+              const data = code.data.trim();
+              console.log('QR 인식 성공:', data);
+
+              // 숫자인 경우에만 처리
+              if (/^\d+$/.test(data)) {
+                localStorage.setItem('scannedQrNumber', data); // 저장
+                navigate('/rental-or-return'); // 이동
+              } else {
+                setScannedResult(`잘못된 코드: ${data}`);
+              }
+              
+              // 일련 코드의 경우
+              if (/^SN-\d{3}-\d{3}$/.test(data)) {
+                localStorage.setItem('scannedQrCode', data);
+
+                const currentPath = window.location.pathname;
+
+                if (currentPath === '/qr-scan/rental') {
+                  navigate('/rental-time');
+                } else if (currentPath === '/qr-scan/return') {
+                  navigate('/return');
+                } else {
+                  console.warn('경로 인식 실패:', currentPath);
+                }
+
+                return;
+              }
             }
           }
 
@@ -156,7 +182,7 @@ function QrScanPage() {
         videoRef.current.srcObject.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <PageWrapper>

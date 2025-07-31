@@ -51,6 +51,7 @@ function AppWrapper() {
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/history/:id" element={<HistoryDetailPage />} />
         <Route path="/return/:id" element={<ReturnPage />} />
+        <Route path="/return" element={<ReturnPage />} />
         <Route path="/account-settings" element={<AccountSettingsPage />} />
         <Route path="/account-settings/edit" element={<EditAccountPage />} />
         <Route path="/account-delete-survey" element={<AccountDeleteSurveyPage />} />
@@ -67,6 +68,8 @@ function AppWrapper() {
         <Route path="/rental-items/:productName/station" element={<AvailableListPage />} />
         <Route path="/rental-items/:productName/map" element={<AvailableMapPage />} />
         <Route path="/qr-scan" element={<QrScanPage />} />
+        <Route path="/qr-scan/rental" element={<QrScanPage />} />
+        <Route path="/qr-scan/return" element={<QrScanPage />} />
         <Route path="/rental-or-return" element={<RentalOrReturn />} />
         <Route path="/rental-time" element={<RentalTimePage />} />
         <Route path="/order-confirm" element={<OrderConfirmPage />} />

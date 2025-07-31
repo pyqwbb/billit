@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import logo from "../../assets/billit.png";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -74,6 +75,8 @@ const StyledFooter = styled.footer`
 `;
 
 function RentalOrReturn() {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Logo src={logo} alt="logo"/>
@@ -84,10 +87,10 @@ function RentalOrReturn() {
       </WelcomeText>
 
       <StyledButton>
-        <button style={{backgroundColor: 'var(--main-color)', paddingBottom: '45px'}} onClick={() => alert("qr 스캔 페이지로 이동")}>
+        <button style={{backgroundColor: 'var(--main-color)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/rental')}>
           <span style={{ marginTop: 'auto' }}>대여</span>
         </button>
-        <button style={{backgroundColor: 'var(--side-color-2)', paddingBottom: '45px'}} onClick={() => alert("qr 스캔 페이지로 이동")}>
+        <button style={{backgroundColor: 'var(--side-color-2)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/return')}>
           <span style={{ marginTop: 'auto' }}>반납</span>
         </button>
       </StyledButton>
