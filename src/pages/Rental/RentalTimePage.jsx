@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
@@ -36,11 +37,9 @@ const PriceInfo = styled.p`
   display: flex;
   flex-direction: row;
   justify-content: right;
-
   p {
     font-family: 'NanumSquareRoundOTFB';
   }
-
   span {
     color: var(--main-color)
   }
@@ -56,12 +55,10 @@ const TimeControl = styled.div`
   padding-top: 27px;
   border-radius: 0px;
   border-top: 1px solid var(--side-color-4);
-
   p {
     font-family: 'NanumSquareRoundOTFR';
     margin-left: -30px;
   }
-
   span {
     font-family: 'NanumSquareRoundOTFB';
     color: var(--main-color);
@@ -82,18 +79,15 @@ const PayInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 10px;
-
   p {
     font-family: 'NanumSquareRoundOTFB';
     font-size: 20px;
   }
-
   span {
     font-family: 'NanumSquareRoundOTFB';
     font-size: 24px;
     display: flex;
     flex-direction: row;
-
     p {
       font-family: 'NanumSquareRoundOTFB';
       font-size: 24px;
@@ -116,25 +110,41 @@ const RentButton = styled.button`
 function RentalTimePage() {
   const [hours, setHours] = useState(1);
   const navigate = useNavigate();
+  const [scannedData, setScannedData] = useState(null);
+  const [estimatedPrice, setEstimatedPrice] = useState(1);
 
-  const mockItem = {
-    id: 1,
-    name: 'C타입 충전 케이블',
-    pricePerHour: 1000,
-  };
+  const amountToBePaid = hours * estimatedPrice;
+  
+  useEffect(() => {
+    const qrCode = localStorage.getItem('scannedQrCode'); 
 
-  const estimatedPrice = hours * mockItem.pricePerHour;
+    if (!qrCode) {
+      console.error('QR 코드 데이터 없음');
+      return;
+    }
+
+    const fetchItem = async () => {
+      try {
+        const response = await api.get(`/api/v1/rentals/products/${qrCode}`);
+        setScannedData(response.data.data);
+        setEstimatedPrice(response.data.data.pricePerHour);
+      } catch (error) {
+        console.error('Error fetching item:', error);
+      }
+    }
+    fetchItem();
+  }, []);
 
   return (
     <>
     <Header stname = '건국대학교 제1학생회관' />
     <Container>
       <div style={{display: 'flex', justifyContent: 'center'}}>
-        <ImageBox />
+        <ImageBox src={scannedData?.image}/>
       </div>
       <InfoRow>
-        <NameInfo>{mockItem.name}</NameInfo>
-        <PriceInfo><p><span>{mockItem.pricePerHour.toLocaleString()}원</span></p>/시간</PriceInfo>
+        <NameInfo>{scannedData?.name}</NameInfo>
+        <PriceInfo><p><span>{scannedData?.pricePerHour.toLocaleString()}원</span></p>/시간</PriceInfo>
       </InfoRow>
 
       <TimeControl>
@@ -146,7 +156,7 @@ function RentalTimePage() {
 
       <PayInfo>
         <p>결제 예정 금액</p>
-        <span><p>{estimatedPrice.toLocaleString()}</p>원</span>
+        <span><p>{amountToBePaid.toLocaleString()}</p>원</span>
       </PayInfo>
       
       <RentButton onClick={() => navigate('/order-confirm')}>대여시작</RentButton>

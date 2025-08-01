@@ -214,13 +214,6 @@ function QrScanPage() {
           </ul>
         </QRScanInfo>
       </Overlay>
-
-      {scannedResult && (
-        <div style={{ position: 'absolute', bottom: 20, left: 20, zIndex: 20, color: '#fff' }}>
-          <strong>스캔 결과:</strong>
-          <p>{scannedResult}</p>
-        </div>
-      )}
     </PageWrapper>
   );
 }
