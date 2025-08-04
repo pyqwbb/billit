@@ -103,8 +103,6 @@ function EditAccountPage() {
     profileImage: '',
   });
 
-  const [town, setTown] = useState('화양동');
-
   const handleSave = () => {
     // 저장 처리
     alert('수정 완료!');
@@ -134,9 +132,6 @@ function EditAccountPage() {
           <ProfileName>
             <input value={user.nickname} onChange={(e) => setName(e.target.value)} />
           </ProfileName>
-          <ProfileAddr>
-            <input value={town} onChange={(e) => setTown(e.target.value)} />
-          </ProfileAddr>
         </Header>
 
         <AccountInfo>

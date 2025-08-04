@@ -88,8 +88,6 @@ function AccountSettingsPage() {
     profileImage: '',
   });
 
-  const town = '화양동';
-
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -114,7 +112,6 @@ function AccountSettingsPage() {
           <span>{user.nickname}</span>
           <button onClick={() => navigate('/account-settings/edit')}>수정</button>
         </ProfileName>
-        <ProfileAddr>{town}</ProfileAddr>
       </Header>
 
       <AccountInfo>
