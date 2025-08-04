@@ -112,16 +112,30 @@ function RentalTimePage() {
   const navigate = useNavigate();
   const [scannedData, setScannedData] = useState(null);
   const [estimatedPrice, setEstimatedPrice] = useState(1);
+  const [stationData, setStationData] = useState(null);
+  const [stationName, setStationName] = useState('');
 
   const amountToBePaid = hours * estimatedPrice;
   
   useEffect(() => {
     const qrCode = localStorage.getItem('scannedQrCode'); 
+    const stationId = localStorage.getItem('scannedQrNumber');
 
     if (!qrCode) {
       console.error('QR 코드 데이터 없음');
       return;
     }
+
+    const fetchStation = async () => {
+      try {
+        const response = await api.get(`/api/v1/stations/${stationId}`);
+        setStationData(response.data.data);
+        setStationName(response.data.data.name);
+      } catch (error) {
+        console.error('Error fetching item:', error);
+      }
+    }
+    fetchStation();
 
     const fetchItem = async () => {
       try {
@@ -137,7 +151,7 @@ function RentalTimePage() {
 
   return (
     <>
-    <Header stname = '건국대학교 제1학생회관' />
+    <Header stname={stationName} />
     <Container>
       <div style={{display: 'flex', justifyContent: 'center'}}>
         <ImageBox src={scannedData?.image}/>
@@ -159,7 +173,7 @@ function RentalTimePage() {
         <span><p>{amountToBePaid.toLocaleString()}</p>원</span>
       </PayInfo>
       
-      <RentButton onClick={() => navigate('/order-confirm')}>대여시작</RentButton>
+      <RentButton onClick={() => navigate('/order-confirm', { state: { hours } })}>대여시작</RentButton>
     </Container>
     </>
   );
