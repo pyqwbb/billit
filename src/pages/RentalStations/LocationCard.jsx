@@ -40,6 +40,7 @@ const Title = styled.h2`
   font-size: 19px;
   font-family: NanumSquareRoundOTFB;
   color: #000;
+  white-space: pre-line;
 `;
 
 const Subtitle = styled.p`
@@ -47,6 +48,7 @@ const Subtitle = styled.p`
   font-family: NanumSquareRoundOTFR;
   color: var(--side-color-4);
   margin-top: 5px;
+  white-space: pre-line;
 `;
 
 const Divider = styled.hr`
@@ -145,12 +147,21 @@ export default function LocationCard({ stationId }) {
 
   const products = station.popularProducts?.slice(0, 3) || [];
 
+  // name이 12글자 이상이면 개행 추가
+  const formattedName =
+    station.name.length > 10
+      ? station.name.slice(0, 12) + '\n' + station.name.slice(12)
+      : station.name;
+
+  // address 구 단위로 개행
+  const formattedAddress = station.address.replace(/(구\s)/, '구\n');
+
   return (
     <Container>
       <Thumbnail src={station.image} alt="건물 이미지" />
       <Card>
         <TitleSection>
-          <Title>{station.name}</Title>
+          <Title>{formattedName}</Title>
           <Status
             status={station.status}
             openTime={station.openTime}
@@ -158,7 +169,7 @@ export default function LocationCard({ stationId }) {
           />
         </TitleSection>
 
-        <Subtitle>{station.address}</Subtitle>
+        <Subtitle>{formattedAddress}</Subtitle>
         <Divider />
 
         <Label>바로 대여 가능!</Label>
