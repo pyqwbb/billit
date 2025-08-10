@@ -118,6 +118,14 @@ function MyPage() {
   fetchUserInfo();
 }, []);
 
+  const onClickLogout = async () =>{
+    await api.post('/api/v1/auth/logout')
+    .then(()=>{
+      localStorage.removeItem('accessToken');
+      navigate('/');
+    })
+  }
+
   return (
     <>
     <HeaderGradient title="마이페이지"/>
@@ -164,7 +172,7 @@ function MyPage() {
         </ListItem>
       </ListMenu>
 
-      <LogoutButton>로그아웃</LogoutButton>
+      <LogoutButton onClick={onClickLogout}>로그아웃</LogoutButton>
     </Container>
     </>
   );
