@@ -241,7 +241,10 @@ function MainPage() {
               {dashboardData.events.length > 0 ? (
                 <EventSlider index={currentEventIndex} length={dashboardData.events.length}>
                   {dashboardData.events.map((event, idx) => (
-                    <EventItem key={idx}>
+                    <EventItem
+                      key={idx}
+                      onClick={() => navigate(`/events/${event.id}`)}
+                    >
                       <img src={event.bannerImage} alt={event.bannerImage} />
                     </EventItem>
                   ))}
@@ -275,7 +278,7 @@ function MainPage() {
                 {dashboardData.latestNotices.map((notice) => (
                   <NoticeItem
                     key={notice.id}
-                    onClick={() => navigate(`/notice/${notice.id}`)}
+                    onClick={() => navigate(`/notices/${notice.id}`)}
                   >
                     {notice.title}
                   </NoticeItem>

@@ -138,10 +138,6 @@ function NoticesPage() {
       return sortAsc ? dateA - dateB : dateB - dateA;
     });
 
-  const handleClick = (id) => {
-    navigate(`/notices/${id}`);
-  };
-
   return (
     <>
       <Header />
@@ -168,7 +164,7 @@ function NoticesPage() {
           </CategoryScroll>
 
           {sortedData.map((notice) => (
-            <NoticeItem key={notice.id} onClick={() => handleClick(notice.id)}>
+            <NoticeItem key={notice.id} onClick={() => navigate(`/notices/${notice.id}`)}>
               <span>{notice.title}</span>
             </NoticeItem>
           ))}
