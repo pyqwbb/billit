@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import NaverMap from './NaverMap';
-import Header from '../../components/header/HeaderMain';
+import Header from '../../components/header/HeaderLike';
 
 const PageWrapper = styled.div`
   position: relative;

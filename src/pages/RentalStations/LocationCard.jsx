@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
+import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 
 const Container = styled.div`
   display: flex;
@@ -36,6 +37,18 @@ const TitleSection = styled.div`
   gap: 6px;
 `;
 
+const SubSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const LikeIcon = styled.div`
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+`;
+
 const Title = styled.h2`
   font-size: 19px;
   font-family: NanumSquareRoundOTFB;
@@ -43,7 +56,7 @@ const Title = styled.h2`
   white-space: pre-line;
 `;
 
-const Subtitle = styled.p`
+const Address = styled.p`
   font-size: 14px;
   font-family: NanumSquareRoundOTFR;
   color: var(--side-color-4);
@@ -129,13 +142,23 @@ const Status = ({ status, openTime, closeTime }) => {
 
 export default function LocationCard({ stationId }) {
   const [station, setStation] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
 
+  // 스테이션 데이터 & 즐겨찾기 여부 불러오기
   useEffect(() => {
     const fetchStationData = async () => {
       try {
+        // 1. 스테이션 상세
         const response = await api.get(`/api/v1/stations/${stationId}`);
         setStation(response.data.data);
+
+        // 2. 즐겨찾기 목록
+        const bookmarkRes = await api.get(`/api/v1/stations/bookmarks`);
+        const bookmarkedIds = bookmarkRes.data.data.bookmarks.map(b => b.stationId);
+
+        // 3. 현재 stationId가 즐겨찾기 목록에 있는지 확인
+        setIsFavorite(bookmarkedIds.includes(Number(stationId)));
       } catch (error) {
         console.error('Error fetching station data:', error);
       }
@@ -156,6 +179,21 @@ export default function LocationCard({ stationId }) {
   // address 구 단위로 개행
   const formattedAddress = station.address.replace(/(구\s)/, '구\n');
 
+  // 즐겨찾기 스테이션 등록/삭제
+  const handleFavoriteToggle = async () => {
+    try {
+      if (isFavorite) {
+        await api.delete(`/api/v1/stations/${stationId}/bookmarks`);
+        setIsFavorite(false);
+      } else {
+        await api.post(`/api/v1/stations/${stationId}/bookmarks`);
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      console.error('즐겨찾기 등록/삭제 실패:', error);
+    }
+  };
+
   return (
     <Container>
       <Thumbnail src={station.image} alt="건물 이미지" />
@@ -169,7 +207,12 @@ export default function LocationCard({ stationId }) {
           />
         </TitleSection>
 
-        <Subtitle>{formattedAddress}</Subtitle>
+        <SubSection>
+          <Address>{formattedAddress}</Address>
+          <LikeIcon onClick={handleFavoriteToggle}>
+            {isFavorite ? <HiHeart/> : <HiOutlineHeart/>}
+          </LikeIcon>
+        </SubSection>
         <Divider />
 
         <Label>바로 대여 가능!</Label>

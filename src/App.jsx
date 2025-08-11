@@ -22,6 +22,7 @@ import NoticeDetailPage from './pages/CustomerSupport/NoticeDetailPage';
 import EventsPage from './pages/CustomerSupport/EventsPage';
 import EventDetailPage from './pages/CustomerSupport/EventDetailPage';
 import StationMapPage from './pages/RentalStations/StationMapPage';
+import FavoriteStationPage from './pages/RentalStations/FavoriteStationPage';
 import AvailableListPage from './pages/RentalStations/AvailableListPage';
 import AvailableMapPage from './pages/RentalStations/AvailableMapPage';
 import RentalItemsPage from './pages/RentalItems/RentalItemsPage';
@@ -63,6 +64,7 @@ function AppWrapper() {
         <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:id" element={<EventDetailPage />} />
         <Route path="/station-map" element={<StationMapPage />} />
+        <Route path="/station-map/favorites" element={<FavoriteStationPage />} />
         <Route path="/rental-items" element={<RentalItemsPage />} />
         <Route path="/rental-items/:productName" element={<ItemDetailPage />} />
         <Route path="/rental-items/:productName/station" element={<AvailableListPage />} />
