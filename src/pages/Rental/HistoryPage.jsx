@@ -11,6 +11,14 @@ const Container = styled.div`
   gap: 18px;
 `;
 
+const EmptyMessage = styled.p`
+  text-align: center;
+  color: var(--side-color-4);
+  font-size: 16px;
+  font-family: 'NanumSquareRoundOTFR';
+  margin-top: 40px;
+`;
+
 const CardWrapper = styled.div`
   border-radius: 30px;
   background-color: var(--side-color-2);
@@ -113,7 +121,10 @@ function HistoryPage() {
     <>
     <HeaderGradient title="이용내역"/>
     <Container>
-        {rentalHistory.map((rental) => (
+      {rentalHistory.length === 0 ? (
+        <EmptyMessage>이용내역 존재하지 않습니다.</EmptyMessage>
+      ) : (
+        rentalHistory.map((rental) => (
           <CardWrapper key={rental.rentalHistoryToken}>
             <Card
               status={rental.status}
@@ -158,7 +169,8 @@ function HistoryPage() {
               </ReturnButton>
             )}
           </CardWrapper>
-        ))}
+        ))
+      )}
       </Container>
     </>
   );
