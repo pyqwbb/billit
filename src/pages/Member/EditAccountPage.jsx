@@ -44,29 +44,15 @@ const ProfileName = styled.div`
   }
   button {
     border: none;
-    background-color: #fff;
+    background-color: var(--side-color-1);
     font-size: 12px;
     font-family: 'NanumSquareRoundOTFR';
     color: var(--side-color-3);
-    text-decoration: underline;
-    padding-bottom: 2px;
+    padding: 8px;
     cursor: pointer;
-  }
-`;
-
-const ProfileAddr = styled.p`
-  margin: 2px 0 30px 0;
-  font-size: 16px;
-  font-family: 'NanumSquareRoundOTFEB';
-  input {
-    font-size: 16px;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    outline: none;
-    width: 100px;
-    text-align: center;
-    font-family: 'NanumSquareRoundOTFEB';
-    background-color: transparent;
+    border: 1px solid var(--side-color-3);
+    border-radius: 10px;
+    width: 65px;
   }
 `;
 
@@ -102,26 +88,53 @@ function EditAccountPage() {
     nickname: '',
     profileImage: '',
   });
+  const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);
 
-  const handleSave = () => {
-    // 저장 처리
-    alert('수정 완료!');
-    navigate('/account-settings');
-  };
+  const handleSave = async () => {
+    if (!isDuplicateChecked) {
+      alert('닉네임 중복확인을 해주세요.');
+      return;
+    }
 
-  useEffect(() => {
-  const fetchUserInfo = async () => {
     try {
-      const response = await api.get('/api/v1/users/me');
-      const { email, nickname, profileImage } = response.data.data;
-      setUser({ email, nickname, profileImage });
+      await api.patch('/api/v1/users/profile', {
+        newProfileImage: null,
+        newNickname: user.nickname,
+      });
+      alert('수정 완료!');
+      navigate('/account-settings');
     } catch (error) {
-      console.error('사용자 정보 가져오기 실패:', error);
+      console.error('프로필 수정 실패:', error);
+      alert('프로필 수정에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
-  fetchUserInfo();
-}, []);
+  const handleDuplicateCheck = async () => {
+    try {
+      const response = await api.get(`/api/v1/users/nicknames/${user.nickname}/availability`);
+      if (response.status === 200) {
+        alert('사용 가능한 닉네임입니다.');
+        setIsDuplicateChecked(true);
+      }
+    } catch (error) {
+      alert('이미 사용 중인 닉네임입니다.');
+      setIsDuplicateChecked(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await api.get('/api/v1/users/me');
+        const { email, nickname, profileImage } = response.data.data;
+        setUser({ email, nickname, profileImage });
+      } catch (error) {
+        console.error('사용자 정보 가져오기 실패:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   return (
     <>
@@ -130,7 +143,15 @@ function EditAccountPage() {
         <Header>
           <ProfileImage src={user.profileImage}/>
           <ProfileName>
-            <input value={user.nickname} onChange={(e) => setName(e.target.value)} />
+            <div style={{width:'65px'}}/>
+            <input 
+              value={user.nickname} 
+              onChange={(e) => {
+                setUser((prev) => ({ ...prev, nickname: e.target.value }));
+                setIsDuplicateChecked(false); 
+              }} 
+            />
+            <button onClick={() => handleDuplicateCheck()}>중복확인</button>
           </ProfileName>
         </Header>
 
