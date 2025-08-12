@@ -27,14 +27,14 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 0 60px; /* 버튼 위아래 여백 */
+  padding: 20px 0;
 `;
 
 const Button = styled.button`
   width: 100%;
   max-width: 360px;
   padding: 12px 0;
-  margin-top: 240px;
+  margin-top: 180px;
   background-color: #F13E1F;
   color: white;
   border: none;
@@ -43,28 +43,62 @@ const Button = styled.button`
   font-size: 19px;
   font-family: 'NanumSquareRoundOTFB';
   box-sizing: border-box;
+  transition: background-color 0.3s ease;
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+const OtherReasonInput = styled.textarea`
+  margin-top: 15px;
+  width: 100%;
+  max-width: 360px;
+  height: 80px;
+  padding: 10px;
+  font-family: 'NanumSquareRoundOTFR';
+  font-size: 14px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: ${props => (props.disabled ? '#f5f5f5' : 'white')};
 `;
 
 function AccountDeleteSurveyPage() {
   const navigate = useNavigate();
   const [selectedReason, setSelectedReason] = useState('');
+  const [otherReason, setOtherReason] = useState('');
+  const isOtherSelected = selectedReason === '기타';
+  const isButtonDisabled = !selectedReason || (isOtherSelected && otherReason.trim() === '');
   
   return (
     <>
-    <HeaderGradient title="회원탈퇴"/>
-    <Container>
-      <InfoText>
-        <h2>회원탈퇴</h2>
-        <p>회원을 탈퇴하시는 이유가 무엇인가요?</p>
-      </InfoText>
-      <CustomRadioGroup
-            selected={selectedReason}
-            setSelected={setSelectedReason}
-       />
-      <ButtonWrapper>
-        <Button onClick={() => navigate('/complete-delete-account')}>탈퇴하기</Button>  
-      </ButtonWrapper>
-    </Container>
+      <HeaderGradient title="회원탈퇴"/>
+      <Container>
+        <InfoText>
+          <h2>회원탈퇴</h2>
+          <p>회원을 탈퇴하시는 이유가 무엇인가요?</p>
+        </InfoText>
+        <CustomRadioGroup
+          selected={selectedReason}
+          setSelected={setSelectedReason}
+        />
+        <OtherReasonInput
+          placeholder="기타 사유를 입력해주세요."
+          value={otherReason}
+          onChange={(e) => setOtherReason(e.target.value)}
+          disabled={!isOtherSelected}
+        />
+        <ButtonWrapper>
+          <Button
+            disabled={isButtonDisabled}
+            onClick={() => navigate('/complete-delete-account')}
+          >
+            탈퇴하기
+          </Button>  
+        </ButtonWrapper>
+      </Container>
     </>
   );
 }

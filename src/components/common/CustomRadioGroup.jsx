@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import { FaCheck } from 'react-icons/fa';
 
@@ -29,14 +28,13 @@ const IconWrapper = styled.span`
   color: ${props => (props.selected ? '#000' : '#555')};
 `;
 
-function CustomRadioGroup() {
-  const [selected, setSelected] = useState('');
-
+function CustomRadioGroup({ selected, setSelected }) {
   const options = [
     '더 이상 필요가 없어서',
     '가격이 비싸서',
     '다른 서비스를 찾아서',
     '사용하기 불편해서 (UI/UX 등)',
+    '기타',
   ];
 
   return (
