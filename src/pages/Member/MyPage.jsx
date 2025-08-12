@@ -99,24 +99,37 @@ function MyPage() {
     nickname: '',
     profileImage: '',
   });
+  const [loading, setLoading] = useState(true);
 
   const handleNotReady = () => {
     alert('서비스 준비 중입니다.');
   };
 
   useEffect(() => {
-  const fetchUserInfo = async () => {
-    try {
-      const response = await api.get('/api/v1/users/me');
-      const { email, nickname, profileImage } = response.data.data;
-      setUser({ email, nickname, profileImage });
-    } catch (error) {
-      console.error('사용자 정보 가져오기 실패:', error);
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      navigate('/login');
+      return;
     }
-  };
 
-  fetchUserInfo();
-}, []);
+    const fetchUserInfo = async () => {
+      try {
+        const response = await api.get('/api/v1/users/me');
+        const { email, nickname, profileImage } = response.data.data;
+        setUser({ email, nickname, profileImage });
+      } catch (error) {
+        console.error('사용자 정보 가져오기 실패:', error);
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserInfo();
+  }, []);
+
+  if (loading) {
+    return null;
+  }
 
   const onClickLogout = async () =>{
     await api.post('/api/v1/auth/logout')
