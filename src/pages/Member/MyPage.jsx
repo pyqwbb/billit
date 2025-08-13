@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
+import Modal, { ConfirmButton, CancelButton } from '../../utils/Modal';
 import couponIcon from '../../assets/icon/coupon.png';
 import historyIcon from '../../assets/icon/history.png';
 import membershipIcon from '../../assets/icon/membership.png';
@@ -79,7 +80,7 @@ const ListItem = styled.li`
   font-family: 'NanumSquareRoundOTFR';
 `;
 
-const LogoutButton = styled.button`
+const LogoutButton = styled.div`
   width: 30%;
   padding: 12px;
   color: var(--side-color-3);
@@ -90,6 +91,7 @@ const LogoutButton = styled.button`
   display: block;
   margin: 0 auto;
   text-decoration: underline;
+  cursor: pointer;
 `;
 
 function MyPage() {
@@ -100,6 +102,7 @@ function MyPage() {
     profileImage: '',
   });
   const [loading, setLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);  // for Modal
 
   const handleNotReady = () => {
     alert('서비스 준비 중입니다.');
@@ -185,7 +188,19 @@ function MyPage() {
         </ListItem>
       </ListMenu>
 
-      <LogoutButton onClick={onClickLogout}>로그아웃</LogoutButton>
+      <LogoutButton onClick={() => setIsOpen(true)}>로그아웃</LogoutButton>
+      {isOpen && (
+        <Modal
+          title="로그아웃 확인"
+          onClose={() => setIsOpen(false)}
+          buttons={[
+            <ConfirmButton key="confirm" onClick={onClickLogout}>확인</ConfirmButton>,
+            <CancelButton key="cancel" onClick={() => setIsOpen(false)}>취소</CancelButton>
+          ]}
+        >
+          <p>정말 로그아웃하시겠습니까?</p>
+        </Modal>
+      )}
     </Container>
     </>
   );
