@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
@@ -89,6 +90,7 @@ function EditAccountPage() {
     profileImage: '',
   });
   const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);
+  const [newProfileImageUrl, setNewProfileImageUrl] = useState(null);
 
   const handleSave = async () => {
     if (!isDuplicateChecked) {
@@ -98,7 +100,7 @@ function EditAccountPage() {
 
     try {
       await api.patch('/api/v1/users/profile', {
-        newProfileImage: null,
+        newProfileImage: newProfileImageUrl,
         newNickname: user.nickname,
       });
       alert('수정 완료!');
@@ -122,6 +124,49 @@ function EditAccountPage() {
     }
   };
 
+  const handleImageChange = async (event) => {
+    const originalFile = event.target.files[0];
+    if (!originalFile) return;
+
+    try {
+      // 1. 압축 옵션 설정
+      const options = {
+        maxSizeMB: 0.5,           // 최대 파일 크기 (MB)
+        maxWidthOrHeight: 1024,   // 최대 가로/세로 크기
+        useWebWorker: true,       // 웹워커 사용 (UI block 방지)
+        fileType: 'image/webp',   // 변환할 포맷
+        initialQuality: 0.3       // 압축 품질 (0~1)
+      };
+
+      // 2. 이미지 압축 + WebP 변환
+      const compressedFile = await imageCompression(originalFile, options);
+
+      // 3. presigned URL 요청
+      const presignedResponse = await api.get('/api/v1/users/profile-image/pre-signed?extension=webp');
+      const presignedUrl = presignedResponse.data.data.preSignedUrl;
+
+      // 4. presigned URL로 업로드
+      const response = await fetch(presignedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'image/webp' },
+        body: compressedFile
+      });
+
+      if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
+
+      // 5. 업로드 성공 후 URL 저장
+      const imageUrl = presignedUrl.split('?')[0];
+      setNewProfileImageUrl(imageUrl);
+
+      // 6. 미리보기
+      const previewUrl = URL.createObjectURL(compressedFile);
+      setUser(prev => ({ ...prev, profileImage: previewUrl }));
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다.');
+    }
+  };
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -141,7 +186,16 @@ function EditAccountPage() {
       <HeaderGradient title="내 정보 수정" />
       <Container>
         <Header>
-          <ProfileImage src={user.profileImage}/>
+          <label htmlFor="profileImageInput">
+            <ProfileImage src={user.profileImage || '/default-profile.png'} alt="프로필 이미지" />
+          </label>
+          <input
+            id="profileImageInput"
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleImageChange}
+          />
           <ProfileName>
             <div style={{width:'65px'}}/>
             <input 
@@ -151,14 +205,16 @@ function EditAccountPage() {
                 setIsDuplicateChecked(false); 
               }} 
             />
-            <button onClick={() => handleDuplicateCheck()}>중복확인</button>
+            <button onClick={handleDuplicateCheck}>중복확인</button>
           </ProfileName>
         </Header>
 
         <AccountInfo>
             <p>본인인증</p>
-            <span style={{borderTop: '1px solid var(--side-color-3)', padding: '13px 0 12px 0'}}><p>계정연동</p></span>
-            <button onClick={() => handleSave()}>수정 완료</button>
+            <span style={{borderTop: '1px solid var(--side-color-3)', padding: '13px 0 12px 0'}}>
+              <p>계정연동</p>
+            </span>
+            <button onClick={handleSave}>수정 완료</button>
         </AccountInfo>
       </Container>
     </>
