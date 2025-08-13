@@ -2,22 +2,40 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshAccessToken } from './auth';
 
+const PERMIT_ALL_ENDPOINTS = [
+  '/api/v1/auth/register',
+  '/api/v1/auth/login',
+  '/api/v1/auth/token/refresh',
+  '/api/v1/products',
+  '/api/v1/products/',
+  '/api/v1/stations',
+  '/api/v1/stations/',
+  '/api/v1/notices',
+  '/api/v1/notices/',
+  '/api/v1/events',
+  '/api/v1/events/',
+  '/actuator/health',
+];
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
-// 모든 요청에 accessToken 자동 추가
+// accessToken 자동 추가 (PERMIT_ALL 제외)
 api.interceptors.request.use(
   (config) => {
+  const isPermitAll = PERMIT_ALL_ENDPOINTS.some((endpoint) =>
+    config.url.startsWith(endpoint)
+  );
+  if (!isPermitAll) {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  }
+  return config;
+}, (error) => Promise.reject(error));
 
 // 응답 시 401(토큰 만료)이면 자동으로 refresh
 let isRefreshing = false;
