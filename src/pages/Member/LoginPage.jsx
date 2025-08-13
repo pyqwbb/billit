@@ -84,6 +84,23 @@ function LoginPage() {
     window.location.href = `${baseUrl}?${params.toString()}`;
   };
 
+  const handleGoogleLogin = () => {
+    const baseUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'email profile',
+      access_type: 'offline',
+      prompt: 'consent'
+    });
+
+    window.location.href = `${baseUrl}?${params.toString()}`;    
+  };
+
   return (
     <Container>
         <Logo src={logo}/>
@@ -102,7 +119,7 @@ function LoginPage() {
 
         <SocialLogin>
             <img src={kakao} onClick={handleKakaoLogin}/>
-            <img src={google}/>
+            <img src={google} onClick={handleGoogleLogin}/>
         </SocialLogin>
     </Container>
   );

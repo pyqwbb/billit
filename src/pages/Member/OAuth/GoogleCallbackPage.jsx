@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../api/axiosInstance';
 
-function KakaoCallbackPage() {
+function GoogleCallbackPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -17,17 +17,17 @@ function KakaoCallbackPage() {
   const getToken = async (code) => {
     try {
       const response = await api.post(
-        '/api/v1/auth/login/kakao',
+        '/api/v1/auth/login/google',
         { authorizationCode: code },
         { withCredentials: true }
       );
 
       const data = response.data;
-      console.log('Kakao login response:', data);
+      console.log('google login response:', data);
 
       if (data.type === 'LOGIN_SUCCESS') {
         localStorage.setItem('accessToken', data.accessToken);
-
+        
         // 로그인 성공 후 리다이렉트
         const redirect = new URLSearchParams(window.location.search).get('redirect');
         navigate(redirect || '/');
@@ -37,17 +37,17 @@ function KakaoCallbackPage() {
         navigate('/terms-agreement', { state: { userInfoKey } });
       }
     } catch (err) {
-      alert('카카오 로그인 처리 중 오류 발생');
+      alert('구글 로그인 처리 중 오류 발생');
       console.error(err);
     }
   };
 
   return (
     <div>
-      <p>카카오 로그인 처리 중...</p>
+      <p>구글 로그인 처리 중...</p>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
 
-export default KakaoCallbackPage;
+export default GoogleCallbackPage;
