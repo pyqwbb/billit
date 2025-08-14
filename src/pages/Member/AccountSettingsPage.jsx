@@ -45,12 +45,6 @@ const ProfileName = styled.div`
   }
 `;
 
-const ProfileAddr = styled.p`
-  margin: 2px 0 30px 0;
-  font-size: 16px;
-  font-family: 'NanumSquareRoundOTFEB';
-`;
-
 const AccountInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -78,6 +72,7 @@ const DeleteButton = styled.button`
   margin-top: 28px;
   font-size: 14px;
   font-family: 'NanumSquareRoundOTFER';  
+  cursor: pointer;
 `;
 
 function AccountSettingsPage() {
@@ -101,6 +96,20 @@ function AccountSettingsPage() {
 
     fetchUserInfo();
   }, []);
+  
+  const handleDeleteAccount = async () => {
+    try {
+        const response = await api.get(`/api/v1/users/me/withdraw`);
+        if (response.data.data.available) {
+          navigate('/account-delete-survey');
+        } else {
+          alert('미반납 대여내역이 존재합니다.');
+          navigate('/history');
+        }
+      } catch (error) {
+        console.error('탈퇴 가능 여부 조회 중 오류 발생', error);
+      }
+  }
 
   return (
     <>
@@ -120,7 +129,7 @@ function AccountSettingsPage() {
         <img src={kakao}/>
       </AccountInfo>
 
-       <DeleteButton onClick={() => navigate('/account-delete-survey')}>회원탈퇴하기</DeleteButton>
+       <DeleteButton onClick={handleDeleteAccount}>회원탈퇴하기</DeleteButton>
     </Container>
     </>
   );

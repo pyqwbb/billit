@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import HeaderGradient from '../../components/header/HeaderGradient';
-import CustomRadioGroup from '../../components/common/CustomRadioGroup';
+import CustomReasonGroup from '../../components/common/CustomReasonGroup';
+import api from '../../api/axiosInstance';
 
 const Container = styled.div`
   padding: 24px;
@@ -67,11 +68,32 @@ const OtherReasonInput = styled.textarea`
 
 function AccountDeleteSurveyPage() {
   const navigate = useNavigate();
-  const [selectedReason, setSelectedReason] = useState('');
+  const [selectedReasons, setSelectedReasons] = useState([]);
   const [otherReason, setOtherReason] = useState('');
-  const isOtherSelected = selectedReason === '기타';
-  const isButtonDisabled = !selectedReason || (isOtherSelected && otherReason.trim() === '');
+  const isOtherSelected = selectedReasons.includes('OTHER');
+
+  const isButtonDisabled =
+    selectedReasons.length === 0 || (isOtherSelected && otherReason.trim() === '');
   
+  const handleDeleteAccount = async () => {
+    try {
+        const reasonsToSend = selectedReasons.filter(r => r !== 'OTHER');
+        if (isOtherSelected) {
+          reasonsToSend.push(otherReason); // 기타 사유를 문자열로 추가
+        }
+
+        const response = await api.post(`/api/v1/users/me/withdraw`, {
+          reasons: reasonsToSend,
+        });
+
+        if (response.data.status === 200) {
+          navigate('/complete-delete-account');
+        }
+      } catch (error) {
+        console.error('회원탈퇴 중 오류 발생', error);
+      }
+  }
+
   return (
     <>
       <HeaderGradient title="회원탈퇴"/>
@@ -80,9 +102,9 @@ function AccountDeleteSurveyPage() {
           <h2>회원탈퇴</h2>
           <p>회원을 탈퇴하시는 이유가 무엇인가요?</p>
         </InfoText>
-        <CustomRadioGroup
-          selected={selectedReason}
-          setSelected={setSelectedReason}
+        <CustomReasonGroup
+          selected={selectedReasons}
+          setSelected={setSelectedReasons}
         />
         <OtherReasonInput
           placeholder="기타 사유를 입력해주세요."
@@ -91,12 +113,9 @@ function AccountDeleteSurveyPage() {
           disabled={!isOtherSelected}
         />
         <ButtonWrapper>
-          <Button
-            disabled={isButtonDisabled}
-            onClick={() => navigate('/complete-delete-account')}
-          >
+          <Button disabled={isButtonDisabled} onClick={handleDeleteAccount}>
             탈퇴하기
-          </Button>  
+          </Button>
         </ButtonWrapper>
       </Container>
     </>
