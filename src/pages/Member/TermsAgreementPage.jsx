@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import { SlArrowRight, SlArrowUp, SlArrowDown } from "react-icons/sl";
 import { FaCheck } from 'react-icons/fa';
+import Modal, { ConfirmButton } from '../../utils/Modal';
 
 const Container = styled.div`
   padding: 20px;
@@ -77,6 +78,7 @@ function TermsAgreementPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const userInfoKey = location.state?.userInfoKey;
+  const [isOpen, setIsOpen] = useState(false);  // for Modal
 
   const [agreements, setAgreements] = useState({
     terms: false,
@@ -111,8 +113,7 @@ function TermsAgreementPage() {
 
       if (response.data.type === 'LOGIN_SUCCESS') {
         localStorage.setItem('accessToken', response.data.accessToken);
-        alert('회원가입이 완료되었습니다. 로그인합니다.');
-        navigate('/');
+        setIsOpen(true);
       } else {
         alert('예상치 못한 응답입니다. 다시 시도해주세요.');
       }
@@ -178,6 +179,18 @@ function TermsAgreementPage() {
         </AgreementGroup>
 
         <NextButton disabled={!requiredAgreed} onClick={handleSubmit}>다음</NextButton>
+
+        {isOpen && (
+        <Modal
+          title="회원가입 완료"
+          onClose={() => setIsOpen(false)}
+          buttons={[
+            <ConfirmButton onClick={() =>{setIsOpen(false);navigate('/');}}>확인</ConfirmButton>
+          ]}
+        >
+          <p>회원가입이 완료되었습니다. 로그인합니다.</p>
+        </Modal>
+      )}
       </Container>
     </>
   );
