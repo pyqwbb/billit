@@ -95,12 +95,6 @@ function HistoryDetailPage() {
 
   if (!rental) return <Container>존재하지 않는 내역입니다.</Container>;
 
-  const formatDateTime = (arr) => {
-    if (!arr || arr.length < 6) return '';
-    const [yyyy, mm, dd, hh, min] = arr;
-    return `${yyyy}-${String(mm).padStart(2, '0')}-${String(dd).padStart(2, '0')} ${String(hh).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
-  };
-
   return (
     <>
     <HeaderGradient title="이용내역"/>
@@ -154,7 +148,7 @@ function HistoryDetailPage() {
             </ReturnInfoDetail>
             <ReturnInfoDetail>
               <span>결제 승인 시간</span>
-              <p>{formatDateTime(payment.paymentDate)}</p>
+              <p>{payment.paymentDate}</p>
             </ReturnInfoDetail>
             <ReturnInfoDetail>
               <span>결제 금액</span>
