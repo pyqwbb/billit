@@ -61,13 +61,10 @@ const AccountInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 185px;
   gap: 13px;
   font-size: 16px;
   font-family: 'NanumSquareRoundOTFEB';
-  p {
-    padding-left: 15px;
-  }
   button {
     font-family: 'NanumSquareRoundOTFEB';
     width: 290px;
@@ -210,10 +207,6 @@ function EditAccountPage() {
         </Header>
 
         <AccountInfo>
-            <p>본인인증</p>
-            <span style={{borderTop: '1px solid var(--side-color-3)', padding: '13px 0 12px 0'}}>
-              <p>계정연동</p>
-            </span>
             <button onClick={handleSave}>수정 완료</button>
         </AccountInfo>
       </Container>

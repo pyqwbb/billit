@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
 import kakao from '../../assets/with-kakao.png';
+import google from '../../assets/google-login.png'
 
 const Container = styled.div`
   padding: 16px;
@@ -82,6 +83,9 @@ function AccountSettingsPage() {
     nickname: '',
     profileImage: '',
   });
+  
+  const provider = localStorage.getItem('provider');
+  const providerImg = provider === 'KAKAO' ? kakao : google;
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -126,7 +130,7 @@ function AccountSettingsPage() {
       <AccountInfo>
         <p>본인인증</p>
         <span style={{borderTop: '1px solid var(--side-color-3)', padding: '13px 0 12px 0'}}><p>계정연동</p></span>
-        <img src={kakao}/>
+        <img src={providerImg}/>
       </AccountInfo>
 
        <DeleteButton onClick={handleDeleteAccount}>회원탈퇴하기</DeleteButton>
