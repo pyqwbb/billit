@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import { FaCheck } from 'react-icons/fa';
+import api from '../../api/axiosInstance';
+import { loadTossPayments } from "@tosspayments/payment-sdk";
 
 const Container = styled.div`
   padding: 24px;
@@ -114,24 +116,96 @@ const PayButton = styled.button`
 
 
 function OrderConfirmPage() {
-  const navigate = useNavigate();
   const [payment, setPayment] = useState('card');
   const [agreed, setAgreed] = useState([false, false]);
 
+  const location = useLocation();
+  const [scannedData, setScannedData] = useState(null);
+  const [stationName, setStationName] = useState('');
+  const [calculatedPrice, setCalculatedPrice] = useState(null);
+
+  const hours = location.state?.hours || 1;
   const allAgreed = agreed.every(a => a);
 
-  const mockItem = {
-    id: 1,
-    name: 'C타입 충전 케이블',
-    stName: '건국대학교 제1학생회관',
-    rentalTime: 3,
-    rentalPrice: 3000,
-  };
+  const serialNumber = localStorage.getItem('scannedQrCode'); 
+  const stationId = localStorage.getItem('scannedQrNumber');
+
+  useEffect(() => {
+    // 1. 스테이션 정보 조회
+    const fetchStation = async () => {
+      try {
+        const response = await api.get(`/api/v1/stations/${stationId}`);
+        setStationName(response.data.data.name);
+      } catch (error) {
+        console.error('Error fetching station:', error);
+      }
+    }
+
+    // 2. 대여 물품 정보 조회
+    const fetchItem = async () => {
+      try {
+        const response = await api.get(`/api/v1/rentals/products/${serialNumber}`);
+        setScannedData(response.data.data);
+
+        // 3. 결제 예정 금액 계산 API 호출
+        try {
+          const calcRes = await api.get(`/api/v1/payments/calculate`, {
+            params: {
+              serialNumber: serialNumber,
+              rentalTime: hours
+            }
+          });
+          setCalculatedPrice(calcRes.data.data.amount);
+        } catch (err) {
+          console.error('Error calculating payment:', err);
+        }
+
+      } catch (error) {
+        console.error('Error fetching item:', error);
+      }
+    }
+
+    fetchStation();
+    fetchItem();
+  }, [hours]);
 
   const toggleAgreement = (index) => {
     const next = [...agreed];
     next[index] = !next[index];
     setAgreed(next);
+  };
+
+  const methodMap = { card: 'CARD', account: 'ACCOUNT', simple: 'SIMPLE' };
+
+  const handlePayment = async () => {
+    try {
+      const res = await api.post('/api/v1/payments/prepare/rental', {
+        serialNumber,
+        rentalTime: hours,
+        amount: calculatedPrice,
+        method: methodMap[payment]
+      });
+
+      if (res.status === 200) {
+        const paymentData = res.data.data;
+        
+        sessionStorage.setItem('sessionInfoKey', paymentData.sessionInfoKey);
+        sessionStorage.setItem('paymentType', paymentData.type);
+
+        const tossPayments = await loadTossPayments(paymentData.clientApiKey);
+        await tossPayments.requestPayment(paymentData.method, {
+          amount: paymentData.amount,
+          orderId: paymentData.orderId,
+          orderName: paymentData.orderName,
+          customerEmail: paymentData.customerEmail,
+          customerKey: paymentData.customerKey,
+          successUrl: `${window.location.origin}/rental-complete`,
+          failUrl: `${window.location.origin}/rental-fail`,
+        });
+      }
+    } catch (error) {
+      console.error("결제 실패:", error);
+    }
   };
 
   return (
@@ -140,19 +214,21 @@ function OrderConfirmPage() {
       <Container>
         <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
         <Box>
-          <ImageBox />
+          <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
           <InBox>
-            <span>{mockItem.name}</span>
-            <p>{mockItem.stName}</p>
+            <span>{scannedData?.name}</span>
+            <p>{stationName}</p>
           </InBox>
         </Box>
         <p style={{ textAlign: 'right', fontFamily: 'NanumSquareRoundOTFB', fontSize: '16px' }}>
-          <span style={{ color: 'var(--main-color)' }}>{mockItem.rentalTime}</span>시간
+          <span style={{ color: 'var(--main-color)' }}>{hours}</span>시간
         </p>
         <ExpectedAmount>
           <p>결제예정금액</p>
           <div style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '24px' }}>
-            <span style={{ color: 'var(--main-color)' }}>{mockItem.rentalPrice.toLocaleString()}</span>원
+            <span style={{ color: 'var(--main-color)' }}>
+              {calculatedPrice?.toLocaleString() || 0}
+            </span>원
           </div>
         </ExpectedAmount>
 
@@ -164,10 +240,7 @@ function OrderConfirmPage() {
         </PaymentOptionsWrapper>
 
         <CheckboxContainer>
-          {[
-            '주문 내용 동의',
-            '주문 내용 동의',
-          ].map((text, i) => (
+          {['주문 내용 동의', '주문 내용 동의'].map((text, i) => (
             <CheckboxLabel key={i}>
               <input
                 type="checkbox"
@@ -185,8 +258,7 @@ function OrderConfirmPage() {
 
         <PayButton
           disabled={!allAgreed}
-          onClick={() => { navigate('/rental-complete');
-          }}
+          onClick={handlePayment}
         >
           결제하기
         </PayButton>

@@ -1,4 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import CompleteIcon from '../../assets/icon/complete.png';
@@ -69,17 +71,73 @@ const Button = styled.button`
   font-family: 'NanumSquareRoundOTFB';
 `;
 
+const formatDate = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  const h = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+  return `${y}.${m}.${d} ${h}:${min}`;
+};
+
 function RentalCompletePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [rentalInfo, setRentalInfo] = useState(null);
 
-  const mockItem = {
-    id: 1,
-    name: 'C타입 충전 케이블',
-    stName: '건국대학교 제1학생회관',
-    rentalTime: 3,
-    rentalStart: '2025.07.12 14:24',
-    rentalEnd: '2025.07.12 17:24',
-  };
+  useEffect(() => {
+    const confirmPayment = async () => {
+      try {
+        const paymentKey = searchParams.get('paymentKey');
+        const orderId = searchParams.get('orderId');
+        const amount = Number(searchParams.get('amount'));
+
+        const paymentType = sessionStorage.getItem('paymentType') || 'RENT';
+        const sessionInfoKey = sessionStorage.getItem('sessionInfoKey');
+
+        if (!paymentKey || !orderId || !amount || !sessionInfoKey) {
+          console.error('필수 결제 데이터 없음');
+          navigate('/rental-fail');
+          return;
+        }
+
+        // 결제 승인 API 호출
+        const res = await api.post('/api/v1/payments/confirm', {
+          paymentKey,
+          orderId,
+          amount,
+          paymentType,
+          sessionInfoKey,
+        });
+
+        if (res.status === 200) {
+          const data = res.data.data;
+
+          // 반납시간 계산
+          const rentalStart = new Date(data.rentalStartTime);
+          const rentalEnd = new Date(rentalStart.getTime() + data.rentalTime * 60 * 60 * 1000);
+
+          setRentalInfo({
+            productName: data.productName,
+            rentalStationName: data.rentalStationName,
+            rentalTime: data.rentalTime,
+            rentalStart: formatDate(rentalStart),
+            rentalEnd: formatDate(rentalEnd),
+            totalAmount: data.totalAmount,
+          });
+        }
+      } catch (err) {
+        console.error('결제 승인 실패:', err);
+        navigate('/rental-fail');
+      }
+    };
+
+    confirmPayment();
+  }, [navigate, searchParams]);
+
+  if (!rentalInfo) {
+    return <p style={{ textAlign: 'center', marginTop: '100px' }}>결제 승인 중...</p>;
+  }
 
   return (
     <>
@@ -91,11 +149,14 @@ function RentalCompletePage() {
         <RentalBox>
           <ImageBox />
           <InBox>
-            <span>{mockItem.name}</span>
-            <p>{mockItem.stName}</p>
-            <p><span style={{color: 'var(--main-color)'}}>{mockItem.rentalTime}</span>시간</p>
-            <p>대여시작 | {mockItem.rentalStart}</p>
-            <p>반납시간 | {mockItem.rentalEnd}</p>
+            <span>{rentalInfo.productName}</span>
+            <p>{rentalInfo.rentalStationName}</p>
+            <p>
+              <span style={{ color: 'var(--main-color)' }}>{rentalInfo.rentalTime}</span>시간
+            </p>
+            <p>대여시작 | {rentalInfo.rentalStart}</p>
+            <p>반납시간 | {rentalInfo.rentalEnd}</p>
+            <p>총 결제금액 | {rentalInfo.totalAmount.toLocaleString()}원</p>
           </InBox>
         </RentalBox>
         <Button onClick={() => navigate('/')}>홈으로</Button>

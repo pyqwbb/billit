@@ -10,7 +10,7 @@ const Container = styled.div`
   padding: 24px;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.img`
   background-color: var(--side-color-3);
   width: 330px;
   aspect-ratio: 1 / 1;
@@ -154,7 +154,7 @@ function RentalTimePage() {
     <Header stname={stationName} />
     <Container>
       <div style={{display: 'flex', justifyContent: 'center'}}>
-        <ImageBox src={scannedData?.image}/>
+        <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
       </div>
       <InfoRow>
         <NameInfo>{scannedData?.name}</NameInfo>
