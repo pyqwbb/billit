@@ -34,7 +34,7 @@ const Card = styled.div`
   border-radius: 30px;
   padding: 25px;
   background-color: ${({ status }) =>
-    status === '대여중' ? '#85FF6A' : 'var(--side-color-2)'};
+    status === '대여 중' ? '#85FF6A' : 'var(--side-color-2)'};
   p {
     font-size: 19px;
     font-family: 'NanumSquareRoundOTFEB';
@@ -108,8 +108,12 @@ function HistoryPage() {
     const fetchRentalHistory = async () => {
       try {
         const response = await api.get('/api/v1/users/me/rentals');
-        const rentals = response.data.data.rentals.content;
-        setRentalHistory(rentals);
+        const { actives, rentals } = response.data.data;
+        
+        // actives와 rentals.content 합치기
+        const combinedHistory = [...actives, ...rentals.content];
+        
+        setRentalHistory(combinedHistory);
       } catch (error) {
         console.error('Failed to fetch rental history:', error);
       }
