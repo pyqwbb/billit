@@ -75,6 +75,23 @@ const SearchIcon = styled(FiSearch)`
   font-size: 20px;
 `;
 
+const FilterWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+`;
+
+const FilterButton = styled.button`
+  padding: 6px 12px;
+  border: 1px solid var(--main-color);
+  background-color: ${props => (props.active ? 'var(--main-color)' : 'white')};
+  color: ${props => (props.active ? 'white' : 'var(--main-color)')};
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'NanumSquareRoundOTFR';
+  font-size: 14px;
+`;
+
 const StationCard = styled.div`
   display: flex;
   padding: 16px 0;
@@ -109,13 +126,16 @@ const StationDetail = styled.div`
 `;
 
 const MapIcon = styled.img`
-  position: absolute;
-  top: 530px;
-  left: 330px;
-  transform: translateX(-50%);
+  position: fixed;
+  bottom: 36px;
+  right: 12px;
   width: 71px;
   aspectRatio: 1 / 1;
   cursor: pointer;
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: translateY(-8px);
+  }
 `;
 
 const Status = ({ status, openTime }) => {
@@ -139,6 +159,7 @@ const Status = ({ status, openTime }) => {
 function AvailableListPage() {
   const [searchText, setSearchText] = useState('');
   const [stationData, setStationData] = useState([]);
+  const [showInStockOnly, setShowInStockOnly] = useState(false);
   const navigate = useNavigate();
   const { productName } = useParams();
   const location = useLocation();
@@ -175,9 +196,11 @@ function AvailableListPage() {
     fetchStations();
   }, [userLocation]);
 
-  const filteredStationData = stationData.filter(station =>
-    station.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredStationData = stationData
+    .filter(station =>
+      station.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .filter(station => (showInStockOnly ? station.stock > 0 : true));
 
   return (
     <>
@@ -204,6 +227,15 @@ function AvailableListPage() {
           />
           <SearchIcon />
         </SearchWrapper>
+
+        <FilterWrapper>
+          <FilterButton
+            active={showInStockOnly}
+            onClick={() => setShowInStockOnly(prev => !prev)}
+          >
+            품절 제외
+          </FilterButton>
+        </FilterWrapper>
 
         {filteredStationData.map(station => (
           <StationCard key={station.id}>
