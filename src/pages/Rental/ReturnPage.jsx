@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import HeaderGradient from '../../components/header/HeaderGradient';
+import api from '../../api/axiosInstance';
+import { loadTossPayments } from "@tosspayments/payment-sdk";
 
 const Container = styled.div`
   padding: 24px;
@@ -106,14 +108,69 @@ const PayButton = styled.button`
 function ReturnPage() {
   const navigate = useNavigate();
   const [payment, setPayment] = useState('card');
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const mockItem = {
-    id: 1,
-    status: '대여',
-    name: 'C타입 충전 케이블',
-    stName: '건국대학교 제1학생회관',
-    rentalTime: 3,
-    rentalPrice: 3000,
+  const serialNumber = localStorage.getItem('scannedQrCode'); 
+  const stationId = localStorage.getItem('scannedQrNumber');
+
+  useEffect(() => {
+    const fetchReturnInfo = async () => {
+      try {
+        const res = await api.get(`/api/v1/returns/products/${serialNumber}`,
+          { params: { returnStationId: stationId } }
+        );
+        const data = res.data.data;
+        setItem(data);
+        sessionStorage.setItem('returnInfoKey', data.returnInfoKey);
+      } catch (error) {
+        console.error('반납 정보 불러오기 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReturnInfo();
+  }, []);
+
+  if (loading) return <div>불러오는 중...</div>;
+  if (!item) return <div>데이터를 불러올 수 없습니다.</div>;
+
+  const handleOverduePayment = async () => {
+    try {
+      const res = await api.post('/api/v1/payments/prepare/overdue', {
+        method: 'OVERDUE',
+        returnInfoKey: item.returnInfoKey,
+      });
+
+      if (res.status === 200) {
+        const paymentData = res.data.data;
+        
+        sessionStorage.setItem('sessionInfoKey', paymentData.sessionInfoKey);
+        sessionStorage.setItem('paymentType', paymentData.type);
+
+        const tossPayments = await loadTossPayments(paymentData.clientApiKey);
+        await tossPayments.requestPayment(paymentData.method, {
+          amount: paymentData.amount,
+          orderId: paymentData.orderId,
+          orderName: paymentData.orderName,
+          customerEmail: paymentData.customerEmail,
+          customerKey: paymentData.customerKey,
+          successUrl: `${window.location.origin}/return-complete?overdue=true`,
+          failUrl: `${window.location.origin}/rental-fail`,
+        });
+      }
+    } catch (error) {
+      console.error("결제 실패:", error);
+    }
+  };
+
+  const handleReturn = async () => {
+    try {
+      navigate('/return-complete');
+    } catch (error) {
+      console.error("반납 실패:", error);
+    }
   };
 
   return (
@@ -122,34 +179,45 @@ function ReturnPage() {
       <Container>
         <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
         <Box>
-          <ImageBox />
+          <ImageBox src={item.image} alt={item.image}/>
           <InBox>
-            <span>{mockItem.name}</span>
+            <span>{item.name}</span>
           </InBox>
         </Box>
         <ReturnInfo>
           <ReturnInfoDetail>
             <span>대여 스테이션</span>
-            <p>{mockItem.stName}</p>
+            <p>{item.rentalStationName}</p>
           </ReturnInfoDetail>
           <ReturnInfoDetail>
             <span>반납 스테이션</span>
-            <p>{mockItem.stName}</p>
+            <p>{item.returnStationName}</p>
           </ReturnInfoDetail>
           <ReturnInfoDetail>
             <span>총 이용시간</span>
-            <p>{mockItem.rentalTime}시간</p>
+            <p>{item.minutesOfUse}분</p>
           </ReturnInfoDetail>
+
+          {item.overdueMinutes || item.overdueAmount ? (
+          <>
           <ReturnInfoDetail>
             <span style={{color: '#F13E1F'}}>연체시간</span>
-            <p style={{color: '#F13E1F'}}>{mockItem.rentalTime}시간</p>
+            <p style={{ color: '#F13E1F' }}>
+              {item.overdueMinutes ? `${item.overdueMinutes}분` : ''}
+            </p>
           </ReturnInfoDetail>
+          </>
+          ) : null}
         </ReturnInfo>
 
+        {item.overdueAmount ? (
+        <>
         <ExpectedAmount>
           <p>결제예정금액</p>
           <div style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '24px' }}>
-            <span style={{ color: 'var(--main-color)' }}>{mockItem.rentalPrice.toLocaleString()}</span>원
+            <span style={{ color: 'var(--main-color)' }}>
+                {item.overdueAmount ? item.overdueAmount.toLocaleString() : 0}
+              </span>원
           </div>
         </ExpectedAmount>
 
@@ -159,9 +227,13 @@ function ReturnPage() {
           <PaymentOption selected={payment === 'account'} onClick={() => setPayment('account')}>실시간 계좌이체</PaymentOption>
           <PaymentOption selected={payment === 'simple'} onClick={() => setPayment('simple')}>간편결제</PaymentOption>
         </PaymentOptionsWrapper>
+        </>
+        ) : null}
 
-        <PayButton onClick={() => { navigate('/return-complete');}}>
-          {mockItem.status === '연체' ? '연체 금액 결제' : '반납하기'}
+        <PayButton
+          onClick={item.status === '연체' ? handleOverduePayment : handleReturn}
+        >
+          {item.status === '연체' ? '연체 금액 결제' : '반납하기'}
         </PayButton>
       </Container>
     </>

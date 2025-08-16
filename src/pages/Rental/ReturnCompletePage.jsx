@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import CompleteIcon from '../../assets/icon/complete.png';
+import api from '../../api/axiosInstance';
 
 const Container = styled.div`
   padding: 24px;
@@ -50,6 +52,71 @@ const Button = styled.button`
 
 function ReturnCompletePage() {
   const navigate = useNavigate();
+  const serialNumber = localStorage.getItem('scannedQrCode');
+  const returnInfoKey = sessionStorage.getItem('returnInfoKey');
+
+  useEffect(() => {
+    const handleComplete = async () => {
+      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const isOverdue = searchParams.get('overdue') === 'true';
+
+        if (isOverdue) {
+          await confirmPayment(searchParams);
+        } else {
+          await completeReturn();
+        }
+      } catch (err) {
+        console.error('반납 실패:', err);
+        navigate('/rental-fail');
+      }
+    };
+
+    handleComplete();
+  }, []);
+
+  const confirmPayment = async (searchParams) => {
+    try {
+      const paymentKey = searchParams.get('paymentKey');
+      const orderId = searchParams.get('orderId');
+      const amount = Number(searchParams.get('amount'));
+
+      const paymentType = sessionStorage.getItem('paymentType') || 'RENT';
+      const sessionInfoKey = sessionStorage.getItem('sessionInfoKey');
+
+      if (!paymentKey || !orderId || !amount || !sessionInfoKey) {
+        console.error('필수 결제 데이터 없음');
+        navigate('/rental-fail');
+        return;
+      }
+
+      const res = await api.post('/api/v1/payments/confirm', {
+        paymentKey,
+        orderId,
+        amount,
+        paymentType,
+        sessionInfoKey,
+      });
+
+      console.log('결제 승인 성공', res.data);
+    } catch (error) {
+      console.error('결제 승인 실패', error);
+      navigate('/rental-fail');
+    }
+  };
+
+  const completeReturn = async () => {
+      try {
+        await api.post(`/api/v1/returns/products/${serialNumber}`, {
+          returnInfoKey,
+        });
+        console.log("반납 성공");
+        localStorage.removeItem('scannedQrCode');
+        localStorage.removeItem('scannedQrNumber');
+      } catch (err) {
+        console.error("반납 실패:", err);
+      }
+    };
 
   return (
     <>
