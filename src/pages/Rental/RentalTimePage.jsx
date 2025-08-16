@@ -132,20 +132,29 @@ function RentalTimePage() {
         setStationData(response.data.data);
         setStationName(response.data.data.name);
       } catch (error) {
-        console.error('Error fetching item:', error);
+        console.error('Error fetching station:', error);
       }
-    }
+    };
     fetchStation();
 
     const fetchItem = async () => {
       try {
         const response = await api.get(`/api/v1/rentals/products/${qrCode}`);
-        setScannedData(response.data.data);
-        setEstimatedPrice(response.data.data.pricePerHour);
+        if (response.status !== 200) {
+          alert('해당 물품은 현재 대여가 불가합니다.');
+          navigate('/');
+          return;
+        } else {
+          const item = response.data.data;
+          setScannedData(item);
+          setEstimatedPrice(item.pricePerHour);
+        }
       } catch (error) {
         console.error('Error fetching item:', error);
+        alert('대여 불가 아이템입니다.');
+        navigate('/');
       }
-    }
+    };
     fetchItem();
   }, []);
 
