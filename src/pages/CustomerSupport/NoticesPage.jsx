@@ -107,19 +107,20 @@ function NoticesPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
   useEffect(() => {
-    fetchNotices(0);
+    fetchNotices(0, sortAsc);
   }, []);
 
-  const fetchNotices = async (pageNumber) => {
+  const fetchNotices = async (pageNumber, sortAscOption) => {
+    const sortParam = sortAscOption ? 'createdAt,asc' : 'createdAt,desc';
     try {
-      const response = await api.get(`/api/v1/notices?page=${pageNumber}&size=${size}`);
+      const response = await api.get(`/api/v1/notices?page=${pageNumber}&size=${size}&sort=${sortParam}`);
       const content = response.data?.data?.noticeInfos?.content || [];
       const pageInfo = response.data?.data?.noticeInfos?.page;
 
       setNotices((prev) => {
         const ids = new Set(prev.map((n) => n.id));
         const newNotices = content.filter((n) => !ids.has(n.id));
-        return [...prev, ...newNotices];
+        return pageNumber === 0 ? newNotices : [...prev, ...newNotices];
       });
       setPage(pageNumber + 1);
       setHasMore(pageNumber + 1 < pageInfo.totalPages);
@@ -128,15 +129,21 @@ function NoticesPage() {
     }
   };
 
+  const handleSortClick = () => {
+    setSortAsc(prev => {
+      const newSort = !prev;
+      setPage(0);
+      setNotices([]);
+      fetchNotices(0, newSort);
+      return newSort;
+    });
+  };
+
   const categories = ['전체', '시스템 점검', '일반', '당첨자 발표'];
 
-  const sortedData = [...notices]
-    .filter(n => selectedCategory === '전체' || n.type === selectedCategory)
-    .sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return sortAsc ? dateA - dateB : dateB - dateA;
-    });
+  const filteredData = notices.filter(
+    (n) => selectedCategory === '전체' || n.type === selectedCategory
+  );
 
   return (
     <>
@@ -146,7 +153,7 @@ function NoticesPage() {
 
         <ListContainer>
           <div style={{ textAlign: 'right', marginBottom: '8px' }}>
-            <SortButton onClick={() => setSortAsc(prev => !prev)}>
+            <SortButton onClick={handleSortClick}>
               정렬 기준: 생성일자 {sortAsc ? '▲' : '▼'}
             </SortButton>
           </div>
@@ -163,14 +170,14 @@ function NoticesPage() {
             ))}
           </CategoryScroll>
 
-          {sortedData.map((notice) => (
+          {filteredData.map((notice) => (
             <NoticeItem key={notice.id} onClick={() => navigate(`/notices/${notice.id}`)}>
               <span>{notice.title}</span>
             </NoticeItem>
           ))}
 
           {hasMore && (
-            <MoreButton onClick={() => fetchNotices(page)}>
+            <MoreButton onClick={() => fetchNotices(page, sortAsc)}>
               더보기
             </MoreButton>
           )}
