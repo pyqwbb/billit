@@ -110,13 +110,16 @@ function EditAccountPage() {
 
   const handleDuplicateCheck = async () => {
     try {
-      const response = await api.get(`/api/v1/users/nicknames/${user.nickname}/availability`);
-      if (response.status === 200) {
+      const response = await api.get(`/api/v1/users/nicknames/${encodeURIComponent(user.nickname)}/availability`);
+      if (response.data.data.available) {
         alert('사용 가능한 닉네임입니다.');
         setIsDuplicateChecked(true);
+      } else {
+        alert('이미 사용 중인 닉네임입니다.');
+        setIsDuplicateChecked(false);
       }
     } catch (error) {
-      alert('이미 사용 중인 닉네임입니다.');
+      alert('닉네임 중복체크 중 오류 발생');
       setIsDuplicateChecked(false);
     }
   };
