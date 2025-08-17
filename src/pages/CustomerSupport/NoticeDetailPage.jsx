@@ -39,7 +39,7 @@ function NoticeDetailPage() {
   useEffect(() => {
     const fetchNotice = async () => {
       try {
-        const response = await api.get(`api/v1/notices/${id}`);
+        const response = await api.get(`/api/v1/notices/${id}`);
         setFetchedNotice(response.data.data);
       } catch (error) {
         console.error('Error fetching notice:', error);

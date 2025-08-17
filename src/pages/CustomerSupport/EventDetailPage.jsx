@@ -72,7 +72,7 @@ function EventDetailPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await api.get(`api/v1/events/${id}`);
+        const response = await api.get(`/api/v1/events/${id}`);
         setEvent(response.data.data);
       } catch (error) {
         console.error('이벤트 정보를 불러오는 데 실패했습니다:', error);
