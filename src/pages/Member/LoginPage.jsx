@@ -6,64 +6,46 @@ import google from '../../assets/google-login.png';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
   gap: 2px;
   text-align: center;
   align-items: center;
   p {
-    font-family: 'NanumSquareRoundOTFR';
+    font-family: 'NanumSquareRoundOTFB';
     font-size: 14px;
     margin: 61px;
   }
 `;
 
-const LoginForm = styled.div`
+const SocialLogin = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  input {
-    width: 288px;
+  gap: 12px;
+  p {
     font-family: 'NanumSquareRoundOTFR';
-    border: none;
-    font-size: 14px;
-    border-bottom: 1px solid #000;
-    border-radius: 0px;
-    margin-bottom: 24px;
-    padding-bottom: 7px;
+    font-size: 12px;
+    margin: 12px;
   }
 `;
 
-const LoginButton = styled.button`
-  width: 289px;
-  height: 52px;
-  border: none;
-  border-radius: 30px;
-  background-color: var(--main-color);
-  font-size: 15px;
-  font-family: 'NanumSquareRoundOTFB';
-`;
-
-const RegisterButton = styled.button`
-  width: 30%;
-  padding: 17px;
-  color: var(--side-color-3);
-  font-family: 'NanumSquareRoundOTFR';
-  border: none;
-  background: none;
-  font-size: 14px;
-  display: block;
-  margin: 0 auto;
-  text-decoration: underline;
-`;
-
-const SocialLogin = styled.div`
-  padding-top: 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+const Divider = styled.div`
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid var(--side-color-3);
+  line-height: 0;
+  margin: 12px 0 20px;
+  span {
+    background: #fff;
+    padding: 0 10px;
+    font-size: 12px;
+    color: black;
+  }
 `;
 
 const Logo = styled.img`
-  padding-top: 70px;
+  margin-top: -40px;
   width: 141px;
 `;
 
@@ -106,18 +88,8 @@ function LoginPage() {
         <Logo src={logo}/>
         <p>3초 만에 가입하고,<br/>필요한 물품 바로 대여해보세요!</p>
 
-        <LoginForm>
-            <input
-              placeholder='아이디'
-            />
-            <input
-              placeholder='비밀번호'
-            />
-            <LoginButton>로그인</LoginButton>
-            <RegisterButton>회원가입</RegisterButton>
-        </LoginForm>
-
         <SocialLogin>
+            <Divider><span>소셜 로그인으로 이용하기</span></Divider>
             <img src={kakao} onClick={handleKakaoLogin}/>
             <img src={google} onClick={handleGoogleLogin}/>
         </SocialLogin>
