@@ -118,8 +118,8 @@ function RentalTimePage() {
   const amountToBePaid = hours * estimatedPrice;
   
   useEffect(() => {
-    const qrCode = localStorage.getItem('scannedQrCode'); 
-    const stationId = localStorage.getItem('scannedQrNumber');
+    const qrCode = sessionStorage.getItem('scannedQrCode'); 
+    const stationId = sessionStorage.getItem('scannedQrNumber');
 
     if (!qrCode) {
       console.error('QR 코드 데이터 없음');

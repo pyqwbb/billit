@@ -140,7 +140,7 @@ function QrScanPage() {
 
               // 숫자인 경우에만 처리
               if (/^\d+$/.test(data)) {
-                localStorage.setItem('scannedQrNumber', data); // 저장
+                sessionStorage.setItem('scannedQrNumber', data); // 저장
                 navigate('/rental-or-return'); // 이동
               } else {
                 setScannedResult(`잘못된 코드: ${data}`);
@@ -148,7 +148,7 @@ function QrScanPage() {
               
               // 일련 코드의 경우
               if (/^SN-\d{3}-\d{3}$/.test(data)) {
-                localStorage.setItem('scannedQrCode', data);
+                sessionStorage.setItem('scannedQrCode', data);
 
                 const currentPath = window.location.pathname;
 

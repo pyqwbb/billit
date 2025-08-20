@@ -111,8 +111,8 @@ function ReturnPage() {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const serialNumber = localStorage.getItem('scannedQrCode'); 
-  const stationId = localStorage.getItem('scannedQrNumber');
+  const serialNumber = sessionStorage.getItem('scannedQrCode'); 
+  const stationId = sessionStorage.getItem('scannedQrNumber');
 
   useEffect(() => {
     const fetchReturnInfo = async () => {

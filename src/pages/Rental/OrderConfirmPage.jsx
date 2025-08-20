@@ -127,8 +127,8 @@ function OrderConfirmPage() {
   const hours = location.state?.hours || 1;
   const allAgreed = agreed.every(a => a);
 
-  const serialNumber = localStorage.getItem('scannedQrCode'); 
-  const stationId = localStorage.getItem('scannedQrNumber');
+  const serialNumber = sessionStorage.getItem('scannedQrCode'); 
+  const stationId = sessionStorage.getItem('scannedQrNumber');
 
   useEffect(() => {
     // 1. 스테이션 정보 조회

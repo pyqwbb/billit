@@ -52,7 +52,7 @@ const Button = styled.button`
 
 function ReturnCompletePage() {
   const navigate = useNavigate();
-  const serialNumber = localStorage.getItem('scannedQrCode');
+  const serialNumber = sessionStorage.getItem('scannedQrCode');
   const returnInfoKey = sessionStorage.getItem('returnInfoKey');
 
   useEffect(() => {
@@ -111,8 +111,8 @@ function ReturnCompletePage() {
           returnInfoKey,
         });
         console.log("반납 성공");
-        localStorage.removeItem('scannedQrCode');
-        localStorage.removeItem('scannedQrNumber');
+        sessionStorage.removeItem('scannedQrCode');
+        sessionStorage.removeItem('scannedQrNumber');
       } catch (err) {
         console.error("반납 실패:", err);
       }
