@@ -71,9 +71,7 @@ function AppWrapper() {
         <Route path="/rental-items/:productName" element={<ItemDetailPage />} />
         <Route path="/rental-items/:productName/station" element={<AvailableListPage />} />
         <Route path="/rental-items/:productName/map" element={<AvailableMapPage />} />
-        <Route path="/qr-scan" element={<QrScanPage />} />
-        <Route path="/qr-scan/rental" element={<QrScanPage />} />
-        <Route path="/qr-scan/return" element={<QrScanPage />} />
+        <Route path="/qr-scan/:type" element={<QrScanPage />} />
         <Route path="/rental-or-return" element={<RentalOrReturn />} />
         <Route path="/rental-time" element={<RentalTimePage />} />
         <Route path="/order-confirm" element={<OrderConfirmPage />} />

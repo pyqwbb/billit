@@ -116,7 +116,7 @@ function MenuDrawer({ onClose }) {
           <ListItem onClick={() => handleNavigate('/mypage')}>마이페이지</ListItem>
           <ListItem onClick={() => handleNavigate('/station-map')}>주변 스테이션</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-items')}>대여 물품</ListItem>
-          <ListItem onClick={() => handleNavigate('/qr-scan')}>QR 스캔</ListItem>
+          <ListItem onClick={() => handleNavigate('/qr-scan/station')}>QR 스캔</ListItem>
         </ListMenu>
 
         <BottomMenu>

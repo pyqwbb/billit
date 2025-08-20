@@ -100,10 +100,6 @@ function HistoryPage() {
     navigate(`/history/${id}`);
   };
 
-  const handleReturnClick = (id) => {
-    navigate(`/return/${id}`);
-  };
-
   useEffect(() => {
     const fetchRentalHistory = async () => {
       try {
@@ -166,7 +162,7 @@ function HistoryPage() {
               <ReturnButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleReturnClick(rental.rentalHistoryToken);
+                  navigate('/qr-scan/station')
                 }}
               >
                 반납하기

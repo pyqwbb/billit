@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/header/HeaderGradient';
 import styled from 'styled-components';
 
@@ -30,6 +30,18 @@ const Overlay = styled.div`
   z-index: 10;
   top: 0;
   left: 0;
+`;
+
+const QRScanNoti = styled.div`
+  position: absolute;
+  top: 150px;
+  width: 100%;
+  p {
+    font-family: 'NanumSquareRoundOTFB';
+    color: var(--main-color);
+    font-size: 16px;
+    text-align: center;
+  }
 `;
 
 const QRScanInfo = styled.div`
@@ -110,6 +122,7 @@ function QrScanPage() {
   const canvasRef = useRef(null);
   const [scannedResult, setScannedResult] = useState('');
   const navigate = useNavigate();
+  const { type } = useParams();
 
   useEffect(() => {
     let animationId;
@@ -205,7 +218,24 @@ function QrScanPage() {
       </QrFocusBox>
 
       <Overlay>
-        <Header />
+        <Header 
+          title={
+            type === 'station'
+              ? '스테이션 QR 스캔'
+              : type === 'rental' || type === 'return'
+              ? '물품 QR 스캔'
+              : ''
+          }
+        />
+        <QRScanNoti>
+          <p>
+            {type === 'station'
+              ? '스테이션에 비치된 QR을 스캔해주세요'
+              : type === 'rental' || type === 'return'
+              ? '물품에 부착된 QR을 스캔해주세요'
+              : ''}
+          </p>
+        </QRScanNoti>
         <QRScanInfo>
           <ul>
             <li>빛이 적절하게 있는 환경에서 촬영해주세요.</li>
