@@ -37,6 +37,7 @@ import ReturnCompletePage from './pages/Rental/ReturnCompletePage';
 import TermsAgreementPage from './pages/Member/TermsAgreementPage';
 import KakaoCallbackPage from './pages/Member/OAuth/KakaoCallbackPage';
 import GoogleCallbackPage from './pages/Member/OAuth/GoogleCallbackPage';
+import Footer from './components/footer/Footer';
 
 function AppWrapper() {
   return (
@@ -87,11 +88,24 @@ function AppWrapper() {
 }
 
 function App() {
+  const location = useLocation();
+
+  const hideFooterPaths = ["/qr-scan", "/station-map"];
+  const hideFooter = hideFooterPaths.some(path => location.pathname.startsWith(path));
+    return (
+    <>
+      <AppWrapper />
+      {!hideFooter && <Footer />}
+    </>
+  );
+}
+
+function Root() {
   return (
     <Router>
-      <AppWrapper />
+      <App />
     </Router>
   );
 }
 
-export default App;
+export default Root;
