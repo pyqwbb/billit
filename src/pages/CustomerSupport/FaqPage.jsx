@@ -146,6 +146,10 @@ function FaqPage() {
     setExpandedIndex(index === expandedIndex ? null : index);
   };
 
+  const handleNotReady = () => {
+    alert('서비스 준비 중입니다.');
+  };
+
   return (
     <>
     <Header/>
@@ -189,7 +193,7 @@ function FaqPage() {
       ))}
       </QuestionBoxList>
 
-      <Footer><p>1:1 문의 바로가기</p></Footer>
+      <Footer><p onClick={handleNotReady}>1:1 문의 바로가기</p></Footer>
     </Container>
     </>
   );

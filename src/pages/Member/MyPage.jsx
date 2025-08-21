@@ -175,7 +175,7 @@ function MyPage() {
         <ListItem onClick={() => navigate('/faq')}>
           자주 묻는 질문
         </ListItem>
-        <ListItem onClick={() => navigate('/inquiry')}>
+        <ListItem onClick={handleNotReady}>
           1:1 문의
         </ListItem>
         <ListItem onClick={() => navigate('/notices')}>
