@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import logo from '../../assets/billit.png';
+import logo from '../../assets/billit.svg';
 
 const StyledHeader = styled.header`
   display: flex;

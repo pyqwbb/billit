@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/billit.png';
+import logo from '../../assets/billit.svg';
 import { HiArrowLeft } from "react-icons/hi";
 
 const StyledHeader = styled.header`

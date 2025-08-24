@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import logo from '../../assets/billit.png';
+import logo from '../../assets/billit.svg';
 import kakao from '../../assets/kakao-login.png';
 import google from '../../assets/google-login.png';
 

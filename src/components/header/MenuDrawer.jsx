@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import logo from "../../assets/billit.png";
+import logo from "../../assets/billit.svg";
 
 const slideIn = keyframes`
   from { transform: translateX(-100%); }
