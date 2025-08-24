@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
 import Modal, { ConfirmButton, CancelButton } from '../../utils/Modal';
-import couponIcon from '../../assets/icon/coupon.png';
-import historyIcon from '../../assets/icon/history.png';
-import membershipIcon from '../../assets/icon/membership.png';
-import pointIcon from '../../assets/icon/point.png';
+import couponIcon from '../../assets/icon/coupon.svg';
+import historyIcon from '../../assets/icon/history.svg';
+import membershipIcon from '../../assets/icon/membership.svg';
+import pointIcon from '../../assets/icon/point.svg';
 
 const Container = styled.div`
   padding: 16px;
@@ -61,8 +61,10 @@ const GridButton = styled.button`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 23px;
-  padding-right: 20px;
+  gap: 10px;
+  p {
+    width: 60px;
+  }
 `;
 
 const ListMenu = styled.ul`
@@ -88,7 +90,8 @@ const LogoutButton = styled.div`
   border: none;
   background: none;
   font-size: 14px;
-  display: block;
+  display: flex;
+  justify-content: center;
   margin: 0 auto;
   text-decoration: underline;
   cursor: pointer;
@@ -155,16 +158,16 @@ function MyPage() {
 
       <GridButtons>
         <GridButton onClick={() => navigate('/history')}>
-          <img src={historyIcon}/>이용내역
+          <img src={historyIcon}/><p>이용내역</p>
         </GridButton>
         <GridButton onClick={handleNotReady}>
-          <img src={membershipIcon}/>멤버십
+          <img src={membershipIcon}/><p>멤버십</p>
         </GridButton>
         <GridButton onClick={handleNotReady}>
-          <img src={pointIcon}/>포인트
+          <img src={pointIcon}/><p>포인트</p>
         </GridButton>
         <GridButton onClick={handleNotReady}>
-          <img src={couponIcon}/>쿠폰
+          <img src={couponIcon}/><p>쿠폰</p>
         </GridButton>
       </GridButtons>
 
