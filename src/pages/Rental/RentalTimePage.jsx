@@ -3,8 +3,8 @@ import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
-import PlusIcon from '../../assets/icon/plus.png';
-import MinusIcon from '../../assets/icon/minus.png';
+import PlusIcon from '../../assets/icon/plus.svg';
+import MinusIcon from '../../assets/icon/minus.svg';
 
 const Container = styled.div`
   padding: 24px;

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
-import CompleteIcon from '../../assets/icon/complete.png';
+import CompleteIcon from '../../assets/icon/complete.svg';
 
 const Container = styled.div`
   padding: 24px;

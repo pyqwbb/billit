@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
-import CompleteIcon from '../../assets/icon/complete.png';
+import CompleteIcon from '../../assets/icon/complete.svg';
 
 const Container = styled.div`
   display: flex;

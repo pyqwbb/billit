@@ -6,7 +6,7 @@ import { getCurrentPosition } from '../../utils/geolocation';
 import styled from 'styled-components';
 import { FiSearch } from 'react-icons/fi';
 import Header from '../../components/header/HeaderMain.jsx';
-import map from '../../assets/icon/map.png';
+import map from '../../assets/icon/map.svg';
 
 const Container = styled.div`
   position: relative;
