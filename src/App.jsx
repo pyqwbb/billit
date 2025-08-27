@@ -4,8 +4,6 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/Member/LoginPage';
 import MyPage from './pages/Member/MyPage';
 import ServiceInfoPage from './pages/CustomerSupport/service/ServiceInfoPage';
-import TermsPage from './pages/CustomerSupport/service/TermsPage';
-import PrivacyPage from './pages/CustomerSupport/service/PrivacyPage';
 import LicensePage from './pages/CustomerSupport/service/LicensePage';
 import VersionPage from './pages/CustomerSupport/service/VersionPage';
 import HistoryPage from './pages/Rental/HistoryPage';
@@ -48,8 +46,6 @@ function AppWrapper() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/service-info" element={<ServiceInfoPage />} />
-        <Route path="/service-info/terms" element={<TermsPage />} />
-        <Route path="/service-info/privacy" element={<PrivacyPage />} />
         <Route path="/service-info/license" element={<LicensePage />} />
         <Route path="/service-info/version" element={<VersionPage />} />
         <Route path="/history" element={<HistoryPage />} />

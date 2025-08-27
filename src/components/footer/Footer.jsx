@@ -7,12 +7,12 @@ const FooterContainer = styled.footer`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-top: 1px solid var(--side-color-2);
 `;
 
 const InfoList = styled.ul`
   padding: 40px 20px;
   list-style: none;
-  border-top: 1px solid var(--side-color-2);
 `;
 
 const InfoItem = styled.li`
@@ -27,9 +27,22 @@ const InfoItem = styled.li`
   }
 `;
 
+const DocsList = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  a {
+    font-family: 'NanumSquareRoundOTFR';
+    font-size: 12px;
+    color: var(--side-color-3);
+    text-decoration: none;
+  }
+`;
+
 const CopyRight = styled.div`
   font-size: 12px;
   color: var(--side-color-3);
+  margin-bottom: 20px;
 `;
 
 const Footer = () => {
@@ -42,6 +55,10 @@ const Footer = () => {
         <InfoItem><span>이메일</span> rladnwntjdbs@naver.com</InfoItem>
         <InfoItem><span>주소</span> 서울특별시 광진구 아차산로 262, B128~131호 건국대학교 캠퍼스타운 사업단 [공유오피스 PRIENZ](자양동,스타시티)</InfoItem>
       </InfoList>
+      <DocsList>
+        <a href="/docs/terms.html">서비스 이용약관</a>
+        <a href="/docs/privacy.html">개인정보 처리방침</a>
+      </DocsList>
       <CopyRight>Copyright © 2025 billit. All rights reserved.</CopyRight>
     </FooterContainer>
   );

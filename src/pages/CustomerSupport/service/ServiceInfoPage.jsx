@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const ListMenu = styled.ul`
@@ -11,19 +10,20 @@ const ListItem = styled.li`
   align-items: center;
   padding: 3px 0;
   font-size: 15px;
+  a {
+    text-decoration: none;
+  }
 `;
 
 function ServiceInfoPage() {
-  const navigate = useNavigate();
-
   return (
     <div>
       <ListMenu>
-        <ListItem onClick={() => window.location.href = '/service-info/terms'}>
-          <strong> 이용 약관 </strong>
+        <ListItem>
+          <a href="/docs/terms.html"><strong>서비스 이용 약관</strong></a>  
         </ListItem>
-        <ListItem onClick={() => window.location.href = '/service-info/privacy'}>
-          <strong> 개인정보 처리방침 </strong>
+        <ListItem>
+          <a href="/docs/privacy.html"><strong>개인정보 처리방침</strong></a>
         </ListItem>
         <ListItem onClick={() => window.location.href = '/service-info/license'}>
          <strong> 오픈소스 라이선스 </strong>

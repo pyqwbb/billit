@@ -137,12 +137,7 @@ function TermsAgreementPage() {
               <IconWrapper checked={agreements.terms}><FaCheck size={10} /></IconWrapper>
               빌릿 서비스 이용약관 (필수)
             </Option>
-            <SlArrowRight
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate('/service-info/terms');
-              }}
-            />
+            <a href="/docs/terms.html"><SlArrowRight/></a>
           </AgreementRow>
         </AgreementGroup>
 
@@ -152,12 +147,7 @@ function TermsAgreementPage() {
               <IconWrapper checked={agreements.privacy}><FaCheck size={10} /></IconWrapper>
               개인정보 수집 이용 동의 (필수)
             </Option>
-            <SlArrowRight
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate('/service-info/privacy');
-              }}
-            />
+            <a href="/docs/privacy.html"><SlArrowRight/></a>
           </AgreementRow>
         </AgreementGroup>
 
