@@ -4,6 +4,7 @@ import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
 import HeaderGradient from '../../components/header/HeaderGradient';
+import defaultImg from '/images/default-profile.svg';
 
 const Container = styled.div`
   padding: 16px;
@@ -32,17 +33,6 @@ const ProfileName = styled.div`
   span {
     color: var(--main-color-ver2);
   }
-  input {
-    font-size: 24px;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    outline: none;
-    width: 120px;
-    text-align: center;
-    color: var(--main-color-ver2);
-    font-family: 'NanumSquareRoundOTFEB';
-    background-color: transparent;
-  }
   button {
     border: none;
     background-color: var(--side-color-1);
@@ -55,6 +45,20 @@ const ProfileName = styled.div`
     border-radius: 10px;
     width: 65px;
   }
+`;
+
+const NicknameInput = styled.input`
+  width: ${({ length }) => `${length+2 || 1}rem`};
+  padding: 4px 6px;
+  box-sizing: content-box;
+  font-size: 24px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  text-align: center;
+  color: var(--main-color-ver2);
+  font-family: 'NanumSquareRoundOTFEB';
+  background-color: transparent;
 `;
 
 const AccountInfo = styled.div`
@@ -86,11 +90,12 @@ function EditAccountPage() {
     nickname: '',
     profileImage: '',
   });
+  const [originalNickname, setOriginalNickname] = useState('');
   const [isDuplicateChecked, setIsDuplicateChecked] = useState(false);
   const [newProfileImageUrl, setNewProfileImageUrl] = useState(null);
 
   const handleSave = async () => {
-    if (!isDuplicateChecked) {
+    if (user.nickname !== originalNickname && !isDuplicateChecked) {
       alert('닉네임 중복확인을 해주세요.');
       return;
     }
@@ -173,6 +178,8 @@ function EditAccountPage() {
         const response = await api.get('/api/v1/users/me');
         const { email, nickname, profileImage } = response.data.data;
         setUser({ email, nickname, profileImage });
+        setOriginalNickname(nickname);
+        setIsDuplicateChecked(true);
       } catch (error) {
         console.error('사용자 정보 가져오기 실패:', error);
       }
@@ -187,7 +194,7 @@ function EditAccountPage() {
       <Container>
         <Header>
           <label htmlFor="profileImageInput">
-            <ProfileImage src={user.profileImage || '/default-profile.png'} alt="프로필 이미지" />
+            <ProfileImage src={user.profileImage ? user.profileImage : defaultImg} alt="프로필 이미지" />
           </label>
           <input
             id="profileImageInput"
@@ -198,11 +205,13 @@ function EditAccountPage() {
           />
           <ProfileName>
             <div style={{width:'65px'}}/>
-            <input 
+            <NicknameInput 
               value={user.nickname} 
+              length={user.nickname.length}
               onChange={(e) => {
-                setUser((prev) => ({ ...prev, nickname: e.target.value }));
-                setIsDuplicateChecked(false); 
+                const newNickname = e.target.value;
+                setUser((prev) => ({ ...prev, nickname: newNickname }));
+                setIsDuplicateChecked(newNickname === originalNickname);
               }} 
             />
             <button onClick={handleDuplicateCheck}>중복확인</button>
