@@ -163,10 +163,10 @@ function NaverMap() {
       const station = stations[idx];
       const isActive = station.stationId === selectedStationId;
       const iconUrl = isActive
-        ? '/marker/active.png'
+        ? '/marker/active.svg'
         : station.status === '운영 중'
-        ? '/marker/open.png'
-        : '/marker/close.png';
+        ? '/marker/open.svg'
+        : '/marker/close.svg';
 
       marker.setIcon({
         url: iconUrl,

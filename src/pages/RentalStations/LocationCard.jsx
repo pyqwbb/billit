@@ -15,7 +15,7 @@ const Container = styled.div`
 
 const Thumbnail = styled.img`
   position: absolute;
-  top: -52%;
+  top: -170px;
   left: 16px;
   width: 155px;
   height: auto;
