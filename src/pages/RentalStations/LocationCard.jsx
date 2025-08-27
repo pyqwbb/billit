@@ -153,12 +153,16 @@ export default function LocationCard({ stationId }) {
         const response = await api.get(`/api/v1/stations/${stationId}`);
         setStation(response.data.data);
 
-        // 2. 즐겨찾기 목록
-        const bookmarkRes = await api.get(`/api/v1/stations/bookmarks`);
-        const bookmarkedIds = bookmarkRes.data.data.bookmarks.map(b => b.stationId);
+        // 로컬스토리지에서 토큰 확인
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+          // 2. 즐겨찾기 목록
+          const bookmarkRes = await api.get(`/api/v1/stations/bookmarks`);
+          const bookmarkedIds = bookmarkRes.data.data.bookmarks.map(b => b.stationId);
 
-        // 3. 현재 stationId가 즐겨찾기 목록에 있는지 확인
-        setIsFavorite(bookmarkedIds.includes(Number(stationId)));
+          // 3. 현재 stationId가 즐겨찾기 목록에 있는지 확인
+          setIsFavorite(bookmarkedIds.includes(Number(stationId)));
+        }
       } catch (error) {
         console.error('Error fetching station data:', error);
       }
