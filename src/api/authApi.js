@@ -2,21 +2,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { refreshAccessToken } from './auth';
 
-const PERMIT_ALL_ENDPOINTS = [
-  '/api/v1/auth/register',
-  '/api/v1/auth/login',
-  '/api/v1/auth/token/refresh',
-  '/api/v1/products',
-  '/api/v1/products/',
-  '/api/v1/stations',
-  '/api/v1/stations/',
-  '/api/v1/notices',
-  '/api/v1/notices/',
-  '/api/v1/events',
-  '/api/v1/events/',
-  '/actuator/health',
-];
-
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
