@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/axiosInstance';
+import publicApi from '../../api/axiosInstance';
+import authApi from '../../api/authApi';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
@@ -150,14 +151,14 @@ export default function LocationCard({ stationId }) {
     const fetchStationData = async () => {
       try {
         // 1. 스테이션 상세
-        const response = await api.get(`/api/v1/stations/${stationId}`);
+        const response = await publicApi.get(`/api/v1/stations/${stationId}`);
         setStation(response.data.data);
 
         // 로컬스토리지에서 토큰 확인
         const token = localStorage.getItem("accessToken");
         if (token) {
           // 2. 즐겨찾기 목록
-          const bookmarkRes = await api.get(`/api/v1/stations/bookmarks`);
+          const bookmarkRes = await authApi.get(`/api/v1/stations/bookmarks`);
           const bookmarkedIds = bookmarkRes.data.data.bookmarks.map(b => b.stationId);
 
           // 3. 현재 stationId가 즐겨찾기 목록에 있는지 확인
@@ -187,10 +188,10 @@ export default function LocationCard({ stationId }) {
   const handleFavoriteToggle = async () => {
     try {
       if (isFavorite) {
-        await api.delete(`/api/v1/stations/${stationId}/bookmarks`);
+        await authApi.delete(`/api/v1/stations/${stationId}/bookmarks`);
         setIsFavorite(false);
       } else {
-        await api.post(`/api/v1/stations/${stationId}/bookmarks`);
+        await authApi.post(`/api/v1/stations/${stationId}/bookmarks`);
         setIsFavorite(true);
       }
     } catch (error) {

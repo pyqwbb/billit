@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Header from '../../components/header/HeaderGradient';
 import styled from 'styled-components';
-import api from '../../api/axiosInstance';
+import api from '../../api/authApi';
 
 function FavoriteStationPage() {
     const [bookmarks, setBookmarks] = useState([]);
