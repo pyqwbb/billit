@@ -243,7 +243,7 @@ function AvailableListPage() {
             <StationInfo>
               <StationName>{station.name}</StationName>
               <StationDetail>
-                <p>잔여수량 {station.stock}개 · {station.distance}m</p>
+                <p>잔여수량 {station.stock}개 · {station.distance}km</p>
                 <Status status={station.status} openTime={station.openTime} />
               </StationDetail>
             </StationInfo>
