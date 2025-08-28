@@ -82,6 +82,7 @@ api.interceptors.response.use(
         processQueue(err, null);
         localStorage.removeItem('accessToken');
         Cookies.remove('selectStation');
+        alert("로그인이 필요합니다.");
         window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname)}`;
         return Promise.reject(err);
       } finally {

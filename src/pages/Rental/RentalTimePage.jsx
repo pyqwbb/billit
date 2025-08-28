@@ -140,18 +140,17 @@ function RentalTimePage() {
     const fetchItem = async () => {
       try {
         const response = await api.get(`/api/v1/rentals/products/${qrCode}`);
-        if (response.status !== 200) {
-          alert('해당 물품은 현재 대여가 불가합니다.');
-          navigate('/');
-          return;
-        } else {
-          const item = response.data.data;
-          setScannedData(item);
-          setEstimatedPrice(item.pricePerHour);
-        }
+        const item = response.data.data;
+        setScannedData(item);
+        setEstimatedPrice(item.pricePerHour);
       } catch (error) {
         console.error('Error fetching item:', error);
-        alert('대여 불가 아이템입니다.');
+        
+        const errData = error.response?.data;
+        if (errData?.status === 'UNAUTHORIZED' && errData?.code === 'AUTH_014') {
+          return;
+        }
+        alert(errData?.message || '해당 물품은 현재 대여가 불가합니다.');
         navigate('/');
       }
     };
