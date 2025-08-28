@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
-import Header from '../../components/header/HeaderMain';
+import HeaderMain from '../../components/header/HeaderMain';
+import HeaderStation from '../../components/header/HeaderStation';
 
 const Container = styled.div`
   width: 360px;
@@ -16,7 +17,7 @@ const CategoryScroll = styled.div`
   overflow-x: auto;
   border: none;
   gap: 5px;
-  margin-bottom: 14px;
+  margin: 14px 0;
   border-bottom: 1px solid var(--side-color-4);
 `;
 
@@ -95,6 +96,8 @@ const RentalItemsPage = () => {
   const location = useLocation();
   const from = location.state?.from || 'menu';
   const stationId = location.state?.stationId;
+  const [stationData, setStationData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const filtered = selected === '전체'
   ? products
@@ -108,22 +111,30 @@ const RentalItemsPage = () => {
         let response;
 
         if (from === 'menu') {
-        response = await api.get('/api/v1/products');
-        setProducts(response.data.data.products);
-      } else if (from === 'location' && stationId) {
-        response = await api.get(`/api/v1/stations/${stationId}/products`);
-        setProducts(response.data.data.stationProducts);
-      }
+          response = await api.get('/api/v1/products');
+          setProducts(response.data.data.products);
+        } else if (from === 'location' && stationId) {
+          const stationsRes = await api.get(`/api/v1/stations/${stationId}`);
+          setStationData(stationsRes.data.data);
+          console.log(stationsRes.data.data);
+          response = await api.get(`/api/v1/stations/${stationId}/products`);
+          setProducts(response.data.data.stationProducts);
+        }
       } catch (err) {
         console.error('상품을 불러오는 데 실패했습니다.', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
   }, [from, stationId]);
 
   return (
+    loading ? <Container>로딩중...</Container> : (
     <>
-    <Header/>
+    {from === 'menu' ? <HeaderMain /> 
+      : <HeaderStation stname={stationData.name} status={stationData.status} time={`${stationData.openTime}~${stationData.closeTime}`}/>}
+    
     <Container>
       <CategoryScroll>
         {categories.map((cat, i) => (
@@ -156,7 +167,7 @@ const RentalItemsPage = () => {
       </Grid>
     </Container>
     </>
-  );
+  ));
 }
 
 export default RentalItemsPage;
