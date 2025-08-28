@@ -23,7 +23,7 @@ function FavoriteStationPage() {
 
   return (
     <>
-        <Header title="즐겨찾기 스테이션" />
+        <Header title="즐겨찾기 스테이션" backPath='/station-map'/>
         <Container>
         {loading ? (
           <Message>불러오는 중...</Message>

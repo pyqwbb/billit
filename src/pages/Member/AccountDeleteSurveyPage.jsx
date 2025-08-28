@@ -96,7 +96,7 @@ function AccountDeleteSurveyPage() {
 
   return (
     <>
-      <HeaderGradient title="회원탈퇴"/>
+      <HeaderGradient title="회원탈퇴" backPath='/account-settings'/>
       <Container>
         <InfoText>
           <h2>회원탈퇴</h2>

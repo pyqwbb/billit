@@ -150,7 +150,7 @@ function EventsPage() {
 
   return (
     <>
-    <HeaderGradient title="이벤트"/>
+    <HeaderGradient title="이벤트" backPath='/mypage'/>
     <Container>
       <ControlBox>
         <SortButton onClick={() => setSortAsc(prev => !prev)}>

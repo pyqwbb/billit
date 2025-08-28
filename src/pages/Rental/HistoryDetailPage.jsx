@@ -97,7 +97,7 @@ function HistoryDetailPage() {
 
   return (
     <>
-    <HeaderGradient title="이용내역"/>
+    <HeaderGradient title="이용내역" backPath='/history'/>
     <Container>
         <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
         <Box>

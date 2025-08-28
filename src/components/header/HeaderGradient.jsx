@@ -44,12 +44,20 @@ const PageTitle = styled.div`
   font-family: 'NanumSquareRoundOTFB';
 `;
 
-function HeaderGradient({ title }) {
+function HeaderGradient({ title, backPath }) {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (backPath) {
+      navigate(backPath);
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <StyledHeader>
-      <IconButton onClick={() => navigate(-1)}>
+      <IconButton onClick={handleBack}>
         <HiArrowLeft />
       </IconButton>
 

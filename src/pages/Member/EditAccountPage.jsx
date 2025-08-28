@@ -190,7 +190,7 @@ function EditAccountPage() {
 
   return (
     <>
-      <HeaderGradient title="내 정보 수정" />
+      <HeaderGradient title="내 정보 수정" backPath='/account-settings'/>
       <Container>
         <Header>
           <label htmlFor="profileImageInput">

@@ -175,7 +175,7 @@ function ReturnPage() {
 
   return (
     <>
-      <HeaderGradient title="반납"/>
+      <HeaderGradient title="반납" backPath='/history'/>
       <Container>
         <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
         <Box>

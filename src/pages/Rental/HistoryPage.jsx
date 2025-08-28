@@ -119,7 +119,7 @@ function HistoryPage() {
 
   return (
     <>
-    <HeaderGradient title="이용내역"/>
+    <HeaderGradient title="이용내역" backPath='/mypage'/>
     <Container>
       {rentalHistory.length === 0 ? (
         <EmptyMessage>이용내역 존재하지 않습니다.</EmptyMessage>

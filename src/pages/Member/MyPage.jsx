@@ -148,7 +148,7 @@ function MyPage() {
 
   return (
     <>
-    <HeaderGradient title="마이페이지"/>
+    <HeaderGradient title="마이페이지" backPath='/'/>
     <Container>
       <Header>
         <ProfileImage src={user.profileImage}/>

@@ -117,7 +117,7 @@ function AccountSettingsPage() {
 
   return (
     <>
-    <HeaderGradient title="내 정보"/>
+    <HeaderGradient title="내 정보" backPath='/mypage'/>
     <Container>
       <Header>
         <ProfileImage src={user.profileImage}/>
