@@ -124,6 +124,17 @@ function QrScanPage() {
   const navigate = useNavigate();
   const { type } = useParams();
 
+  const prefixes = [
+    "CHR_", // 충전기
+    "CAB_", // 케이블
+    "HUB_", // 허브
+    "PWB_", // 보조 배터리
+    "MOU_", // 마우스
+    "KEY_", // 키보드
+    "STD_", // 노트북 스탠드
+    "ETC_", // 기타
+  ];
+
   useEffect(() => {
     let animationId;
 
@@ -149,18 +160,17 @@ function QrScanPage() {
 
             if (code) {
               const data = code.data.trim();
-              console.log('QR 인식 성공:', data);
 
-              // 숫자인 경우에만 처리
+              // 자연수 형태의 스테이션 QR 처리
               if (/^\d+$/.test(data)) {
-                sessionStorage.setItem('scannedQrNumber', data); // 저장
-                navigate('/rental-or-return'); // 이동
+                sessionStorage.setItem('scannedQrNumber', data);
+                navigate('/rental-or-return');
               } else {
                 setScannedResult(`잘못된 코드: ${data}`);
               }
               
-              // 일련 코드의 경우
-              if (/^SN-\d{3}-\d{3}$/.test(data)) {
+              // 일련 코드 형태의 물품 QR 처리
+              if (prefixes.some(prefix => data.startsWith(prefix))) {
                 sessionStorage.setItem('scannedQrCode', data);
 
                 const currentPath = window.location.pathname;
