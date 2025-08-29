@@ -98,6 +98,16 @@ function MenuDrawer({ onClose }) {
     }, 300);
   };
 
+  const handleSecureNavigate = (path) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      handleNavigate(path);
+    } else {
+      alert('로그인이 필요합니다.');
+      handleNavigate('/login');
+    }
+  };
+
   const handleNotReady = () => {
     alert('서비스 준비 중입니다.');
   };
@@ -117,10 +127,10 @@ function MenuDrawer({ onClose }) {
         </LogoWrapper>
 
         <ListMenu>
-          <ListItem onClick={() => handleNavigate('/mypage')}>마이페이지</ListItem>
+          <ListItem onClick={() => handleSecureNavigate('/mypage')}>마이페이지</ListItem>
           <ListItem onClick={() => handleNavigate('/station-map')}>주변 스테이션</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-items')}>대여 물품</ListItem>
-          <ListItem onClick={() => handleNavigate('/qr-scan/station')}>QR 스캔</ListItem>
+          <ListItem onClick={() => handleSecureNavigate('/qr-scan/station')}>QR 스캔</ListItem>
         </ListMenu>
 
         <BottomMenu>

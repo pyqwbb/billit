@@ -43,7 +43,17 @@ function HeaderMain() {
           <HiMenu />
         </IconButton>
         <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
-        <IconButton onClick={() => navigate('/mypage')}>
+        <IconButton
+          onClick={() => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+              navigate('/mypage');
+            } else {
+              alert('로그인이 필요합니다.');
+              navigate('/login');
+            }
+          }}
+        >
           <HiUser />
         </IconButton>
       </StyledHeader>

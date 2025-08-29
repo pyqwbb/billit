@@ -56,10 +56,31 @@ function HeaderLike() {
         </IconButton>
         <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
         <Icons>
-          <IconButton onClick={() => navigate('/station-map/favorites')}>
+          <IconButton
+            onClick={() => {
+              const token = localStorage.getItem('accessToken');
+              if (token) {
+                navigate('/station-map/favorites');
+              } else {
+                alert('로그인이 필요합니다.');
+                navigate('/login');
+              }
+            }}
+          >
             <HiHeart />
           </IconButton>
-          <IconButton onClick={() => navigate('/myPage')}>
+
+          <IconButton
+            onClick={() => {
+              const token = localStorage.getItem('accessToken');
+              if (token) {
+                navigate('/mypage');
+              } else {
+                alert('로그인이 필요합니다.');
+                navigate('/login');
+              }
+            }}
+          >
             <HiUser />
           </IconButton>
         </Icons>
