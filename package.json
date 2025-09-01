@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@tosspayments/payment-sdk": "^1.9.1",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "browser-image-compression": "^2.0.2",
     "js-cookie": "^3.0.5",
     "jsqr": "^1.4.0",
