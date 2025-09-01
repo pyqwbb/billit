@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../api/axiosInstance';
+import ClipLoader from "react-spinners/ClipLoader";
 
 function GoogleCallbackPage() {
   const [error, setError] = useState('');
@@ -23,8 +24,6 @@ function GoogleCallbackPage() {
       );
 
       const data = response.data;
-      console.log('google login response:', data);
-
       if (data.type === 'LOGIN_SUCCESS') {
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('provider', 'GOOGLE');
@@ -44,8 +43,9 @@ function GoogleCallbackPage() {
   };
 
   return (
-    <div>
-      <p>구글 로그인 처리 중...</p>
+    <div style={{ textAlign: 'center', padding: '230px 0' }}>
+      <ClipLoader size={50} color='var(--main-color)' />
+      <p style={{marginTop:'5px'}}>구글 로그인 중...</p>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );

@@ -27,6 +27,7 @@ const RentalItemCard = styled.div`
   justify-content: space-between;
   min-width: 177px;
   height: 126px;
+  margin-bottom: 33px;
 `;
 
 const ItemTitle = styled.div`
@@ -49,7 +50,6 @@ const TimeBar = styled.div`
 
 const EventBoxWrapper = styled.div`
   position: relative;
-  margin-top: 33px;
   height: 114px;
   background-color: #9BA5B7;
   border-radius: 15px;
@@ -226,9 +226,7 @@ function MainPage() {
                     </RentalItemCard>
                   ))
                 ) : (
-                  <RentalItemCard>
-                    <ItemTitle>현재 대여 중인 물품이 없습니다.</ItemTitle>
-                  </RentalItemCard>
+                  <></>
                 )
               ) : (
                 <RentalItemCard>
