@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import logo from '../../assets/billit.svg';
-import kakao from '../../assets/kakao-login.png';
-import google from '../../assets/google-login.png';
+import kakao from '../../assets/kakao-login.svg';
+import google from '../../assets/google-login.svg';
 
 const Container = styled.div`
   display: flex;

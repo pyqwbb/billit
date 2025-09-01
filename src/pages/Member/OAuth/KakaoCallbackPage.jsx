@@ -26,7 +26,6 @@ function KakaoCallbackPage() {
       const data = response.data;
       if (data.type === 'LOGIN_SUCCESS') {
         localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('provider', 'KAKAO');
 
         // 로그인 성공 후 리다이렉트
         const redirect = new URLSearchParams(window.location.search).get('redirect');

@@ -140,7 +140,6 @@ function MyPage() {
   const onClickLogout = async () =>{
     await api.post('/api/v1/auth/logout')
     .then(()=>{
-      localStorage.removeItem('provider');
       localStorage.removeItem('accessToken');
       navigate('/');
     })

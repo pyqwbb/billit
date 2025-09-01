@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
-import kakao from '../../assets/with-kakao.png';
-import google from '../../assets/google-login.png'
+import kakao from '../../assets/with-kakao.svg';
+import google from '../../assets/with-google.svg'
 
 const Container = styled.div`
   padding: 16px;
@@ -82,17 +82,21 @@ function AccountSettingsPage() {
     email: '',
     nickname: '',
     profileImage: '',
+    provider: '',
   });
-  
-  const provider = localStorage.getItem('provider');
-  const providerImg = provider === 'KAKAO' ? kakao : google;
+  const [providerImg, setProviderImg] = useState('');
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const response = await api.get('/api/v1/users/me');
-        const { email, nickname, profileImage } = response.data.data;
-        setUser({ email, nickname, profileImage });
+        const { email, nickname, profileImage, provider } = response.data.data;
+        setUser({ email, nickname, profileImage, provider });
+        if (provider === 'KAKAO') {
+          setProviderImg(kakao);
+        } else if (provider === 'GOOGLE') {
+          setProviderImg(google);
+        }
       } catch (error) {
         console.error('사용자 정보 가져오기 실패:', error);
       }
