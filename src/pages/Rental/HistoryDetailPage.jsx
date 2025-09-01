@@ -102,7 +102,7 @@ function HistoryDetailPage() {
         <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
         <Box>
           <InBox>
-            <ImageBox />
+            <ImageBox src={rental.productImage}/>
             <StatusBox>{rental.status}</StatusBox>
           </InBox>
           <p style={{ fontSize: '19px', fontFamily: 'NanumSquareRoundOTFB', marginBottom: '4px' }}>{rental.productName}</p>

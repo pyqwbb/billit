@@ -4,6 +4,7 @@ import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import CompleteIcon from '../../assets/icon/complete.svg';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Container = styled.div`
   display: flex;
@@ -124,6 +125,7 @@ function RentalCompletePage() {
             rentalStart: formatDate(rentalStart),
             rentalEnd: formatDate(rentalEnd),
             totalAmount: data.totalAmount,
+            productImage: data.productImage,
           });
         }
       } catch (err) {
@@ -136,7 +138,12 @@ function RentalCompletePage() {
   }, [navigate, searchParams]);
 
   if (!rentalInfo) {
-    return <p style={{ textAlign: 'center', marginTop: '100px' }}>결제 승인 중...</p>;
+    return (
+      <div style={{ textAlign: 'center', padding: '230px 0' }}>
+        <ClipLoader size={50} color='var(--main-color)' />
+        <p style={{marginTop:'5px'}}>결제 승인 중...</p>
+      </div>
+    );
   }
 
   return (
@@ -147,7 +154,7 @@ function RentalCompletePage() {
         <MainText>대여 완료!</MainText>
         <SubText>필요할 땐 언제든, 빌릿하세요!</SubText>
         <RentalBox>
-          <ImageBox />
+          <ImageBox src={rentalInfo.productImage}/>
           <InBox>
             <span>{rentalInfo.productName}</span>
             <p>{rentalInfo.rentalStationName}</p>
