@@ -45,31 +45,10 @@ const ImageBox = styled.img`
 const ExpectedAmount = styled.div`
   font-family: NanumSquareRoundOTFB;
   font-size:20px;
-  border-bottom: 1px solid var(--side-color-4);
-  padding: 6px 0 25px;
+  padding: 6px 0 40px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-`;
-
-const PaymentOption = styled.button`
-  margin: 0 -24px;
-  height: 54px;
-  border: none;
-  background-color: ${({ selected }) => (selected ? 'var(--main-color)' : 'var(--side-color-1)')};
-  font-family: 'NanumSquareRoundOTFB';
-  font-size: 19px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  padding: 0 40px;
-  text-align: left;
-`;
-
-const PaymentOptionsWrapper = styled.div`
-  margin: 22px 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
 `;
 
 const CheckboxContainer = styled.div`
@@ -114,9 +93,7 @@ const PayButton = styled.button`
   transition: background-color 0.2s;
 `;
 
-
 function OrderConfirmPage() {
-  const [payment, setPayment] = useState('card');
   const [agreed, setAgreed] = useState([false, false]);
 
   const location = useLocation();
@@ -175,15 +152,13 @@ function OrderConfirmPage() {
     setAgreed(next);
   };
 
-  const methodMap = { card: 'CARD', account: 'ACCOUNT', simple: 'SIMPLE' };
-
   const handlePayment = async () => {
     try {
       const res = await api.post('/api/v1/payments/prepare/rental', {
         serialNumber,
         rentalTime: hours,
         amount: calculatedPrice,
-        method: methodMap[payment]
+        method: 'CARD'
       });
 
       if (res.status === 200) {
@@ -231,13 +206,6 @@ function OrderConfirmPage() {
             </span>원
           </div>
         </ExpectedAmount>
-
-        <p style={{ fontFamily: 'NanumSquareRoundOTFEB', fontSize: '24px', marginTop: '23px' }}>결제수단</p>
-        <PaymentOptionsWrapper>
-          <PaymentOption selected={payment === 'card'} onClick={() => setPayment('card')}>카드</PaymentOption>
-          <PaymentOption selected={payment === 'account'} onClick={() => setPayment('account')}>실시간 계좌이체</PaymentOption>
-          <PaymentOption selected={payment === 'simple'} onClick={() => setPayment('simple')}>간편결제</PaymentOption>
-        </PaymentOptionsWrapper>
 
         <CheckboxContainer>
           {['주문 내용 동의', '주문 내용 동의'].map((text, i) => (

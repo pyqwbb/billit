@@ -226,7 +226,6 @@ export default function LocationCard({ stationId }) {
             <ItemBox key={index}>
               <ItemImage src={item.image} alt={item.name} />
               <div>{item.name}</div>
-              <div>{item.count}개</div>
             </ItemBox>
           ))}
         </ItemList>
