@@ -90,12 +90,12 @@ function RentalOrReturn() {
         <button style={{backgroundColor: 'var(--main-color)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/rental')}>
           <span style={{ marginTop: 'auto' }}>대여</span>
         </button>
-        <button style={{backgroundColor: 'var(--side-color-2)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/return')}>
+        <button style={{backgroundColor: 'var(--side-color-2)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/station')}>
           <span style={{ marginTop: 'auto' }}>반납</span>
         </button>
       </StyledButton>
 
-      <a>이용 가이드 링크</a>
+      <a onClick={() => alert("준비 중")}>이용 가이드 링크</a>
 
       <StyledFooter>
         <p>© 2025 billit. All rights reserved.</p>

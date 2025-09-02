@@ -3,6 +3,8 @@ import jsQR from 'jsqr';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/header/HeaderGradient';
 import styled from 'styled-components';
+import api from '../../api/axiosInstance';
+import Modal, { ConfirmButton, CancelButton } from '../../utils/Modal';
 
 const PageWrapper = styled.div`
   position: relative;
@@ -46,6 +48,7 @@ const QRScanNoti = styled.div`
 
 const QRScanInfo = styled.div`
   width: 100%;
+  height: 100vh;
   margin-top: 510px;
   padding: 16px;
   font-size: 14px;
@@ -120,9 +123,10 @@ const QrFocusBox = styled.div`
 function QrScanPage() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [scannedResult, setScannedResult] = useState('');
   const navigate = useNavigate();
   const { type } = useParams();
+  const [isOpen, setIsOpen] = useState(false);
+  const [stationName, setStationName] = useState('');
 
   const prefixes = [
     "CHR_", // 충전기
@@ -149,7 +153,7 @@ function QrScanPage() {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
 
-        const scan = () => {
+        const scan = async () => {
           if (video.readyState === video.HAVE_ENOUGH_DATA) {
             canvas.height = video.videoHeight;
             canvas.width = video.videoWidth;
@@ -161,29 +165,30 @@ function QrScanPage() {
             if (code) {
               const data = code.data.trim();
 
-              // 자연수 형태의 스테이션 QR 처리
               if (/^\d+$/.test(data)) {
                 sessionStorage.setItem('scannedQrNumber', data);
-                navigate('/rental-or-return');
-              } else {
-                setScannedResult(`잘못된 코드: ${data}`);
-              }
-              
-              // 일련 코드 형태의 물품 QR 처리
-              if (prefixes.some(prefix => data.startsWith(prefix))) {
+
+                try {
+                  const response = await api.get(`/api/v1/stations/${data}`);
+                  setStationName(response.data.data.name);
+                  setIsOpen(true);
+                  return;
+                } catch (err) {
+                  console.error('스테이션 정보를 불러오는 데 실패했습니다.');
+                }
+              } else if (prefixes.some(prefix => data.startsWith(prefix))) {
                 sessionStorage.setItem('scannedQrCode', data);
 
                 const currentPath = window.location.pathname;
-
                 if (currentPath === '/qr-scan/rental') {
                   navigate('/rental-time');
                 } else if (currentPath === '/qr-scan/return') {
                   navigate('/return');
                 } else {
-                  console.warn('경로 인식 실패:', currentPath);
+                  console.error('경로 인식 실패:', currentPath);
                 }
-
-                return;
+              } else {
+                console.error('잘못된 코드:', data);
               }
             }
           }
@@ -254,6 +259,19 @@ function QrScanPage() {
           </ul>
         </QRScanInfo>
       </Overlay>
+
+      {isOpen && (
+        <Modal
+          title="반납 스테이션 확인"
+          onClose={() => setIsOpen(false)}
+          buttons={[
+            <ConfirmButton key="confirm" onClick={() => { navigate('/qr-scan/return'); setIsOpen(false); }}>확인</ConfirmButton>,
+            <CancelButton key="cancel" onClick={() => setIsOpen(false)}>취소</CancelButton>
+          ]}
+        >
+          <p>{stationName}에서 반납합니다.</p>
+        </Modal>
+      )}
     </PageWrapper>
   );
 }

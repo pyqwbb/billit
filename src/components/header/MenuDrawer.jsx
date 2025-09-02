@@ -108,6 +108,12 @@ function MenuDrawer({ onClose }) {
     }
   };
 
+  const handleRentalOrReturn = () => {
+    sessionStorage.removeItem('scannedQrNumber');
+    sessionStorage.removeItem('scannedQrCode');
+    handleSecureNavigate('/rental-or-return');
+  }
+
   const handleNotReady = () => {
     alert('서비스 준비 중입니다.');
   };
@@ -130,7 +136,7 @@ function MenuDrawer({ onClose }) {
           <ListItem onClick={() => handleSecureNavigate('/mypage')}>마이페이지</ListItem>
           <ListItem onClick={() => handleNavigate('/station-map')}>주변 스테이션</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-items')}>대여 물품</ListItem>
-          <ListItem onClick={() => handleSecureNavigate('/qr-scan/station')}>QR 스캔</ListItem>
+          <ListItem onClick={handleRentalOrReturn}>대여/반납</ListItem>
         </ListMenu>
 
         <BottomMenu>

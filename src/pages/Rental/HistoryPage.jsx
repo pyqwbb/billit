@@ -162,6 +162,8 @@ function HistoryPage() {
               <ReturnButton
                 onClick={(e) => {
                   e.stopPropagation();
+                  sessionStorage.removeItem('scannedQrNumber');
+                  sessionStorage.removeItem('scannedQrCode');
                   navigate('/qr-scan/station')
                 }}
               >

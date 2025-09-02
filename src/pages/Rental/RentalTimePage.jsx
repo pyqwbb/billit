@@ -112,30 +112,15 @@ function RentalTimePage() {
   const navigate = useNavigate();
   const [scannedData, setScannedData] = useState(null);
   const [estimatedPrice, setEstimatedPrice] = useState(1);
-  const [stationData, setStationData] = useState(null);
-  const [stationName, setStationName] = useState('');
 
   const amountToBePaid = hours * estimatedPrice;
   
   useEffect(() => {
     const qrCode = sessionStorage.getItem('scannedQrCode'); 
-    const stationId = sessionStorage.getItem('scannedQrNumber');
-
     if (!qrCode) {
       console.error('QR 코드 데이터 없음');
       return;
     }
-
-    const fetchStation = async () => {
-      try {
-        const response = await api.get(`/api/v1/stations/${stationId}`);
-        setStationData(response.data.data);
-        setStationName(response.data.data.name);
-      } catch (error) {
-        console.error('Error fetching station:', error);
-      }
-    };
-    fetchStation();
 
     const fetchItem = async () => {
       try {
@@ -159,7 +144,7 @@ function RentalTimePage() {
 
   return (
     <>
-    <Header stname={stationName} />
+    <Header stname={scannedData?.currentStationName} />
     <Container>
       <div style={{display: 'flex', justifyContent: 'center'}}>
         <ImageBox src={scannedData?.image} alt={scannedData?.image}/>

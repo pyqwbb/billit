@@ -98,33 +98,19 @@ function OrderConfirmPage() {
 
   const location = useLocation();
   const [scannedData, setScannedData] = useState(null);
-  const [stationName, setStationName] = useState('');
   const [calculatedPrice, setCalculatedPrice] = useState(null);
 
   const hours = location.state?.hours || 1;
   const allAgreed = agreed.every(a => a);
 
   const serialNumber = sessionStorage.getItem('scannedQrCode'); 
-  const stationId = sessionStorage.getItem('scannedQrNumber');
 
   useEffect(() => {
-    // 1. 스테이션 정보 조회
-    const fetchStation = async () => {
-      try {
-        const response = await api.get(`/api/v1/stations/${stationId}`);
-        setStationName(response.data.data.name);
-      } catch (error) {
-        console.error('Error fetching station:', error);
-      }
-    }
-
-    // 2. 대여 물품 정보 조회
     const fetchItem = async () => {
       try {
         const response = await api.get(`/api/v1/rentals/products/${serialNumber}`);
         setScannedData(response.data.data);
 
-        // 3. 결제 예정 금액 계산 API 호출
         try {
           const calcRes = await api.get(`/api/v1/payments/calculate`, {
             params: {
@@ -142,7 +128,6 @@ function OrderConfirmPage() {
       }
     }
 
-    fetchStation();
     fetchItem();
   }, [hours]);
 
@@ -192,7 +177,7 @@ function OrderConfirmPage() {
           <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
           <InBox>
             <span>{scannedData?.name}</span>
-            <p>{stationName}</p>
+            <p>{scannedData?.currentStationName}</p>
           </InBox>
         </Box>
         <p style={{ textAlign: 'right', fontFamily: 'NanumSquareRoundOTFB', fontSize: '16px' }}>

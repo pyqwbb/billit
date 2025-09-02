@@ -41,6 +41,8 @@ const StationName = styled.div`
   margin-bottom: 5px;
   font-size: 19px;
   font-family: 'NanumSquareRoundOTFB';
+  text-align: center;
+  margin: 4px;
 `;
 
 const OpenDot = styled.span`
