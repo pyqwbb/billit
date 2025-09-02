@@ -71,26 +71,6 @@ const ExpectedAmount = styled.div`
   justify-content: space-between;
 `;
 
-const PaymentOption = styled.button`
-  margin: 0 -24px;
-  height: 54px;
-  border: none;
-  background-color: ${({ selected }) => (selected ? 'var(--main-color)' : 'var(--side-color-1)')};
-  font-family: 'NanumSquareRoundOTFB';
-  font-size: 19px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  padding: 0 40px;
-  text-align: left;
-`;
-
-const PaymentOptionsWrapper = styled.div`
-  margin: 22px 0;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
 const PayButton = styled.button`
   width: 100%;
   margin-top: 20px;
@@ -107,7 +87,6 @@ const PayButton = styled.button`
 
 function ReturnPage() {
   const navigate = useNavigate();
-  const [payment, setPayment] = useState('card');
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -220,13 +199,6 @@ function ReturnPage() {
               </span>원
           </div>
         </ExpectedAmount>
-
-        <p style={{ fontFamily: 'NanumSquareRoundOTFEB', fontSize: '24px', marginTop: '23px' }}>결제수단</p>
-        <PaymentOptionsWrapper>
-          <PaymentOption selected={payment === 'card'} onClick={() => setPayment('card')}>카드</PaymentOption>
-          <PaymentOption selected={payment === 'account'} onClick={() => setPayment('account')}>실시간 계좌이체</PaymentOption>
-          <PaymentOption selected={payment === 'simple'} onClick={() => setPayment('simple')}>간편결제</PaymentOption>
-        </PaymentOptionsWrapper>
         </>
         ) : null}
 
