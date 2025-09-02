@@ -133,7 +133,7 @@ function MenuDrawer({ onClose }) {
         </LogoWrapper>
 
         <ListMenu>
-          <ListItem onClick={() => handleSecureNavigate('/service-intro')}>서비스 소개</ListItem>
+          <ListItem onClick={() => handleNavigate('/service-intro')}>서비스 소개</ListItem>
           <ListItem onClick={() => handleSecureNavigate('/mypage')}>마이페이지</ListItem>
           <ListItem onClick={() => handleNavigate('/station-map')}>주변 스테이션</ListItem>
           <ListItem onClick={() => handleNavigate('/rental-items')}>대여 물품</ListItem>
