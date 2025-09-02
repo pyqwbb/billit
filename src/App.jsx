@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import GlobalStyles from './styles/GlobalStyles';
 import MainPage from './pages/MainPage';
+import ServiceIntroPage from './pages/ServiceIntroPage';
 import LoginPage from './pages/Member/LoginPage';
 import MyPage from './pages/Member/MyPage';
 import ServiceInfoPage from './pages/CustomerSupport/service/ServiceInfoPage';
@@ -43,6 +44,7 @@ function AppWrapper() {
       <GlobalStyles />
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/service-intro" element={<ServiceIntroPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/service-info" element={<ServiceInfoPage />} />
