@@ -136,7 +136,7 @@ function ReturnPage() {
           customerEmail: paymentData.customerEmail,
           customerKey: paymentData.customerKey,
           successUrl: `${window.location.origin}/return-complete?overdue=true`,
-          failUrl: `${window.location.origin}/rental-fail`,
+          failUrl: `${window.location.origin}/payment-failed`,
         });
       }
     } catch (error) {

@@ -160,7 +160,7 @@ function OrderConfirmPage() {
           customerEmail: paymentData.customerEmail,
           customerKey: paymentData.customerKey,
           successUrl: `${window.location.origin}/rental-complete`,
-          failUrl: `${window.location.origin}/rental-fail`,
+          failUrl: `${window.location.origin}/payment-failed`,
         });
       }
     } catch (error) {

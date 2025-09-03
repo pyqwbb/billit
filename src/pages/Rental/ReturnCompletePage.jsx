@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
@@ -54,8 +54,15 @@ function ReturnCompletePage() {
   const navigate = useNavigate();
   const serialNumber = sessionStorage.getItem('scannedQrCode');
   const returnInfoKey = sessionStorage.getItem('returnInfoKey');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!serialNumber || !returnInfoKey) {
+      console.error('필수 반납 데이터 없음');
+      navigate('/payment-failed');
+      return;
+    }
+
     const handleComplete = async () => {
       try {
         const searchParams = new URLSearchParams(window.location.search);
@@ -66,9 +73,10 @@ function ReturnCompletePage() {
         } else {
           await completeReturn();
         }
+        setLoading(false);
       } catch (err) {
         console.error('반납 실패:', err);
-        navigate('/rental-fail');
+        navigate('/payment-failed');
       }
     };
 
@@ -86,7 +94,7 @@ function ReturnCompletePage() {
 
       if (!paymentKey || !orderId || !amount || !sessionInfoKey) {
         console.error('필수 결제 데이터 없음');
-        navigate('/rental-fail');
+        navigate('/payment-failed');
         return;
       }
 
@@ -101,7 +109,7 @@ function ReturnCompletePage() {
       console.log('결제 승인 성공', res.data);
     } catch (error) {
       console.error('결제 승인 실패', error);
-      navigate('/rental-fail');
+      navigate('/payment-failed');
     }
   };
 
@@ -116,7 +124,9 @@ function ReturnCompletePage() {
       } catch (err) {
         console.error("반납 실패:", err);
       }
-    };
+  };
+
+  if (loading) return <div>불러오는 중...</div>;
 
   return (
     <>

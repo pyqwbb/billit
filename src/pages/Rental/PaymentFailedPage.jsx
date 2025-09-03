@@ -31,7 +31,7 @@ const HomeButton = styled.button`
   }
 `;
 
-function RentalFailPage() {
+function PaymentFailedPage() {
   const navigate = useNavigate();
 
   return (
@@ -44,4 +44,4 @@ function RentalFailPage() {
   );
 }
 
-export default RentalFailPage;
+export default PaymentFailedPage;

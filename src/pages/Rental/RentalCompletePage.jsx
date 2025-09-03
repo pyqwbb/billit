@@ -101,7 +101,7 @@ function RentalCompletePage() {
 
         if (!paymentKey || !orderId || !amount || !sessionInfoKey) {
           console.error('필수 결제 데이터 없음');
-          navigate('/rental-fail');
+          navigate('/payment-failed');
           return;
         }
 
@@ -147,7 +147,7 @@ function RentalCompletePage() {
         }
       } catch (err) {
         console.error('결제 승인 실패:', err);
-        navigate('/rental-fail');
+        navigate('/payment-failed');
       }
     };
 
