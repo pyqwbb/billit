@@ -72,8 +72,8 @@ function AvailableMapPage() {
 
       stations.forEach((station) => {
         const iconUrl =  station.status === '운영 중'
-          ? '/marker/open.png'
-          : '/marker/close.png';
+          ? '/marker/open.svg'
+          : '/marker/close.svg';
 
         const marker = new naver.maps.Marker({
           position: new naver.maps.LatLng(station.latitude, station.longitude),
