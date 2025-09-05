@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import CompleteIcon from '../../assets/icon/complete.svg';
 import api from '../../api/axiosInstance';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Container = styled.div`
   padding: 24px;
@@ -126,7 +127,16 @@ function ReturnCompletePage() {
       }
   };
 
-  if (loading) return <div>불러오는 중...</div>;
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '230px 0' }}>
+        <ClipLoader size={50} color='var(--main-color)' />
+        <p style={{ marginTop: '5px' }}>
+          불러오는 중...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Header from '../../components/header/HeaderGradient';
 import styled from 'styled-components';
 import api from '../../api/authApi';
+import ClipLoader from "react-spinners/ClipLoader";
 
 function FavoriteStationPage() {
     const [bookmarks, setBookmarks] = useState([]);
@@ -26,7 +27,10 @@ function FavoriteStationPage() {
         <Header title="즐겨찾기 스테이션" backPath='/station-map'/>
         <Container>
         {loading ? (
-          <Message>불러오는 중...</Message>
+          <div style={{ textAlign: 'center', padding: '230px 0' }}>
+            <ClipLoader size={50} color='var(--main-color)' />
+            <p style={{marginTop:'5px'}}>불러오는 중...</p>
+          </div>
         ) : bookmarks.length === 0 ? (
           <Message>즐겨찾기한 스테이션이 없습니다.</Message>
         ) : (

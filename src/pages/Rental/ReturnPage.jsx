@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import HeaderGradient from '../../components/header/HeaderGradient';
 import api from '../../api/axiosInstance';
 import { loadTossPayments } from "@tosspayments/payment-sdk";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Container = styled.div`
   padding: 24px;
@@ -112,7 +113,17 @@ function ReturnPage() {
     fetchReturnInfo();
   }, []);
 
-  if (loading) return <div>불러오는 중...</div>;
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '230px 0' }}>
+        <ClipLoader size={50} color='var(--main-color)' />
+        <p style={{ marginTop: '5px' }}>
+          불러오는 중...
+        </p>
+      </div>
+    );
+  }
+  
   if (!item) return <div>데이터를 불러올 수 없습니다.</div>;
 
   const handleOverduePayment = async () => {

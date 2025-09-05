@@ -4,6 +4,7 @@ import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import HeaderMain from '../../components/header/HeaderMain';
 import HeaderStation from '../../components/header/HeaderStation';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Container = styled.div`
   width: 360px;
@@ -130,7 +131,12 @@ const RentalItemsPage = () => {
   }, [from, stationId]);
 
   return (
-    loading ? <Container>로딩중...</Container> : (
+    loading ?
+      <div style={{ textAlign: 'center', padding: '230px 0' }}>
+        <ClipLoader size={50} color='var(--main-color)' />
+        <p style={{marginTop:'5px'}}>불러오는 중...</p>
+        </div>
+    : (
     <>
     {from === 'menu' ? <HeaderMain /> 
       : <HeaderStation stname={stationData.name} status={stationData.status} time={`${stationData.openTime}~${stationData.closeTime}`}/>}

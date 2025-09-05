@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
 import HeaderBack from '../../components/header/HeaderBack';
 import Cookies from 'js-cookie';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Container = styled.div`
   padding: 16px;
@@ -128,7 +129,14 @@ function ItemDetailPage() {
   }
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div style={{ textAlign: 'center', padding: '230px 0' }}>
+        <ClipLoader size={50} color='var(--main-color)' />
+        <p style={{ marginTop: '5px' }}>
+          불러오는 중...
+        </p>
+      </div>
+    );
   }
   if (error) {
     return <div>{error}</div>;
