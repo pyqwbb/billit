@@ -8,10 +8,10 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; 
+  height: 100vh;
   gap: 2px;
   text-align: center;
-  align-items: center;
+
   p {
     font-family: 'NanumSquareRoundOTFB';
     font-size: 14px;
@@ -23,6 +23,7 @@ const SocialLogin = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
   p {
     font-family: 'NanumSquareRoundOTFR';
     font-size: 12px;
@@ -36,6 +37,7 @@ const Divider = styled.div`
   border-bottom: 1px solid var(--side-color-3);
   line-height: 0;
   margin: 12px 0 20px;
+
   span {
     background: #fff;
     padding: 0 10px;
@@ -80,20 +82,20 @@ function LoginPage() {
       prompt: 'consent'
     });
 
-    window.location.href = `${baseUrl}?${params.toString()}`;    
+    window.location.href = `${baseUrl}?${params.toString()}`;
   };
 
   return (
-    <Container>
+      <Container>
         <Logo src={logo}/>
         <p>3초 만에 가입하고,<br/>필요한 물품 바로 대여해보세요!</p>
 
         <SocialLogin>
-            <Divider><span>소셜 로그인으로 이용하기</span></Divider>
-            <img src={kakao} onClick={handleKakaoLogin}/>
-            <img src={google} onClick={handleGoogleLogin}/>
+          <Divider><span>소셜 로그인으로 이용하기</span></Divider>
+          <img src={kakao} onClick={handleKakaoLogin} alt="kakao login"/>
+          <img src={google} onClick={handleGoogleLogin} alt="google login"/>
         </SocialLogin>
-    </Container>
+      </Container>
   );
 }
 

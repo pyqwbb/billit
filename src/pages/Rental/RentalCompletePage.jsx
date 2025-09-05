@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
 import CompleteIcon from '../../assets/icon/complete.svg';
 import ClipLoader from "react-spinners/ClipLoader";
+import axios from "axios";
 
 const Container = styled.div`
   display: flex;
@@ -25,13 +26,13 @@ const SubText = styled.p`
 `;
 
 const RentalBox = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-top: 1px solid var(--side-color-4);
-    border-radius: 0px;
-    margin-top: 60px;
-    padding-top: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-top: 1px solid var(--side-color-4);
+  border-radius: 0;
+  margin-top: 60px;
+  padding-top: 30px;
 `;
 
 const InBox = styled.div`
@@ -40,10 +41,12 @@ const InBox = styled.div`
   gap: 6px;
   width: 100%;
   margin: 5px 10px;
+
   span {
     font-size: 16px;
     font-family: NanumSquareRoundOTFB;
   }
+
   p {
     font-size: 14px;
     font-family: NanumSquareRoundOTFR;
@@ -116,7 +119,8 @@ function RentalCompletePage() {
 
           // 반납시간 계산
           const rentalStart = new Date(data.rentalStartTime);
-          const rentalEnd = new Date(rentalStart.getTime() + data.rentalTime * 60 * 60 * 1000);
+          const rentalEnd = new Date(
+              rentalStart.getTime() + data.rentalTime * 60 * 60 * 1000);
 
           setRentalInfo({
             productName: data.productName,
@@ -127,6 +131,17 @@ function RentalCompletePage() {
             totalAmount: data.totalAmount,
             productImage: data.productImage,
           });
+
+          // FIXME: 테스트 후 제거
+          if (localStorage.getItem('profile') === 'toss') {
+            const serialNumber = sessionStorage.getItem('scannedQrCode');
+            axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/toss/return`,
+                {
+                  params: {
+                    serialNumber: serialNumber
+                  }
+                });
+          }
         }
       } catch (err) {
         console.error('결제 승인 실패:', err);
@@ -139,36 +154,37 @@ function RentalCompletePage() {
 
   if (!rentalInfo) {
     return (
-      <div style={{ textAlign: 'center', padding: '230px 0' }}>
-        <ClipLoader size={50} color='var(--main-color)' />
-        <p style={{marginTop:'5px'}}>결제 승인 중...</p>
-      </div>
+        <div style={{textAlign: 'center', padding: '230px 0'}}>
+          <ClipLoader size={50} color='var(--main-color)'/>
+          <p style={{marginTop: '5px'}}>결제 승인 중...</p>
+        </div>
     );
   }
 
   return (
-    <>
-      <Header/>
-      <Container>
-        <img src={CompleteIcon} style={{marginTop: '90px'}}/>
-        <MainText>대여 완료!</MainText>
-        <SubText>필요할 땐 언제든, 빌릿하세요!</SubText>
-        <RentalBox>
-          <ImageBox src={rentalInfo.productImage}/>
-          <InBox>
-            <span>{rentalInfo.productName}</span>
-            <p>{rentalInfo.rentalStationName}</p>
-            <p>
-              <span style={{ color: 'var(--main-color)' }}>{rentalInfo.rentalTime}</span>시간
-            </p>
-            <p>대여시작 | {rentalInfo.rentalStart}</p>
-            <p>반납시간 | {rentalInfo.rentalEnd}</p>
-            <p>총 결제금액 | {rentalInfo.totalAmount.toLocaleString()}원</p>
-          </InBox>
-        </RentalBox>
-        <Button onClick={() => navigate('/')}>홈으로</Button>
-      </Container> 
-    </>
+      <>
+        <Header/>
+        <Container>
+          <img src={CompleteIcon} style={{marginTop: '90px'}}/>
+          <MainText>대여 완료!</MainText>
+          <SubText>필요할 땐 언제든, 빌릿하세요!</SubText>
+          <RentalBox>
+            <ImageBox src={rentalInfo.productImage}/>
+            <InBox>
+              <span>{rentalInfo.productName}</span>
+              <p>{rentalInfo.rentalStationName}</p>
+              <p>
+                <span
+                    style={{color: 'var(--main-color)'}}>{rentalInfo.rentalTime}</span>시간
+              </p>
+              <p>대여시작 | {rentalInfo.rentalStart}</p>
+              <p>반납시간 | {rentalInfo.rentalEnd}</p>
+              <p>총 결제금액 | {rentalInfo.totalAmount.toLocaleString()}원</p>
+            </InBox>
+          </RentalBox>
+          <Button onClick={() => navigate('/')}>홈으로</Button>
+        </Container>
+      </>
   );
 }
 

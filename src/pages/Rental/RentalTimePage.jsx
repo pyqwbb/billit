@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import api from '../../api/axiosInstance';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
 import PlusIcon from '../../assets/icon/plus.svg';
@@ -37,9 +37,11 @@ const PriceInfo = styled.p`
   display: flex;
   flex-direction: row;
   justify-content: right;
+
   p {
     font-family: 'NanumSquareRoundOTFB';
   }
+
   span {
     color: var(--main-color)
   }
@@ -53,12 +55,14 @@ const TimeControl = styled.div`
   font-size: 32px;
   margin: 18px 0 42px 0;
   padding-top: 27px;
-  border-radius: 0px;
+  border-radius: 0;
   border-top: 1px solid var(--side-color-4);
+
   p {
     font-family: 'NanumSquareRoundOTFR';
     margin-left: -30px;
   }
+
   span {
     font-family: 'NanumSquareRoundOTFB';
     color: var(--main-color);
@@ -70,8 +74,13 @@ const Button = styled.button`
   width: 40px;
   height: 40px;
   border: none;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   background-color: white;
+  opacity: ${props => props.disabled ? 0.3 : 1};
+
+  img {
+    opacity: ${props => props.disabled ? 0.3 : 1};
+  }
 `;
 
 const PayInfo = styled.div`
@@ -79,15 +88,18 @@ const PayInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 10px;
+
   p {
     font-family: 'NanumSquareRoundOTFB';
     font-size: 20px;
   }
+
   span {
     font-family: 'NanumSquareRoundOTFB';
     font-size: 24px;
     display: flex;
     flex-direction: row;
+
     p {
       font-family: 'NanumSquareRoundOTFB';
       font-size: 24px;
@@ -114,9 +126,17 @@ function RentalTimePage() {
   const [estimatedPrice, setEstimatedPrice] = useState(1);
 
   const amountToBePaid = hours * estimatedPrice;
-  
+
+  const handleMinusHour = () => {
+    setHours(prev => Math.max(1, prev - 1));
+  }
+
+  const handlePlusHour = () => {
+    setHours(prev => Math.min(12, prev + 1));
+  }
+
   useEffect(() => {
-    const qrCode = sessionStorage.getItem('scannedQrCode'); 
+    const qrCode = sessionStorage.getItem('scannedQrCode');
     if (!qrCode) {
       console.error('QR 코드 데이터 없음');
       return;
@@ -130,9 +150,10 @@ function RentalTimePage() {
         setEstimatedPrice(item.pricePerHour);
       } catch (error) {
         console.error('Error fetching item:', error);
-        
+
         const errData = error.response?.data;
-        if (errData?.status === 'UNAUTHORIZED' && errData?.code === 'AUTH_014') {
+        if (errData?.status === 'UNAUTHORIZED' &&
+            errData?.code === 'AUTH_014') {
           return;
         }
         alert(errData?.message || '해당 물품은 현재 대여가 불가합니다.');
@@ -143,32 +164,39 @@ function RentalTimePage() {
   }, []);
 
   return (
-    <>
-    <Header stname={scannedData?.currentStationName} />
-    <Container>
-      <div style={{display: 'flex', justifyContent: 'center'}}>
-        <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
-      </div>
-      <InfoRow>
-        <NameInfo>{scannedData?.name}</NameInfo>
-        <PriceInfo><p><span>{scannedData?.pricePerHour.toLocaleString()}원</span></p>/시간</PriceInfo>
-      </InfoRow>
+      <>
+        <Header stname={scannedData?.currentStationName}/>
+        <Container>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
+          </div>
+          <InfoRow>
+            <NameInfo>{scannedData?.name}</NameInfo>
+            <PriceInfo><p>
+              <span>{scannedData?.pricePerHour.toLocaleString()}원</span></p>/시간</PriceInfo>
+          </InfoRow>
 
-      <TimeControl>
-        <Button onClick={() => setHours(prev => Math.max(1, prev - 1))}><img src={MinusIcon}/></Button>
-        <span>{hours}</span>
-        <p>시간</p>
-        <Button onClick={() => setHours(prev => prev + 1)}><img src={PlusIcon}/></Button>
-      </TimeControl>
+          <TimeControl>
+            <Button onClick={handleMinusHour} disabled={hours === 1}>
+              <img
+                  src={MinusIcon}/>
+            </Button>
+            <span>{hours}</span>
+            <p>시간</p>
+            <Button onClick={handlePlusHour} disabled={hours === 12}>
+              <img src={PlusIcon}/>
+            </Button>
+          </TimeControl>
 
-      <PayInfo>
-        <p>결제 예정 금액</p>
-        <span><p>{amountToBePaid.toLocaleString()}</p>원</span>
-      </PayInfo>
-      
-      <RentButton onClick={() => navigate('/order-confirm', { state: { hours } })}>대여시작</RentButton>
-    </Container>
-    </>
+          <PayInfo>
+            <p>결제 예정 금액</p>
+            <span><p>{amountToBePaid.toLocaleString()}</p>원</span>
+          </PayInfo>
+
+          <RentButton onClick={() => navigate('/order-confirm',
+              {state: {hours}})}>대여시작</RentButton>
+        </Container>
+      </>
   );
 }
 

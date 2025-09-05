@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation
+} from 'react-router-dom';
 import GlobalStyles from './styles/GlobalStyles';
 import MainPage from './pages/MainPage';
 import ServiceIntroPage from './pages/ServiceIntroPage';
@@ -13,7 +18,8 @@ import ReturnPage from './pages/Rental/ReturnPage';
 import AccountSettingsPage from './pages/Member/AccountSettingsPage';
 import EditAccountPage from './pages/Member/EditAccountPage';
 import AccountDeleteSurveyPage from './pages/Member/AccountDeleteSurveyPage';
-import CompleteDeleteAccountPage from './pages/Member/CompleteDeleteAccountPage';
+import CompleteDeleteAccountPage
+  from './pages/Member/CompleteDeleteAccountPage';
 import FaqPage from './pages/CustomerSupport/FaqPage';
 import InquiryPage from './pages/CustomerSupport/InquiryPage';
 import NoticesPage from './pages/CustomerSupport/NoticesPage';
@@ -37,51 +43,60 @@ import TermsAgreementPage from './pages/Member/TermsAgreementPage';
 import KakaoCallbackPage from './pages/Member/OAuth/KakaoCallbackPage';
 import GoogleCallbackPage from './pages/Member/OAuth/GoogleCallbackPage';
 import Footer from './components/footer/Footer';
+import TossTestLoginPage from "./pages/TossTest/TossTestLoginPage.jsx";
 
 function AppWrapper() {
   return (
-    <>
-      <GlobalStyles />
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/service-intro" element={<ServiceIntroPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/service-info" element={<ServiceInfoPage />} />
-        <Route path="/service-info/license" element={<LicensePage />} />
-        <Route path="/service-info/version" element={<VersionPage />} />
-        <Route path="/history" element={<HistoryPage />} />
-        <Route path="/history/:id" element={<HistoryDetailPage />} />
-        <Route path="/return/:id" element={<ReturnPage />} />
-        <Route path="/return" element={<ReturnPage />} />
-        <Route path="/account-settings" element={<AccountSettingsPage />} />
-        <Route path="/account-settings/edit" element={<EditAccountPage />} />
-        <Route path="/account-delete-survey" element={<AccountDeleteSurveyPage />} />
-        <Route path="/complete-delete-account" element={<CompleteDeleteAccountPage />} />
-        <Route path="/faq" element={<FaqPage />} />
-        <Route path="/inquiry" element={<InquiryPage />} />
-        <Route path="/notices" element={<NoticesPage />} />
-        <Route path="/notices/:id" element={<NoticeDetailPage />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/events/:id" element={<EventDetailPage />} />
-        <Route path="/station-map" element={<StationMapPage />} />
-        <Route path="/station-map/favorites" element={<FavoriteStationPage />} />
-        <Route path="/rental-items" element={<RentalItemsPage />} />
-        <Route path="/rental-items/:productName" element={<ItemDetailPage />} />
-        <Route path="/rental-items/:productName/station" element={<AvailableListPage />} />
-        <Route path="/rental-items/:productName/map" element={<AvailableMapPage />} />
-        <Route path="/qr-scan/:type" element={<QrScanPage />} />
-        <Route path="/rental-or-return" element={<RentalOrReturn />} />
-        <Route path="/rental-time" element={<RentalTimePage />} />
-        <Route path="/order-confirm" element={<OrderConfirmPage />} />
-        <Route path="/rental-complete" element={<RentalCompletePage />} />
-        <Route path="/rental-fail" element={<RentalFailPage />} />
-        <Route path="/return-complete" element={<ReturnCompletePage />} />
-        <Route path="/terms-agreement" element={<TermsAgreementPage />} />
-        <Route path="/oauth2/callback/kakao" element={<KakaoCallbackPage />} />
-        <Route path="/oauth2/callback/google" element={<GoogleCallbackPage />} />
-      </Routes>
-    </>
+      <>
+        <GlobalStyles/>
+        <Routes>
+          <Route path="/" element={<MainPage/>}/>
+          <Route path="/service-intro" element={<ServiceIntroPage/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/mypage" element={<MyPage/>}/>
+          <Route path="/service-info" element={<ServiceInfoPage/>}/>
+          <Route path="/service-info/license" element={<LicensePage/>}/>
+          <Route path="/service-info/version" element={<VersionPage/>}/>
+          <Route path="/history" element={<HistoryPage/>}/>
+          <Route path="/history/:id" element={<HistoryDetailPage/>}/>
+          <Route path="/return/:id" element={<ReturnPage/>}/>
+          <Route path="/return" element={<ReturnPage/>}/>
+          <Route path="/account-settings" element={<AccountSettingsPage/>}/>
+          <Route path="/account-settings/edit" element={<EditAccountPage/>}/>
+          <Route path="/account-delete-survey"
+                 element={<AccountDeleteSurveyPage/>}/>
+          <Route path="/complete-delete-account"
+                 element={<CompleteDeleteAccountPage/>}/>
+          <Route path="/faq" element={<FaqPage/>}/>
+          <Route path="/inquiry" element={<InquiryPage/>}/>
+          <Route path="/notices" element={<NoticesPage/>}/>
+          <Route path="/notices/:id" element={<NoticeDetailPage/>}/>
+          <Route path="/events" element={<EventsPage/>}/>
+          <Route path="/events/:id" element={<EventDetailPage/>}/>
+          <Route path="/station-map" element={<StationMapPage/>}/>
+          <Route path="/station-map/favorites"
+                 element={<FavoriteStationPage/>}/>
+          <Route path="/rental-items" element={<RentalItemsPage/>}/>
+          <Route path="/rental-items/:productName" element={<ItemDetailPage/>}/>
+          <Route path="/rental-items/:productName/station"
+                 element={<AvailableListPage/>}/>
+          <Route path="/rental-items/:productName/map"
+                 element={<AvailableMapPage/>}/>
+          <Route path="/qr-scan/:type" element={<QrScanPage/>}/>
+          <Route path="/rental-or-return" element={<RentalOrReturn/>}/>
+          <Route path="/rental-time" element={<RentalTimePage/>}/>
+          <Route path="/order-confirm" element={<OrderConfirmPage/>}/>
+          <Route path="/rental-complete" element={<RentalCompletePage/>}/>
+          <Route path="/rental-fail" element={<RentalFailPage/>}/>
+          <Route path="/return-complete" element={<ReturnCompletePage/>}/>
+          <Route path="/terms-agreement" element={<TermsAgreementPage/>}/>
+          <Route path="/oauth2/callback/kakao" element={<KakaoCallbackPage/>}/>
+          <Route path="/oauth2/callback/google"
+                 element={<GoogleCallbackPage/>}/>
+          // FIXME: 테스트 후 제거
+          <Route path="/toss/login" element={<TossTestLoginPage/>}/>
+        </Routes>
+      </>
   );
 }
 
@@ -89,20 +104,21 @@ function App() {
   const location = useLocation();
 
   const hideFooterPaths = ["/qr-scan", "/station-map"];
-  const hideFooter = hideFooterPaths.some(path => location.pathname.startsWith(path));
-    return (
-    <>
-      <AppWrapper />
-      {!hideFooter && <Footer />}
-    </>
+  const hideFooter = hideFooterPaths.some(
+      path => location.pathname.startsWith(path));
+  return (
+      <>
+        <AppWrapper/>
+        {!hideFooter && <Footer/>}
+      </>
   );
 }
 
 function Root() {
   return (
-    <Router>
-      <App />
-    </Router>
+      <Router>
+        <App/>
+      </Router>
   );
 }
 

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import api from '../../api/axiosInstance';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderStation';
@@ -84,29 +84,29 @@ const StationButton = styled.button`
 
 function ItemDetailPage() {
   const navigate = useNavigate();
-  const { productName } = useParams();
+  const {productName} = useParams();
   const location = useLocation();
   const from = location.state?.from || 'menu';
   const stationId = location.state?.stationId;
   const [itemData, setItemData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const profile = localStorage.getItem('profile');
   const selectStation = JSON.parse(Cookies.get('selectStation') || '{}');
   console.log(selectStation.name);
-
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
         let response;
         if (from === 'location' && stationId) {
-          response = await api.get(`/api/v1/stations/${stationId}/products/${productName}`);
+          response = await api.get(
+              `/api/v1/stations/${stationId}/products/${productName}`);
         } else {
           response = await api.get(`/api/v1/products/${productName}`);
         }
         setItemData(response.data.data);
-      } catch (err) {
+      } catch {
         setError('상품 정보를 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
@@ -115,39 +115,69 @@ function ItemDetailPage() {
     fetchItem();
   }, [from, stationId, productName]);
 
-  if (loading) return <div>로딩 중...</div>;
-  if (error) return <div>{error}</div>;
-  if (!itemData) return null; 
+  const handleRentalButton = () => {
+    // FIXME: 테스트 후 제거
+    const map = new Map();
+    map.set('충전기', 'CHR_QFIBZaworE');
+    map.set('마우스', 'MOU_toppfwW3HL');
+    map.set('노트북 스탠드', 'STD_CPyoueblT0');
+    const serialNumber = map.get(itemData.category);
+    sessionStorage.setItem('scannedQrCode', serialNumber);
+    navigate('/rental-time');
+  }
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+  if (error) {
+    return <div>{error}</div>;
+  }
+  if (!itemData) {
+    return null;
+  }
 
   return (
-    <>
-      { !itemData.stock ? (
-        <HeaderBack />
-      ) : (
-        <Header stname={selectStation.name} status={selectStation.status} time={`${selectStation.openTime}~${selectStation.closeTime}`}/>
-      )}
-      <Container>
-        <Image src={itemData.image} alt={itemData.name} />
-        <Title>{itemData.name}</Title>
-        { !itemData.stock ? (
-          <Category></Category> 
+      <>
+        {!itemData.stock ? (
+            <HeaderBack/>
         ) : (
-          <Category>잔여수량&nbsp;{itemData.stock}개</Category>
-        )}   
-        <Price>
-          <Price1><span style={{color: '#53CF38'}}>{itemData.pricePerHour.toLocaleString()}</span>원</Price1>
-          <Price2>/ 시간</Price2>
-        </Price>
-        <Desc>{itemData.description}</Desc>
-        { !itemData.stock ? (
-          <StationButton onClick={() => navigate(`/rental-items/${productName}/station`, { state: { itemData } })}>
-            대여 가능 스테이션 보기
-          </StationButton>
-        ) : (
-          <div />
+            <Header stname={selectStation.name} status={selectStation.status}
+                    time={`${selectStation.openTime}~${selectStation.closeTime}`}/>
         )}
-      </Container>
-    </>
+        <Container>
+          <Image src={itemData.image} alt={itemData.name}/>
+          <Title>{itemData.name}</Title>
+          {!itemData.stock ? (
+              <Category></Category>
+          ) : (
+              <Category>잔여수량&nbsp;{itemData.stock}개</Category>
+          )}
+          <Price>
+            <Price1><span
+                style={{color: '#53CF38'}}>{itemData.pricePerHour.toLocaleString()}</span>원</Price1>
+            <Price2>/ 시간</Price2>
+          </Price>
+          <Desc>{itemData.description}</Desc>
+          {!itemData.stock ? (
+              <StationButton onClick={() => navigate(
+                  `/rental-items/${productName}/station`, {state: {itemData}})}>
+                대여 가능 스테이션 보기
+              </StationButton>
+          ) : (
+              <div/>
+          )}
+          {
+            // TODO: 테스트 후 제거
+            profile === 'toss' ? (
+                <StationButton onClick={handleRentalButton}>
+                  대여하기
+                </StationButton>
+            ) : (
+                <div/>
+            )
+          }
+        </Container>
+      </>
   );
 }
 
