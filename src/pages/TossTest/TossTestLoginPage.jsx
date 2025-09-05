@@ -96,7 +96,7 @@ function TossTestLoginPage() {
         .then(res => res.data)
         .then(data => {
           localStorage.setItem('accessToken', data.accessToken);
-          localStorage.setItem('profile', 'toss');
+          sessionStorage.setItem('profile', 'toss');
           navigate('/rental-items');
         });
   }

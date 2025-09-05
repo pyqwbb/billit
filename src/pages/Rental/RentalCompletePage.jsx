@@ -133,7 +133,7 @@ function RentalCompletePage() {
           });
 
           // FIXME: 테스트 후 제거
-          if (localStorage.getItem('profile') === 'toss') {
+          if (sessionStorage.getItem('profile') === 'toss') {
             const serialNumber = sessionStorage.getItem('scannedQrCode');
             const origin = import.meta.env.VITE_API_BASE_URL;
             const requestUrl = origin ? `${origin}/api/v1/toss/return`

@@ -91,9 +91,10 @@ function ItemDetailPage() {
   const [itemData, setItemData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const profile = localStorage.getItem('profile');
   const selectStation = JSON.parse(Cookies.get('selectStation') || '{}');
-  console.log(selectStation.name);
+
+  // FIXME: 테스트 후 제거
+  const profile = sessionStorage.getItem('profile');
 
   useEffect(() => {
     const fetchItem = async () => {

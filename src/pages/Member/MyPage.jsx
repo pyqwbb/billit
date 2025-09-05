@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useEffect, useState} from 'react';
 import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
-import Modal, { ConfirmButton, CancelButton } from '../../utils/Modal';
+import Modal, {CancelButton, ConfirmButton} from '../../utils/Modal';
 import couponIcon from '../../assets/icon/coupon.svg';
 import historyIcon from '../../assets/icon/history.svg';
 import membershipIcon from '../../assets/icon/membership.svg';
@@ -28,6 +28,7 @@ const ProfileImage = styled.img`
 const ProfileName = styled.div`
   font-size: 24px;
   font-family: 'NanumSquareRoundOTFEB';
+
   span {
     color: var(--main-color);
   }
@@ -62,6 +63,7 @@ const GridButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 10px;
+
   p {
     width: 60px;
   }
@@ -121,8 +123,8 @@ function MyPage() {
     const fetchUserInfo = async () => {
       try {
         const response = await api.get('/api/v1/users/me');
-        const { email, nickname, profileImage } = response.data.data;
-        setUser({ email, nickname, profileImage });
+        const {email, nickname, profileImage} = response.data.data;
+        setUser({email, nickname, profileImage});
       } catch (error) {
         console.error('사용자 정보 가져오기 실패:', error);
         navigate('/login');
@@ -137,75 +139,81 @@ function MyPage() {
     return null;
   }
 
-  const onClickLogout = async () =>{
+  const onClickLogout = async () => {
     await api.post('/api/v1/auth/logout')
-    .then(()=>{
-      localStorage.removeItem('accessToken');
-      navigate('/');
-    })
+        .then(() => {
+          localStorage.removeItem('accessToken');
+          navigate('/');
+          // FIXME: 테스트 후 제거
+          if (sessionStorage.getItem('profile') === 'toss') {
+            sessionStorage.removeItem('profile');
+          }
+        });
   }
 
   return (
-    <>
-    <HeaderGradient title="마이페이지" backPath='/'/>
-    <Container>
-      <Header>
-        <ProfileImage src={user.profileImage}/>
-        <ProfileName><span>{user.nickname}</span>님</ProfileName>
-        <WelcomeText>오늘도 빌릿과 함께 스마트하게!</WelcomeText>
-      </Header>
+      <>
+        <HeaderGradient title="마이페이지" backPath='/'/>
+        <Container>
+          <Header>
+            <ProfileImage src={user.profileImage}/>
+            <ProfileName><span>{user.nickname}</span>님</ProfileName>
+            <WelcomeText>오늘도 빌릿과 함께 스마트하게!</WelcomeText>
+          </Header>
 
-      <GridButtons>
-        <GridButton onClick={() => navigate('/history')}>
-          <img src={historyIcon}/><p>이용내역</p>
-        </GridButton>
-        <GridButton onClick={handleNotReady}>
-          <img src={membershipIcon}/><p>멤버십</p>
-        </GridButton>
-        <GridButton onClick={handleNotReady}>
-          <img src={pointIcon}/><p>포인트</p>
-        </GridButton>
-        <GridButton onClick={handleNotReady}>
-          <img src={couponIcon}/><p>쿠폰</p>
-        </GridButton>
-      </GridButtons>
+          <GridButtons>
+            <GridButton onClick={() => navigate('/history')}>
+              <img src={historyIcon}/><p>이용내역</p>
+            </GridButton>
+            <GridButton onClick={handleNotReady}>
+              <img src={membershipIcon}/><p>멤버십</p>
+            </GridButton>
+            <GridButton onClick={handleNotReady}>
+              <img src={pointIcon}/><p>포인트</p>
+            </GridButton>
+            <GridButton onClick={handleNotReady}>
+              <img src={couponIcon}/><p>쿠폰</p>
+            </GridButton>
+          </GridButtons>
 
-      <ListMenu>
-        <ListItem onClick={() => navigate('/account-settings')}>
-          내 정보
-        </ListItem>
-        <ListItem onClick={() => navigate('/faq')}>
-          자주 묻는 질문
-        </ListItem>
-        <ListItem onClick={handleNotReady}>
-          1:1 문의
-        </ListItem>
-        <ListItem onClick={() => navigate('/notices')}>
-          공지사항
-        </ListItem>
-        <ListItem onClick={() => navigate('/events')}>
-          이벤트
-        </ListItem>
-        <ListItem onClick={() => navigate('/service-info')}>
-          서비스 정보
-        </ListItem>
-      </ListMenu>
+          <ListMenu>
+            <ListItem onClick={() => navigate('/account-settings')}>
+              내 정보
+            </ListItem>
+            <ListItem onClick={() => navigate('/faq')}>
+              자주 묻는 질문
+            </ListItem>
+            <ListItem onClick={handleNotReady}>
+              1:1 문의
+            </ListItem>
+            <ListItem onClick={() => navigate('/notices')}>
+              공지사항
+            </ListItem>
+            <ListItem onClick={() => navigate('/events')}>
+              이벤트
+            </ListItem>
+            <ListItem onClick={() => navigate('/service-info')}>
+              서비스 정보
+            </ListItem>
+          </ListMenu>
 
-      <LogoutButton onClick={() => setIsOpen(true)}>로그아웃</LogoutButton>
-      {isOpen && (
-        <Modal
-          title="로그아웃 확인"
-          onClose={() => setIsOpen(false)}
-          buttons={[
-            <ConfirmButton key="confirm" onClick={onClickLogout}>확인</ConfirmButton>,
-            <CancelButton key="cancel" onClick={() => setIsOpen(false)}>취소</CancelButton>
-          ]}
-        >
-          <p>정말 로그아웃하시겠습니까?</p>
-        </Modal>
-      )}
-    </Container>
-    </>
+          <LogoutButton onClick={() => setIsOpen(true)}>로그아웃</LogoutButton>
+          {isOpen && (
+              <Modal
+                  title="로그아웃 확인"
+                  onClose={() => setIsOpen(false)}
+                  buttons={[
+                    <ConfirmButton key="confirm"
+                                   onClick={onClickLogout}>확인</ConfirmButton>,
+                    <CancelButton key="cancel" onClick={() => setIsOpen(
+                        false)}>취소</CancelButton>
+                  ]}
+              >
+                <p>정말 로그아웃하시겠습니까?</p>
+              </Modal>
+          )}
+        </Container>
+      </>
   );
 }
 
