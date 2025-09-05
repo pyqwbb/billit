@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useLocation} from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../../components/header/HeaderSub';
-import { FaCheck } from 'react-icons/fa';
+import {FaCheck} from 'react-icons/fa';
 import api from '../../api/axiosInstance';
-import { loadTossPayments } from "@tosspayments/payment-sdk";
+import {loadTossPayments} from "@tosspayments/payment-sdk";
 
 const Container = styled.div`
   padding: 24px;
@@ -24,10 +24,12 @@ const InBox = styled.div`
   gap: 4px;
   width: 100%;
   margin: 5px 10px;
+
   span {
     font-size: 16px;
     font-family: NanumSquareRoundOTFB;
   }
+
   p {
     font-size: 14px;
     font-family: NanumSquareRoundOTFR;
@@ -44,7 +46,7 @@ const ImageBox = styled.img`
 
 const ExpectedAmount = styled.div`
   font-family: NanumSquareRoundOTFB;
-  font-size:20px;
+  font-size: 20px;
   padding: 6px 0 40px;
   display: flex;
   flex-direction: row;
@@ -60,7 +62,7 @@ const CheckboxContainer = styled.div`
 
 const CheckboxLabel = styled.label`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 9px;
   font-size: 16px;
   font-family: 'NanumSquareRoundOTFR';
@@ -75,8 +77,8 @@ const CheckboxBox = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${({ checked }) => (checked ? '#85FF6A' : 'transparent')};
-  color: ${({ checked }) => (checked ? '#000' : '#555')};
+  background-color: ${({checked}) => (checked ? '#85FF6A' : 'transparent')};
+  color: ${({checked}) => (checked ? '#000' : '#555')};
 `;
 
 const PayButton = styled.button`
@@ -87,28 +89,30 @@ const PayButton = styled.button`
   font-size: 19px;
   border-radius: 30px;
   border: none;
-  background-color: ${({ disabled }) => (disabled ? 'var(--side-color-1)' : 'var(--main-color)')};
-  color: ${({ disabled }) => (disabled ? '#999' : '#000')};
-  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+  background-color: ${({disabled}) => (disabled ? 'var(--side-color-1)'
+      : 'var(--main-color)')};
+  color: ${({disabled}) => (disabled ? '#999' : '#000')};
+  cursor: ${({disabled}) => (disabled ? 'default' : 'pointer')};
   transition: background-color 0.2s;
 `;
 
 function OrderConfirmPage() {
-  const [agreed, setAgreed] = useState([false, false]);
+  const [agreed, setAgreed] = useState(false);
 
   const location = useLocation();
   const [scannedData, setScannedData] = useState(null);
   const [calculatedPrice, setCalculatedPrice] = useState(null);
 
   const hours = location.state?.hours || 1;
-  const allAgreed = agreed.every(a => a);
+  const allAgreed = agreed;
 
-  const serialNumber = sessionStorage.getItem('scannedQrCode'); 
+  const serialNumber = sessionStorage.getItem('scannedQrCode');
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const response = await api.get(`/api/v1/rentals/products/${serialNumber}`);
+        const response = await api.get(
+            `/api/v1/rentals/products/${serialNumber}`);
         setScannedData(response.data.data);
 
         try {
@@ -131,10 +135,8 @@ function OrderConfirmPage() {
     fetchItem();
   }, [hours]);
 
-  const toggleAgreement = (index) => {
-    const next = [...agreed];
-    next[index] = !next[index];
-    setAgreed(next);
+  const toggleAgreement = () => {
+    setAgreed(!agreed);
   };
 
   const handlePayment = async () => {
@@ -148,7 +150,7 @@ function OrderConfirmPage() {
 
       if (res.status === 200) {
         const paymentData = res.data.data;
-        
+
         sessionStorage.setItem('sessionInfoKey', paymentData.sessionInfoKey);
         sessionStorage.setItem('paymentType', paymentData.type);
 
@@ -169,54 +171,83 @@ function OrderConfirmPage() {
   };
 
   return (
-    <>
-      <Header />
-      <Container>
-        <p style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px' }}>대여 정보</p>
-        <Box>
-          <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
-          <InBox>
-            <span>{scannedData?.name}</span>
-            <p>{scannedData?.currentStationName}</p>
-          </InBox>
-        </Box>
-        <p style={{ textAlign: 'right', fontFamily: 'NanumSquareRoundOTFB', fontSize: '16px' }}>
-          <span style={{ color: 'var(--main-color)' }}>{hours}</span>시간
-        </p>
-        <ExpectedAmount>
-          <p>결제예정금액</p>
-          <div style={{ fontFamily: 'NanumSquareRoundOTFB', fontSize: '24px' }}>
-            <span style={{ color: 'var(--main-color)' }}>
+      <>
+        <Header/>
+        <Container>
+          <p style={{fontFamily: 'NanumSquareRoundOTFB', fontSize: '19px'}}>대여
+            정보</p>
+          <Box>
+            <ImageBox src={scannedData?.image} alt={scannedData?.image}/>
+            <InBox>
+              <span>{scannedData?.name}</span>
+              <p>{scannedData?.currentStationName}</p>
+            </InBox>
+          </Box>
+          <p style={{
+            textAlign: 'right',
+            fontFamily: 'NanumSquareRoundOTFB',
+            fontSize: '16px'
+          }}>
+            <span style={{color: 'var(--main-color)'}}>{hours}</span>시간
+          </p>
+          <ExpectedAmount>
+            <p>결제예정금액</p>
+            <div style={{fontFamily: 'NanumSquareRoundOTFB', fontSize: '24px'}}>
+            <span style={{color: 'var(--main-color)'}}>
               {calculatedPrice?.toLocaleString() || 0}
             </span>원
-          </div>
-        </ExpectedAmount>
+            </div>
+          </ExpectedAmount>
 
-        <CheckboxContainer>
-          {['주문 내용 동의', '주문 내용 동의'].map((text, i) => (
-            <CheckboxLabel key={i}>
+          <CheckboxContainer>
+            <CheckboxLabel>
               <input
-                type="checkbox"
-                checked={agreed[i]}
-                onChange={() => toggleAgreement(i)}
-                style={{ display: 'none' }}
+                  type="checkbox"
+                  checked={agreed}
+                  onChange={toggleAgreement}
+                  style={{display: 'none'}}
               />
-              <CheckboxBox checked={agreed[i]}>
-                <FaCheck size={10} />
+              <CheckboxBox checked={agreed}>
+                <FaCheck size={12}/>
               </CheckboxBox>
-              {text}
+              <span style={{fontSize: '14px'}}>
+                결제 내용을 확인하였으며, <br/>
+                <a
+                    href="/docs/terms.html"
+                    style={{
+                      color: 'var(--main-color-ver2)',
+                      textDecoration: 'underline'
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  이용약관
+                </a>
+                ,
+                <a
+                    href="/docs/privacy.html"
+                    style={{
+                      color: 'var(--main-color-ver2)',
+                      textDecoration: 'underline'
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  개인정보처리방침
+                </a>
+                {' '}및 결제에 동의합니다.
+              </span>
             </CheckboxLabel>
-          ))}
-        </CheckboxContainer>
+          </CheckboxContainer>
 
-        <PayButton
-          disabled={!allAgreed}
-          onClick={handlePayment}
-        >
-          결제하기
-        </PayButton>
-      </Container>
-    </>
+          <PayButton
+              disabled={!allAgreed}
+              onClick={handlePayment}
+          >
+            결제하기
+          </PayButton>
+        </Container>
+      </>
   );
 }
 
