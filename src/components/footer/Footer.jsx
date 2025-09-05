@@ -52,6 +52,7 @@ const Footer = () => {
         <InfoItem><span>상호</span> 프렌즈(PRIENZ)</InfoItem>
         <InfoItem><span>대표</span> 김우주</InfoItem>
         <InfoItem><span>사업자등록번호</span> 708-71-00730</InfoItem>
+        <InfoItem><span>통신판매업자신고번호</span> 2025-서울광진-1214</InfoItem>
         <InfoItem><span>이메일</span> rladnwntjdbs@naver.com</InfoItem>
         <InfoItem><span>전화번호</span> 010-4141-7301</InfoItem>
         <InfoItem><span>주소</span> 서울특별시 광진구 아차산로 262, B128~131호 건국대학교 캠퍼스타운 사업단 [공유오피스 PRIENZ](자양동,스타시티)</InfoItem>
