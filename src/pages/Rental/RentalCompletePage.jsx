@@ -135,12 +135,14 @@ function RentalCompletePage() {
           // FIXME: 테스트 후 제거
           if (localStorage.getItem('profile') === 'toss') {
             const serialNumber = sessionStorage.getItem('scannedQrCode');
-            axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/toss/return`,
-                {
-                  params: {
-                    serialNumber: serialNumber
-                  }
-                });
+            const origin = import.meta.env.VITE_API_BASE_URL;
+            const requestUrl = origin ? `${origin}/api/v1/toss/return`
+                : 'https://billit.co.kr/api/v1/toss/return';
+            axios.get(requestUrl, {
+              params: {
+                serialNumber: serialNumber
+              }
+            });
           }
         }
       } catch (err) {

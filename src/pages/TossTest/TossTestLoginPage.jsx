@@ -87,7 +87,10 @@ const TestGuideBox = styled.div`
 function TossTestLoginPage() {
   const navigate = useNavigate();
   const handleTestLogin = () => {
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/toss/login`, {
+    const origin = import.meta.env.VITE_API_BASE_URL;
+    const requestUrl = origin ? `${origin}/api/v1/toss/login`
+        : 'https://billit.co.kr/api/v1/toss/login';
+    axios.get(requestUrl, {
       withCredentials: true
     })
         .then(res => res.data)
