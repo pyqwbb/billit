@@ -5,6 +5,8 @@ import Header from '../components/header/HeaderMain';
 import NaverMap from './RentalStations/NaverMap';
 import { getCurrentPosition } from '../utils/geolocation';
 import api from '../api/axiosInstance';
+import mainApi from '../api/mainApi';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const MainContainer = styled.div`
   padding: 24px 16px;
@@ -145,38 +147,52 @@ const LoadingText = styled.div`
 function MainPage() {
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
+  const [activeRentals, setActiveRentals] = useState([]);
   const [locationStatus, setLocationStatus] = useState('loading');
-  const [accessToken, setAccessToken] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
   const [currentNoticeIndex, setCurrentNoticeIndex] = useState(0);
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
 
-  useEffect(() => {
-    getCurrentPosition()
-      .then(({ latitude, longitude }) => {
-        setUserLocation({ latitude, longitude });
-      })
-      .catch(() => {
-        setUserLocation({ latitude: 37.542053, longitude: 127.078192 });
-      });
-  }, []);
+  const DEFAULT_LOCATION = {
+    latitude: 37.542183,
+    longitude: 127.078188
+  };
 
   useEffect(() => {
-    if (!userLocation) return; // 위치 받아오기 전까지 대기
-    const token = localStorage.getItem('accessToken');
-    setAccessToken(token);
+    const fetchDataAndSetLocation = async () => {
+      setLocationStatus('loading');
+      let currentPosition = DEFAULT_LOCATION;
+      
+      try {
+        const position = await getCurrentPosition();
+        currentPosition = position;
+      } catch (error) {
+        console.error("위치 정보를 가져오는 데 실패했습니다.");
+      }
 
-    const { latitude, longitude } = userLocation;
-
-    api.get(`/api/v1/main?latitude=${latitude}&longitude=${longitude}`)
-      .then((res) => {
+      try {
+        const res = await api.get(`/api/v1/main?latitude=${currentPosition.latitude}&longitude=${currentPosition.longitude}`);
         setDashboardData(res.data.data);
         setLocationStatus('success');
-      })
-      .catch(() => {
+
+        if (localStorage.getItem('accessToken')) {
+          try {
+            const rentalRes = await mainApi.get('/api/v1/main/active-rentals');
+            setActiveRentals(rentalRes.data.data.activeRentals);
+          } catch (err) {
+            console.warn("활성 이용내역 조회 실패했습니다.", err);
+            setActiveRentals([]);
+          }
+        }
+
+      } catch (e) {
         setLocationStatus('error');
-      });
-  }, [userLocation]);
+        setDashboardData(null);
+        console.error("대시보드 데이터를 불러오는 데 실패했습니다.");
+      }
+    };
+
+    fetchDataAndSetLocation();
+  }, []);
 
   // 공지사항 자동 롤링
   useEffect(() => {
@@ -208,15 +224,23 @@ function MainPage() {
     <>
       <Header />
       <MainContainer>
-        {locationStatus === 'loading' && <LoadingText>위치 권한을 요청 중입니다...</LoadingText>}
-        {locationStatus === 'error' && <LoadingText>위치 정보를 불러올 수 없습니다.</LoadingText>}
+        {locationStatus === 'loading' &&
+          <div style={{ textAlign: 'center', padding: '230px 0' }}>
+            <ClipLoader size={50} color='var(--main-color)' />
+            <p style={{marginTop:'5px'}}>위치 정보를 가져오는 중입니다...</p>
+          </div>
+        }
 
-        {dashboardData && (
+        {locationStatus === 'error' && 
+          <LoadingText>위치 정보를 불러올 수 없습니다.</LoadingText>
+        }
+
+        {locationStatus === 'success' && dashboardData && (
           <>
             <RentalItemList>
-              {accessToken ? (
-                dashboardData.activeRentals.length > 0 ? (
-                  dashboardData.activeRentals.map((item, idx) => (
+              {localStorage.getItem('accessToken') ? (
+                activeRentals.length > 0 ? (
+                  activeRentals.map((item, idx) => (
                     <RentalItemCard key={idx}>
                       <ItemTitle>{item.productName}</ItemTitle>
                       <ItemTime>

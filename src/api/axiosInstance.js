@@ -14,6 +14,7 @@ const PERMIT_ALL_ENDPOINTS = [
   '/api/v1/notices/',
   '/api/v1/events',
   '/api/v1/events/',
+  '/api/v1/main',
   '/actuator/health',
 ];
 
