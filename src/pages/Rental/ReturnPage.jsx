@@ -86,6 +86,36 @@ const PayButton = styled.button`
   transition: background-color 0.2s;
 `;
 
+const FailContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  font-family: 'NanumSquareRoundOTFB';
+`;
+
+const Message = styled.p`
+  font-size: 18px;
+  margin-bottom: 24px;
+`;
+
+const HomeButton = styled.button`
+  width: 50%;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: 'NanumSquareRoundOTFB';
+  border-radius: 8px;
+  border: none;
+  background-color: var(--side-color-2);
+  color: #000;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--side-color-3);
+  }
+`;
+
 function ReturnPage() {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
@@ -124,7 +154,16 @@ function ReturnPage() {
     );
   }
   
-  if (!item) return <div>데이터를 불러올 수 없습니다.</div>;
+  if (!item) {
+    return (
+      <FailContainer>
+        <Message>대여 정보를 불러올 수 없습니다.</Message>
+        <HomeButton onClick={() => navigate('/')}>
+          홈으로
+        </HomeButton>
+      </FailContainer>
+    );
+  }
 
   const handleOverduePayment = async () => {
     try {

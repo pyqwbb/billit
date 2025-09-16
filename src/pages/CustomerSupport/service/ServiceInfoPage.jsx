@@ -25,12 +25,6 @@ function ServiceInfoPage() {
         <ListItem>
           <a href="/docs/privacy.html"><strong>개인정보 처리방침</strong></a>
         </ListItem>
-        <ListItem onClick={() => window.location.href = '/service-info/license'}>
-         <strong> 오픈소스 라이선스 </strong>
-        </ListItem>
-        <ListItem onClick={() => window.location.href = '/service-info/version'}>
-         <strong> 서비스 버전 정보 </strong>
-        </ListItem>
       </ListMenu>
     </div>
   );

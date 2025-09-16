@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from '../components/header/HeaderMain';
 import NaverMap from './RentalStations/NaverMap';
@@ -138,6 +138,25 @@ const NoticeItem = styled.div`
   padding-left: 4px;
 `;
 
+const StyledButton = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: -30px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 84px;
+    border: none;
+    cursor: pointer;
+    font-family: 'NanumSquareRoundOTFEB';
+    font-size: 20px;
+  }
+`;
+
 const LoadingText = styled.div`
   font-size: 16px;
   color: gray;
@@ -146,6 +165,8 @@ const LoadingText = styled.div`
 
 function MainPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [dashboardData, setDashboardData] = useState(null);
   const [activeRentals, setActiveRentals] = useState([]);
   const [locationStatus, setLocationStatus] = useState('loading');
@@ -157,7 +178,32 @@ function MainPage() {
     longitude: 127.078188
   };
 
+  const handleRentalOrReturn = (type) => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+
+    sessionStorage.setItem('rentalProcessType', type);
+
+    if (!sessionStorage.getItem('scannedQrNumber')) {
+      alert('스테이션 QR코드를 스캔해주세요.');
+      navigate('/qr-scan/station');
+    } else {
+      navigate(`/qr-scan/${type}`);
+    }
+  };
+
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const stationId = params.get("stationId");
+
+    if (stationId) {
+      sessionStorage.setItem("scannedQrNumber", stationId);
+    }
+
     const fetchDataAndSetLocation = async () => {
       setLocationStatus('loading');
       let currentPosition = DEFAULT_LOCATION;
@@ -192,7 +238,7 @@ function MainPage() {
     };
 
     fetchDataAndSetLocation();
-  }, []);
+  }, [location]);
 
   // 공지사항 자동 롤링
   useEffect(() => {
@@ -310,6 +356,20 @@ function MainPage() {
           </>
         )}
       </MainContainer>
+      <StyledButton>
+        <button
+          style={{backgroundColor: 'var(--side-color-2)'}}
+          onClick={() => handleRentalOrReturn('return')}
+        >
+          <span>반납</span>
+        </button>
+        <button
+          style={{backgroundColor: 'var(--main-color)'}}
+          onClick={() => handleRentalOrReturn('rental')}
+        >
+          <span>대여</span>
+        </button>
+      </StyledButton>
     </>
   );
 }

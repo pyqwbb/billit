@@ -165,17 +165,27 @@ function QrScanPage() {
             if (code) {
               const data = code.data.trim();
 
-              if (/^\d+$/.test(data)) {
-                sessionStorage.setItem('scannedQrNumber', data);
+              // 스테이션 QR
+              if (data.includes("stationId=")) {
+                const url = new URL(data);
+                const stationId = url.searchParams.get("stationId");
 
-                try {
-                  const response = await api.get(`/api/v1/stations/${data}`);
-                  setStationName(response.data.data.name);
-                  setIsOpen(true);
-                  return;
-                } catch (err) {
-                  console.error('스테이션 정보를 불러오는 데 실패했습니다.');
+                if (stationId) {
+                  sessionStorage.setItem('scannedQrNumber', stationId);
+
+                  try {
+                    const response = await api.get(`/api/v1/stations/${stationId}`);
+                    setStationName(response.data.data.name);
+                    setIsOpen(true);
+                    return;
+                  } catch (err) {
+                    console.error('스테이션 정보를 불러오는 데 실패했습니다.', err);
+                  }
+                } else {
+                  console.error('stationId 파라미터 없음:', data);
                 }
+
+              // 대여 물품 QR  
               } else if (prefixes.some(prefix => data.startsWith(prefix))) {
                 sessionStorage.setItem('scannedQrCode', data);
 
@@ -262,14 +272,27 @@ function QrScanPage() {
 
       {isOpen && (
         <Modal
-          title="반납 스테이션 확인"
+          title="스테이션 확인"
           onClose={() => setIsOpen(false)}
           buttons={[
-            <ConfirmButton key="confirm" onClick={() => { navigate('/qr-scan/return'); setIsOpen(false); }}>확인</ConfirmButton>,
+            <ConfirmButton
+              key="confirm"
+              onClick={() => {
+                const processType = sessionStorage.getItem('rentalProcessType');
+                navigate(`/qr-scan/${processType}`);
+                setIsOpen(false);
+              }}
+            >
+              확인
+            </ConfirmButton>,
             <CancelButton key="cancel" onClick={() => setIsOpen(false)}>취소</CancelButton>
           ]}
         >
-          <p>{stationName}에서 반납합니다.</p>
+          <p>
+            {stationName}에서{' '}
+            {sessionStorage.getItem('rentalProcessType') === 'rental' ? '대여' : '반납'}
+            합니다.
+          </p>
         </Modal>
       )}
     </PageWrapper>
