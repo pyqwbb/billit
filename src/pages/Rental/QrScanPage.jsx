@@ -127,6 +127,7 @@ function QrScanPage() {
   const { type } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [stationName, setStationName] = useState('');
+  const [mode, setMode] = useState(type);
 
   const prefixes = [
     "CHR_", // 충전기
@@ -166,7 +167,7 @@ function QrScanPage() {
               const data = code.data.trim();
 
               // 스테이션 QR
-              if (data.includes("stationId=")) {
+              if (data.includes("stationId=") && mode === 'station') {
                 const url = new URL(data);
                 const stationId = url.searchParams.get("stationId");
 
@@ -177,6 +178,7 @@ function QrScanPage() {
                     const response = await api.get(`/api/v1/stations/${stationId}`);
                     setStationName(response.data.data.name);
                     setIsOpen(true);
+                    setMode(sessionStorage.getItem('rentalProcessType'));
                     return;
                   } catch (err) {
                     console.error('스테이션 정보를 불러오는 데 실패했습니다.', err);
@@ -186,17 +188,14 @@ function QrScanPage() {
                 }
 
               // 대여 물품 QR  
-              } else if (prefixes.some(prefix => data.startsWith(prefix))) {
+              } else if (prefixes.some(prefix => data.startsWith(prefix)) && (mode !== "station")) {
                 sessionStorage.setItem('scannedQrCode', data);
 
-                const currentPath = window.location.pathname;
-                if (currentPath === '/qr-scan/rental') {
-                  navigate('/rental-time');
-                } else if (currentPath === '/qr-scan/return') {
-                  navigate('/return');
-                } else {
-                  console.error('경로 인식 실패:', currentPath);
-                }
+                 if (mode === "rental") {
+                   navigate("/rental-time");
+                 } else if (mode === "return") {
+                   navigate("/return");
+                 }
               } else {
                 console.error('잘못된 코드:', data);
               }

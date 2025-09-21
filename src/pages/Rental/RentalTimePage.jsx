@@ -149,15 +149,9 @@ function RentalTimePage() {
         setScannedData(item);
         setEstimatedPrice(item.pricePerHour);
       } catch (error) {
-        console.error('Error fetching item:', error);
-
-        const errData = error.response?.data;
-        if (errData?.status === 'UNAUTHORIZED' &&
-            errData?.code === 'AUTH_014') {
-          return;
-        }
-        alert(errData?.message || '해당 물품은 현재 대여가 불가합니다.');
-        navigate('/');
+        console.error(error.response.data.message);
+        alert(error.response.data.message || '해당 물품은 현재 대여가 불가합니다.');
+        navigate('/qr-scan/rental');
       }
     };
     fetchItem();
