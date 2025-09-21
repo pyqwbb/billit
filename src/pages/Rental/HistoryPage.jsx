@@ -162,9 +162,14 @@ function HistoryPage() {
               <ReturnButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  sessionStorage.removeItem('scannedQrNumber');
-                  sessionStorage.removeItem('scannedQrCode');
-                  navigate('/qr-scan/station')
+                  sessionStorage.setItem('rentalProcessType', 'return');
+
+                  if (!sessionStorage.getItem('scannedQrNumber')) {
+                    alert('스테이션 QR코드를 스캔해주세요.');
+                    navigate('/qr-scan/station');
+                  } else {
+                    navigate(`/qr-scan/return`);
+                  }
                 }}
               >
                 반납하기
