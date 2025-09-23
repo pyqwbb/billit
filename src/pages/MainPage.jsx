@@ -284,8 +284,8 @@ function MainPage() {
         {locationStatus === 'success' && dashboardData && (
           <>
             <RentalItemList>
-              {localStorage.getItem('accessToken') ? (
-                activeRentals.length > 0 ? (
+              {localStorage.getItem('accessToken') &&
+                activeRentals.length > 0 &&
                   activeRentals.map((item, idx) => (
                     <RentalItemCard key={idx}>
                       <ItemTitle>{item.productName}</ItemTitle>
@@ -294,15 +294,7 @@ function MainPage() {
                         <TimeBar />
                       </ItemTime>
                     </RentalItemCard>
-                  ))
-                ) : (
-                  <></>
-                )
-              ) : (
-                <RentalItemCard>
-                  <ItemTitle>로그인 후 이용하세요</ItemTitle>
-                </RentalItemCard>
-              )}
+                ))}
             </RentalItemList>
 
             <EventBoxWrapper>
