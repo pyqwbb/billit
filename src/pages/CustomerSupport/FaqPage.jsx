@@ -2,7 +2,7 @@ import { useState } from 'react';
 import faqData from '../../data/faq.json';
 import styled from 'styled-components';
 import { FiSearch, FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import Header from '../../components/header/HeaderMain';
+import HeaderGradient from '../../components/header/HeaderGradient';
 
 const Container = styled.div`
   padding: 12px;
@@ -48,7 +48,7 @@ const CategoryList = styled.div`
   margin: 24px 0;
   width: 100%;
   border-bottom: 1px solid var(--side-color-4);
-  padding: 30px 0 10px 0;
+  padding-bottom: 10px;
 `;
 
 const CategoryButton = styled.button`
@@ -152,17 +152,16 @@ function FaqPage() {
 
   return (
     <>
-    <Header/>
-    <Title>자주 묻는 질문</Title>
+    <HeaderGradient title="자주 묻는 질문" backPath='/mypage'/>
     <Container>
-      <SearchWrapper>
+      {/* <SearchWrapper>
         <SearchInput
           placeholder='어떤 문제가 발생했나요?'
           value={searchText}
           onChange={e => setSearchText(e.target.value)}
         />
         <SearchIcon />
-      </SearchWrapper>
+      </SearchWrapper> */}
 
       <CategoryList>
         {categories.map(category => (
@@ -193,7 +192,7 @@ function FaqPage() {
       ))}
       </QuestionBoxList>
 
-      <Footer><p onClick={handleNotReady}>1:1 문의 바로가기</p></Footer>
+      <Footer><p onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}>1:1 문의 바로가기</p></Footer>
     </Container>
     </>
   );

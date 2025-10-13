@@ -106,10 +106,6 @@ function NoticesPage() {
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
-  const handleNotReady = () => {
-    alert('서비스 준비 중입니다.');
-  };
-
   useEffect(() => {
     fetchNotices(0, sortAsc);
   }, []);
@@ -188,7 +184,7 @@ function NoticesPage() {
         </ListContainer>
 
         <Footer>
-          <p onClick={handleNotReady}>1:1 문의 바로가기</p>
+          <p onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}>1:1 문의 바로가기</p>
         </Footer>
       </Container>
     </>

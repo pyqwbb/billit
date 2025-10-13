@@ -183,7 +183,7 @@ function MyPage() {
             <ListItem onClick={() => navigate('/faq')}>
               자주 묻는 질문
             </ListItem>
-            <ListItem onClick={handleNotReady}>
+            <ListItem onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}>
               1:1 문의
             </ListItem>
             <ListItem onClick={() => navigate('/notices')}>

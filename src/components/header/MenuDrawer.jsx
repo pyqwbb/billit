@@ -108,10 +108,6 @@ function MenuDrawer({ onClose }) {
     }
   };
 
-  const handleNotReady = () => {
-    alert('서비스 준비 중입니다.');
-  };
-
   const handleOverlayClick = () => {
     setClosing(true);
     setTimeout(() => {
@@ -136,7 +132,7 @@ function MenuDrawer({ onClose }) {
         <BottomMenu>
           <ListItem onClick={() => handleNavigate('/notices')}>공지사항</ListItem>
           <ListItem onClick={() => handleNavigate('/faq')}>자주 묻는 질문</ListItem>
-          <ListItem onClick={handleNotReady}>1:1 문의</ListItem>
+          <ListItem onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}>1:1 문의</ListItem>
         </BottomMenu>
 
         <StyledFooter>
