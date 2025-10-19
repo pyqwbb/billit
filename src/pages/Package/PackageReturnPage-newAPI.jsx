@@ -177,7 +177,7 @@ function PackageReturnPage() {
               alt='https://cdn.billit.co.kr/items/%EB%B9%8C%EB%A6%BF+%ED%8C%A8%ED%82%A4%EC%A7%80.png'
             />
             <InBox>
-              <span>빌릿 패키지 대여/4시간</span>
+              <span>빌릿 패키지</span>
               <p>물품 번호: {item.serialNumber.slice(-2)}</p>
             </InBox>
           </Box>
