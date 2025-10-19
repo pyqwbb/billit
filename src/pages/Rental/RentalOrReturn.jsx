@@ -118,7 +118,9 @@ function RentalOrReturn() {
         </button>
       </StyledButton>
 
-      <a onClick={() => alert("준비 중")}>이용 가이드 링크</a>
+      <a onClick={() => window.open('https://signstar.notion.site/2912e124e7fb801db1f9f2b24960f0ba?source=copy_link', '_blank')}>
+          이용 가이드 링크
+      </a>
       <a 
         onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}
         style={{ marginTop: '12px' }}

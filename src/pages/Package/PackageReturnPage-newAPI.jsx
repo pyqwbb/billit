@@ -173,12 +173,12 @@ function PackageReturnPage() {
             정보</p>
           <Box>
             <ImageBox
-              src='https://cdn.billit.co.kr/items/고정형+노트북+스탠드.webp'
-              alt='https://cdn.billit.co.kr/items/고정형+노트북+스탠드.webp'
+              src='https://cdn.billit.co.kr/items/%EB%B9%8C%EB%A6%BF+%ED%8C%A8%ED%82%A4%EC%A7%80.png'
+              alt='https://cdn.billit.co.kr/items/%EB%B9%8C%EB%A6%BF+%ED%8C%A8%ED%82%A4%EC%A7%80.png'
             />
             <InBox>
               <span>빌릿 패키지 대여/4시간</span>
-              <p>{item.serialNumber.slice(-2)}</p>
+              <p>물품 번호: {item.serialNumber.slice(-2)}</p>
             </InBox>
           </Box>
           <ReturnInfo>
