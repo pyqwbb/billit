@@ -96,6 +96,8 @@ function HistoryPage() {
   const navigate = useNavigate();
   const [rentalHistory, setRentalHistory] = useState([]);
 
+  const [remainingTime, setRemainingTime] = useState({});
+  const [returnSerialNum, setReturnSerialNum] = useState(null);
   const handleCardClick = (id) => {
     navigate(`/history/${id}`);
   };
@@ -110,6 +112,18 @@ function HistoryPage() {
         const combinedHistory = [...actives, ...rentals.content];
         
         setRentalHistory(combinedHistory);
+
+        const now = new Date();
+        const remaining = {};
+        combinedHistory.forEach((r) => {
+          if (r.status !== '반납') {
+            const returnTime = new Date(r.expectedReturnTime);
+            let diffMs = returnTime - now;
+            if (diffMs < 0) diffMs = 0;
+            remaining[r.rentalHistoryToken] = Math.floor(diffMs / (1000 * 60 * 60)); // 시간 단위
+          }
+        });
+        setRemainingTime(remaining);
       } catch (error) {
         console.error('Failed to fetch rental history:', error);
       }
@@ -132,14 +146,10 @@ function HistoryPage() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <p>{rental.productName}</p>
-                {rental.status === '반납' ? (
-                  <Status status={rental.status}>{rental.status} 완료</Status>
-                ) : (
-                  <Status status={rental.status}>{rental.status}</Status>
-                )}
+                <Status status={rental.status}>{rental.status}</Status>
               </div>
               <div style={{ fontFamily: 'NanumSquareRoundOTFR', fontSize: '14px' }}>
-                {rental.rentalStationName}
+                건국대학교 상허기념도서관
               </div>
               <CardInfo>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -153,25 +163,13 @@ function HistoryPage() {
               </CardInfo>
               {rental.status !== '반납' && (
                 <RentalTime>
-                  {rental.rentalTimeHour}시간 / {rental.rentalTimeHour}시간
+                  {remainingTime[rental.rentalHistoryToken] ?? 0}시간 / {rental.rentalTimeHour}시간
                   <BottomBar />
                 </RentalTime>
               )}
             </Card>
             {rental.status !== '반납' && (
-              <ReturnButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  sessionStorage.setItem('rentalProcessType', 'return');
-
-                  if (!sessionStorage.getItem('scannedQrNumber')) {
-                    alert('스테이션 QR코드를 스캔해주세요.');
-                    navigate('/qr-scan/station');
-                  } else {
-                    navigate(`/qr-scan/return`);
-                  }
-                }}
-              >
+              <ReturnButton onClick={() => navigate('/package-return-newAPI')}>
                 반납하기
               </ReturnButton>
             )}

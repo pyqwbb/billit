@@ -28,8 +28,13 @@ function GoogleCallbackPage() {
         localStorage.setItem('accessToken', data.accessToken);
         
         // 로그인 성공 후 리다이렉트
-        const redirect = new URLSearchParams(window.location.search).get('redirect');
-        navigate(redirect || '/');
+        const redirectPath = localStorage.getItem("redirectPath");
+        if (redirectPath) {
+          navigate(redirectPath);
+          localStorage.removeItem("redirectPath");
+        } else {
+          navigate('/');
+        }
       }
       else if (data.type === 'REGISTRATION_REQUIRED') {
         const userInfoKey = data.userInfoKey;

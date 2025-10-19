@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import logo from '../../assets/billit.svg';
 import MenuDrawer from './MenuDrawer';
 import { HiMenu, HiUser } from "react-icons/hi";
+import Modal, {CancelButton, ConfirmButton} from '../../utils/Modal';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -35,6 +36,22 @@ const Logo = styled.img`
 function HeaderMain() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const hasAccessToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      localStorage.setItem("redirectPath", window.location.pathname);
+      setIsModalOpen(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleMyPageClick = () => {
+    if (!hasAccessToken()) return;
+    navigate('/mypage');
+  };
 
   return (
     <>
@@ -43,22 +60,28 @@ function HeaderMain() {
           <HiMenu />
         </IconButton>
         <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
-        <IconButton
-          onClick={() => {
-            const token = localStorage.getItem('accessToken');
-            if (token) {
-              navigate('/mypage');
-            } else {
-              alert('로그인이 필요합니다.');
-              navigate('/login');
-            }
-          }}
-        >
+        <IconButton onClick={handleMyPageClick}>
           <HiUser />
         </IconButton>
       </StyledHeader>
 
       {isMenuOpen && <MenuDrawer onClose={() => setIsMenuOpen(false)} />}
+      
+      {isModalOpen && (
+       <Modal
+          title="로그인 페이지 이동"
+          onClose={() => setIsModalOpen(false)}
+          buttons={[
+          <ConfirmButton key="confirm"
+            onClick={() => navigate('/login')}>이동</ConfirmButton>,
+            <CancelButton key="cancel" onClick={() => setIsModalOpen(false)}>
+              취소
+            </CancelButton>
+          ]}
+        >
+          <p>로그인이 필요한 기능입니다.</p>
+        </Modal>
+      )}
     </>
   );
 }

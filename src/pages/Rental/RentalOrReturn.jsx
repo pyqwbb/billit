@@ -1,6 +1,8 @@
+import { useState } from "react";
 import styled from "styled-components";
 import logo from "../../assets/billit.svg";
 import { useNavigate } from "react-router-dom";
+import Modal, {CancelButton, ConfirmButton} from '../../utils/Modal';
 
 const Container = styled.div`
   display: flex;
@@ -50,7 +52,7 @@ const StyledButton = styled.div`
     cursor: pointer;
     transition: background-color 0.3s;
     font-family: 'NanumSquareRoundOTFEB';
-    font-size: 24px;
+    font-size: 36px;
 
     &:hover {
       background-color: #ccc;
@@ -76,6 +78,27 @@ const StyledFooter = styled.footer`
 
 function RentalOrReturn() {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const hasAccessToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      localStorage.setItem("redirectPath", window.location.pathname);
+      setIsOpen(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleRentalClick = () => {
+    if (!hasAccessToken()) return;
+    navigate('/packages');
+  };
+
+  const handleReturnClick = () => {
+    if (!hasAccessToken()) return;
+    navigate('/package-return-newAPI');
+  };
 
   return (
     <Container>
@@ -87,20 +110,42 @@ function RentalOrReturn() {
       </WelcomeText>
 
       <StyledButton>
-        <button style={{backgroundColor: 'var(--main-color)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/rental')}>
-          <span style={{ marginTop: 'auto' }}>대여</span>
+        <button style={{backgroundColor: 'var(--main-color)', paddingTop: '10px'}} onClick={handleRentalClick}>
+          <span style={{}}>대여</span>
         </button>
-        <button style={{backgroundColor: 'var(--side-color-2)', paddingBottom: '45px'}} onClick={() => navigate('/qr-scan/station')}>
-          <span style={{ marginTop: 'auto' }}>반납</span>
+        <button style={{backgroundColor: 'var(--side-color-2)', paddingTop: '10px'}} onClick={handleReturnClick}>
+          <span style={{}}>반납</span>
         </button>
       </StyledButton>
 
       <a onClick={() => alert("준비 중")}>이용 가이드 링크</a>
+      <a 
+        onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}
+        style={{ marginTop: '12px' }}
+      >
+        1:1 문의 바로가기
+      </a>
 
       <StyledFooter>
         <p>© 2025 billit. All rights reserved.</p>
         <p>Powered by Prienz.</p>
       </StyledFooter>
+
+      {isOpen && (
+       <Modal
+          title="로그인 페이지 이동"
+          onClose={() => setIsOpen(false)}
+          buttons={[
+          <ConfirmButton key="confirm"
+            onClick={() => navigate('/login')}>이동</ConfirmButton>,
+            <CancelButton key="cancel" onClick={() => setIsOpen(false)}>
+              취소
+            </CancelButton>
+          ]}
+        >
+          <p>로그인이 필요한 기능입니다.</p>
+        </Modal>
+      )}
     </Container>
   );
 }

@@ -42,6 +42,12 @@ import KakaoCallbackPage from './pages/Member/OAuth/KakaoCallbackPage';
 import GoogleCallbackPage from './pages/Member/OAuth/GoogleCallbackPage';
 import Footer from './components/footer/Footer';
 import TossTestLoginPage from "./pages/TossTest/TossTestLoginPage.jsx";
+import PackageDetailPage from "./pages/Package/PackageDetailPage.jsx";
+import OrderPackagePageNewAPI from "./pages/Package/OrderPackagePage-newAPI.jsx";
+import OrderPackagePage from "./pages/Package/OrderPackagePage.jsx";
+import PackageReturnPageNewAPI from "./pages/Package/PackageReturnPage-newAPI.jsx";
+import PackageReturnPage from "./pages/Package/PackageReturnPage.jsx";
+import PackageReturnCompletePage from "./pages/Package/PackageReturnCompletePage.jsx";
 
 function AppWrapper() {
   return (
@@ -85,6 +91,13 @@ function AppWrapper() {
         <Route path="/oauth2/callback/google" element={<GoogleCallbackPage />} />
           // FIXME: 테스트 후 제거
           <Route path="/toss/login" element={<TossTestLoginPage/>}/>
+          // Package
+          <Route path="/packages" element={<PackageDetailPage/>}/>
+          <Route path="/order-package-newAPI" element={<OrderPackagePageNewAPI/>}/>
+          <Route path="/order-package" element={<OrderPackagePage/>}/>
+          <Route path="/package-return-newAPI" element={<PackageReturnPageNewAPI/>}/>
+          <Route path="/package-return" element={<PackageReturnPage/>}/>
+          <Route path="/package-return-complete" element={<PackageReturnCompletePage/>}/>
         </Routes>
       </>
   );

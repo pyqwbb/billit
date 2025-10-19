@@ -175,7 +175,20 @@ function TermsAgreementPage() {
           title="회원가입 완료"
           onClose={() => setIsOpen(false)}
           buttons={[
-            <ConfirmButton onClick={() =>{setIsOpen(false);navigate('/');}}>확인</ConfirmButton>
+            <ConfirmButton
+              onClick={() =>{
+                setIsOpen(false);
+                const redirectPath = localStorage.getItem("redirectPath");
+                if (redirectPath) {
+                  navigate(redirectPath);
+                  localStorage.removeItem("redirectPath");
+                } else {
+                  navigate('/');
+                }
+              }}
+            >
+              확인
+            </ConfirmButton>
           ]}
         >
           <p>회원가입이 완료되었습니다. 로그인합니다.</p>

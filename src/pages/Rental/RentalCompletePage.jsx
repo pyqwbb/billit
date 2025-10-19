@@ -174,7 +174,6 @@ function RentalCompletePage() {
             <ImageBox src={rentalInfo.productImage}/>
             <InBox>
               <span>{rentalInfo.productName}</span>
-              <p>{rentalInfo.rentalStationName}</p>
               <p>
                 <span
                     style={{color: 'var(--main-color)'}}>{rentalInfo.rentalTime}</span>시간

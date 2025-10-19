@@ -17,7 +17,7 @@ const Logo = styled.img`
 function HeaderSub() {
   return (
     <StyledHeader>
-      <Logo src={logo} alt="logo"/>
+      <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
     </StyledHeader>
   );
 }

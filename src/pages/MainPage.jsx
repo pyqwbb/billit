@@ -7,6 +7,7 @@ import { getCurrentPosition } from '../utils/geolocation';
 import api from '../api/axiosInstance';
 import mainApi from '../api/mainApi';
 import ClipLoader from "react-spinners/ClipLoader";
+import Modal, {CancelButton, ConfirmButton} from '../utils/Modal';
 
 const MainContainer = styled.div`
   padding: 24px 16px;
@@ -178,22 +179,26 @@ function MainPage() {
     longitude: 127.078188
   };
 
-  const handleRentalOrReturn = (type) => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      alert('로그인이 필요합니다.');
-      navigate('/login');
-      return;
-    }
+  const [isOpen, setIsOpen] = useState(false);
 
-    sessionStorage.setItem('rentalProcessType', type);
-
-    if (!sessionStorage.getItem('scannedQrNumber')) {
-      alert('스테이션 QR코드를 스캔해주세요.');
-      navigate('/qr-scan/station');
-    } else {
-      navigate(`/qr-scan/${type}`);
+  const hasAccessToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      localStorage.setItem("redirectPath", window.location.pathname);
+      setIsOpen(true);
+      return false;
     }
+    return true;
+  };
+
+  const handleRentalClick = () => {
+    if (!hasAccessToken()) return;
+    navigate('/packages');
+  };
+
+  const handleReturnClick = () => {
+    if (!hasAccessToken()) return;
+    navigate('/package-return-newAPI');
   };
 
   useEffect(() => {
@@ -351,17 +356,33 @@ function MainPage() {
       <StyledButton>
         <button
           style={{backgroundColor: 'var(--side-color-2)'}}
-          onClick={() => handleRentalOrReturn('return')}
+          onClick={handleReturnClick}
         >
           <span>반납</span>
         </button>
         <button
           style={{backgroundColor: 'var(--main-color)'}}
-          onClick={() => handleRentalOrReturn('rental')}
+          onClick={handleRentalClick}
         >
           <span>대여</span>
         </button>
       </StyledButton>
+      
+      {isOpen && (
+       <Modal
+          title="로그인 페이지 이동"
+          onClose={() => setIsOpen(false)}
+          buttons={[
+          <ConfirmButton key="confirm"
+            onClick={() => navigate('/login')}>이동</ConfirmButton>,
+            <CancelButton key="cancel" onClick={() => setIsOpen(false)}>
+              취소
+            </CancelButton>
+          ]}
+        >
+          <p>로그인이 필요한 기능입니다.</p>
+        </Modal>
+      )}
     </>
   );
 }
