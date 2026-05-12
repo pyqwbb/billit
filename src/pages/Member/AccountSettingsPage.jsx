@@ -5,6 +5,7 @@ import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
 import kakao from '../../assets/with-kakao.svg';
 import google from '../../assets/with-google.svg'
+import defaultImg from '/images/default-profile.svg';
 
 const Container = styled.div`
   padding: 16px;
@@ -90,12 +91,15 @@ function AccountSettingsPage() {
     const fetchUserInfo = async () => {
       try {
         const response = await api.get('/api/v1/users/me');
-        const { email, nickname, profileImage, provider } = response.data.data;
-        setUser({ email, nickname, profileImage, provider });
-        if (provider === 'KAKAO') {
-          setProviderImg(kakao);
-        } else if (provider === 'GOOGLE') {
-          setProviderImg(google);
+        const { email, nickname, profileImage, provider } = response.data?.data || {};
+        
+        if (email) {
+          setUser({ email, nickname, profileImage, provider });
+          if (provider === 'KAKAO') {
+            setProviderImg(kakao);
+          } else if (provider === 'GOOGLE') {
+            setProviderImg(google);
+          }
         }
       } catch (error) {
         console.error('사용자 정보 가져오기 실패:', error);
@@ -124,7 +128,7 @@ function AccountSettingsPage() {
     <HeaderGradient title="내 정보" backPath='/mypage'/>
     <Container>
       <Header>
-        <ProfileImage src={user.profileImage}/>
+        <ProfileImage src={user.profileImage || defaultImg}/>
         <ProfileName>
           <span>{user.nickname}</span>
           <button onClick={() => navigate('/account-settings/edit')}>수정</button>

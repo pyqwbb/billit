@@ -1,13 +1,14 @@
 import styled from 'styled-components';
-import {useNavigate} from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import api from '../../api/axiosInstance';
 import HeaderGradient from '../../components/header/HeaderGradient';
-import Modal, {CancelButton, ConfirmButton} from '../../utils/Modal';
+import Modal, { CancelButton, ConfirmButton } from '../../utils/Modal';
 import couponIcon from '../../assets/icon/coupon.svg';
 import historyIcon from '../../assets/icon/history.svg';
 import membershipIcon from '../../assets/icon/membership.svg';
 import pointIcon from '../../assets/icon/point.svg';
+import defaultImg from '/images/default-profile.svg';
 
 const Container = styled.div`
   padding: 16px;
@@ -54,7 +55,7 @@ const GridButton = styled.button`
   height: 72px;
   border-radius: 15px;
   border: none;
-  background-color: #EEF2FA;
+  background-color: #eef2fa;
   font-size: 14px;
   font-family: 'NanumSquareRoundOTFB';
   cursor: pointer;
@@ -107,7 +108,7 @@ function MyPage() {
     profileImage: '',
   });
   const [loading, setLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);  // for Modal
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleNotReady = () => {
     alert('서비스 준비 중입니다.');
@@ -123,11 +124,23 @@ function MyPage() {
     const fetchUserInfo = async () => {
       try {
         const response = await api.get('/api/v1/users/me');
-        const {email, nickname, profileImage} = response.data.data;
-        setUser({email, nickname, profileImage});
+        const { email, nickname, profileImage } = response.data?.data || {};
+
+        if (email) {
+          setUser({ email, nickname, profileImage });
+        } else {
+          throw new Error('데이터 구조가 올바르지 않습니다.');
+        }
       } catch (error) {
         console.error('사용자 정보 가져오기 실패:', error);
-        navigate('/login');
+        // 테스트 로그인을 위한 폴백 데이터 (서버가 준비되지 않은 경우)
+        if (localStorage.getItem('accessToken') === 'mock-access-token') {
+          setUser({
+            email: 'test@billit.com',
+            nickname: '테스터(Mock)',
+            profileImage: defaultImg,
+          });
+        }
       } finally {
         setLoading(false);
       }
@@ -140,80 +153,84 @@ function MyPage() {
   }
 
   const onClickLogout = async () => {
-    await api.post('/api/v1/auth/logout')
-        .then(() => {
-          localStorage.removeItem('accessToken');
-          navigate('/');
-          // FIXME: 테스트 후 제거
-          if (sessionStorage.getItem('profile') === 'toss') {
-            sessionStorage.removeItem('profile');
-          }
-        });
-  }
+    try {
+      await api.post('/api/v1/auth/logout');
+    } catch (error) {
+      console.error('로그아웃 API 요청 실패:', error);
+    } finally {
+      // 서버 로그아웃 요청 실패하더라도 로컬 로그아웃 진행
+      localStorage.removeItem('accessToken');
+      window.location.replace('/');
+    }
+  };
 
   return (
-      <>
-        <HeaderGradient title="마이페이지" backPath='/'/>
-        <Container>
-          <Header>
-            <ProfileImage src={user.profileImage}/>
-            <ProfileName><span>{user.nickname}</span>님</ProfileName>
-            <WelcomeText>오늘도 빌릿과 함께 스마트하게!</WelcomeText>
-          </Header>
+    <>
+      <HeaderGradient title="마이페이지" backPath="/" />
+      <Container>
+        <Header>
+          <ProfileImage src={user.profileImage || defaultImg} />
+          <ProfileName>
+            <span>{user.nickname}</span>님
+          </ProfileName>
+          <WelcomeText>오늘도 빌릿과 함께 스마트하게!</WelcomeText>
+        </Header>
 
-          <GridButtons>
-            <GridButton onClick={() => navigate('/history')}>
-              <img src={historyIcon}/><p>이용내역</p>
-            </GridButton>
-            <GridButton onClick={handleNotReady}>
-              <img src={membershipIcon}/><p>멤버십</p>
-            </GridButton>
-            <GridButton onClick={handleNotReady}>
-              <img src={pointIcon}/><p>포인트</p>
-            </GridButton>
-            <GridButton onClick={handleNotReady}>
-              <img src={couponIcon}/><p>쿠폰</p>
-            </GridButton>
-          </GridButtons>
+        <GridButtons>
+          <GridButton onClick={() => navigate('/history')}>
+            <img src={historyIcon} />
+            <p>이용내역</p>
+          </GridButton>
+          <GridButton onClick={handleNotReady}>
+            <img src={membershipIcon} />
+            <p>멤버십</p>
+          </GridButton>
+          <GridButton onClick={handleNotReady}>
+            <img src={pointIcon} />
+            <p>포인트</p>
+          </GridButton>
+          <GridButton onClick={handleNotReady}>
+            <img src={couponIcon} />
+            <p>쿠폰</p>
+          </GridButton>
+        </GridButtons>
 
-          <ListMenu>
-            <ListItem onClick={() => navigate('/account-settings')}>
-              내 정보
-            </ListItem>
-            <ListItem onClick={() => navigate('/faq')}>
-              자주 묻는 질문
-            </ListItem>
-            <ListItem onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}>
-              1:1 문의
-            </ListItem>
-            <ListItem onClick={() => navigate('/notices')}>
-              공지사항
-            </ListItem>
-            <ListItem onClick={() => navigate('/events')}>
-              이벤트
-            </ListItem>
-            <ListItem onClick={() => navigate('/service-info')}>
-              서비스 정보
-            </ListItem>
-          </ListMenu>
+        <ListMenu>
+          <ListItem onClick={() => navigate('/account-settings')}>
+            내 정보
+          </ListItem>
+          <ListItem onClick={() => navigate('/faq')}>자주 묻는 질문</ListItem>
+          <ListItem
+            onClick={() => window.open('http://pf.kakao.com/_uRFKn', '_blank')}
+          >
+            1:1 문의
+          </ListItem>
+          <ListItem onClick={() => navigate('/notices')}>공지사항</ListItem>
+          <ListItem onClick={() => navigate('/events')}>이벤트</ListItem>
+          <ListItem onClick={() => navigate('/service-info')}>
+            서비스 정보
+          </ListItem>
+        </ListMenu>
 
-          <LogoutButton onClick={() => setIsOpen(true)}>로그아웃</LogoutButton>
-          {isOpen && (
-              <Modal
-                  title="로그아웃 확인"
-                  onClose={() => setIsOpen(false)}
-                  buttons={[
-                    <ConfirmButton key="confirm"
-                                   onClick={onClickLogout}>확인</ConfirmButton>,
-                    <CancelButton key="cancel" onClick={() => setIsOpen(
-                        false)}>취소</CancelButton>
-                  ]}
-              >
-                <p>정말 로그아웃하시겠습니까?</p>
-              </Modal>
-          )}
-        </Container>
-      </>
+        <LogoutButton onClick={() => setIsOpen(true)}>로그아웃</LogoutButton>
+        {isOpen && (
+          <Modal
+            title="로그아웃 확인"
+            onClose={() => setIsOpen(false)}
+            buttons={[
+              <ConfirmButton key="confirm" onClick={onClickLogout}>
+                확인
+              </ConfirmButton>,
+              <CancelButton key="cancel" onClick={() => setIsOpen(false)}>
+                취소
+              </CancelButton>,
+            ]}
+          >
+            <p>정말 로그아웃하시겠습니까?</p>
+          </Modal>
+        )}
+      </Container>
+    </>
   );
 }
 

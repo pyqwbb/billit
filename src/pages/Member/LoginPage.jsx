@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from '../../assets/billit.svg';
 import kakao from '../../assets/kakao-login.svg';
@@ -11,7 +13,6 @@ const Container = styled.div`
   height: 100vh;
   gap: 2px;
   text-align: center;
-
   p {
     font-family: 'NanumSquareRoundOTFB';
     font-size: 14px;
@@ -28,6 +29,14 @@ const SocialLogin = styled.div`
     font-family: 'NanumSquareRoundOTFR';
     font-size: 12px;
     margin: 12px;
+  }
+
+  img {
+    cursor: pointer;
+  }
+
+  #googleLogin {
+    margin-bottom: 20px;
   }
 `;
 
@@ -51,51 +60,69 @@ const Logo = styled.img`
   width: 141px;
 `;
 
+const TestLoginButton = styled.button`
+  padding: 12px 24px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: 20px;
+  font-family: 'NanumSquareRoundOTFB';
+  font-size: 14px;
+  color: var(--side-color-5);
+  cursor: pointer;
+  width: 100%;
+  height: 50px;
+  max-width: 300px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--main-color-ver2);
+  }
+`;
+
 function LoginPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const handleKakaoLogin = () => {
-    const baseUrl = 'https://kauth.kakao.com/oauth/authorize';
-    const clientId = import.meta.env.VITE_KAKAO_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_KAKAO_REDIRECT_URI;
-
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: 'code',
-      scope: 'openid,profile_nickname,profile_image,account_email',
-    });
-
-    window.location.href = `${baseUrl}?${params.toString()}`;
+  const handleSocialLoginClick = () => {
+    alert('test 환경에서는 동작하지 않습니다.');
   };
 
-  const handleGoogleLogin = () => {
-    const baseUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
-
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      response_type: 'code',
-      scope: 'email profile',
-      access_type: 'offline',
-      prompt: 'consent'
-    });
-
-    window.location.href = `${baseUrl}?${params.toString()}`;
+  const handleTestLogin = () => {
+    // 테스트 토큰 저장
+    localStorage.setItem('accessToken', 'mock-access-token');
+    const redirect = searchParams.get('redirect') || '/';
+    navigate(redirect);
   };
 
   return (
-      <Container>
-        <Logo src={logo}/>
-        <p>3초 만에 가입하고,<br/>필요한 물품 바로 대여해보세요!</p>
+    <Container>
+      <Logo src={logo} />
+      <p>
+        3초 만에 가입하고,
+        <br />
+        필요한 물품 바로 대여해보세요!
+      </p>
 
-        <SocialLogin>
-          <Divider><span>소셜 로그인으로 이용하기</span></Divider>
-          <img src={kakao} onClick={handleKakaoLogin} alt="kakao login"/>
-          <img src={google} onClick={handleGoogleLogin} alt="google login"/>
-        </SocialLogin>
-      </Container>
+      <SocialLogin>
+        <Divider>
+          <span>소셜 로그인으로 이용하기</span>
+        </Divider>
+        <img src={kakao} onClick={handleSocialLoginClick} alt="kakao login" />
+        <img
+          src={google}
+          onClick={handleSocialLoginClick}
+          alt="google login"
+          id="googleLogin"
+        />
+
+        <Divider>
+          <span>테스트 계정으로 시작하기</span>
+        </Divider>
+        <TestLoginButton onClick={handleTestLogin}>
+          테스트 로그인
+        </TestLoginButton>
+      </SocialLogin>
+    </Container>
   );
 }
 

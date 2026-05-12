@@ -6,8 +6,8 @@ import NaverMap from './RentalStations/NaverMap';
 import { getCurrentPosition } from '../utils/geolocation';
 import api from '../api/axiosInstance';
 import mainApi from '../api/mainApi';
-import ClipLoader from "react-spinners/ClipLoader";
-import Modal, {CancelButton, ConfirmButton} from '../utils/Modal';
+import ClipLoader from 'react-spinners/ClipLoader';
+import Modal, { CancelButton, ConfirmButton } from '../utils/Modal';
 
 const MainContainer = styled.div`
   padding: 24px 16px;
@@ -48,39 +48,26 @@ const ItemTime = styled.div`
 
 const TimeBar = styled.div`
   height: 2px;
-  background: linear-gradient(to right, var(--main-color), #EEF1F4 );
+  background: linear-gradient(to right, var(--main-color), #eef1f4);
 `;
 
 const EventBoxWrapper = styled.div`
   position: relative;
-  height: 114px;
-  background-color: #9BA5B7;
+  background-color: #deffd6;
   border-radius: 15px;
   overflow: hidden;
 `;
 
 const EventSlider = styled.div`
   display: flex;
-  transform: translateX(${(props) => `-${props.index * 100}%`});
-  transition: transform 0.6s ease-in-out;
-  width: ${(props) => props.length * 100}%;
+  width: 100%;
 `;
 
 const EventItem = styled.div`
-  min-width: 100%;
-  height: 114px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-family: NanumSquareRoundOTFR;
-  background-color: #9BA5B7;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 15px;
-  }
+  background-color: #deffd6;
 `;
 
 const PaginationWrapper = styled.div`
@@ -118,7 +105,7 @@ const NoticeWrapper = styled.div`
   height: 54px;
   overflow: hidden;
   position: relative;
-  border-bottom: 1px solid #9BA5B7;
+  border-bottom: 1px solid #9ba5b7;
 `;
 
 const NoticeList = styled.div`
@@ -134,7 +121,7 @@ const NoticeItem = styled.div`
   align-items: center;
   font-size: 19px;
   font-family: NanumSquareRoundOTFEB;
-  color: #545F71;
+  color: #545f71;
   cursor: pointer;
   padding-left: 4px;
 `;
@@ -172,19 +159,18 @@ function MainPage() {
   const [activeRentals, setActiveRentals] = useState([]);
   const [locationStatus, setLocationStatus] = useState('loading');
   const [currentNoticeIndex, setCurrentNoticeIndex] = useState(0);
-  const [currentEventIndex, setCurrentEventIndex] = useState(0);
 
   const DEFAULT_LOCATION = {
     latitude: 37.542183,
-    longitude: 127.078188
+    longitude: 127.078188,
   };
 
   const [isOpen, setIsOpen] = useState(false);
 
   const hasAccessToken = () => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
     if (!token) {
-      localStorage.setItem("redirectPath", window.location.pathname);
+      localStorage.setItem('redirectPath', window.location.pathname);
       setIsOpen(true);
       return false;
     }
@@ -203,25 +189,27 @@ function MainPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const stationId = params.get("stationId");
+    const stationId = params.get('stationId');
 
     if (stationId) {
-      sessionStorage.setItem("scannedQrNumber", stationId);
+      sessionStorage.setItem('scannedQrNumber', stationId);
     }
 
     const fetchDataAndSetLocation = async () => {
       setLocationStatus('loading');
       let currentPosition = DEFAULT_LOCATION;
-      
+
       try {
         const position = await getCurrentPosition();
         currentPosition = position;
       } catch (error) {
-        console.error("위치 정보를 가져오는 데 실패했습니다.");
+        console.error('위치 정보를 가져오는 데 실패했습니다.');
       }
 
       try {
-        const res = await api.get(`/api/v1/main?latitude=${currentPosition.latitude}&longitude=${currentPosition.longitude}`);
+        const res = await api.get(
+          `/api/v1/main?latitude=${currentPosition.latitude}&longitude=${currentPosition.longitude}`,
+        );
         setDashboardData(res.data.data);
         setLocationStatus('success');
 
@@ -230,15 +218,14 @@ function MainPage() {
             const rentalRes = await mainApi.get('/api/v1/main/active-rentals');
             setActiveRentals(rentalRes.data.data.activeRentals);
           } catch (err) {
-            console.warn("활성 이용내역 조회 실패했습니다.", err);
+            console.warn('활성 이용내역 조회 실패했습니다.', err);
             setActiveRentals([]);
           }
         }
-
       } catch (e) {
         setLocationStatus('error');
         setDashboardData(null);
-        console.error("대시보드 데이터를 불러오는 데 실패했습니다.");
+        console.error('대시보드 데이터를 불러오는 데 실패했습니다.');
       }
     };
 
@@ -251,22 +238,11 @@ function MainPage() {
 
     const interval = setInterval(() => {
       setCurrentNoticeIndex((prevIndex) =>
-        prevIndex === dashboardData.latestNotices.length - 1 ? 0 : prevIndex + 1
+        prevIndex === dashboardData.latestNotices.length - 1
+          ? 0
+          : prevIndex + 1,
       );
     }, 2000);
-
-    return () => clearInterval(interval);
-  }, [dashboardData]);
-
-  // 이벤트 자동 슬라이드
-  useEffect(() => {
-    if (!dashboardData || dashboardData.events.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentEventIndex((prev) =>
-        prev === dashboardData.events.length - 1 ? 0 : prev + 1
-      );
-    }, 3000);
 
     return () => clearInterval(interval);
   }, [dashboardData]);
@@ -275,63 +251,51 @@ function MainPage() {
     <>
       <Header />
       <MainContainer>
-        {locationStatus === 'loading' &&
+        {locationStatus === 'loading' && (
           <div style={{ textAlign: 'center', padding: '230px 0' }}>
-            <ClipLoader size={50} color='var(--main-color)' />
-            <p style={{marginTop:'5px'}}>위치 정보를 가져오는 중입니다...</p>
+            <ClipLoader size={50} color="var(--main-color)" />
+            <p style={{ marginTop: '5px' }}>위치 정보를 가져오는 중입니다...</p>
           </div>
-        }
+        )}
 
-        {locationStatus === 'error' && 
+        {locationStatus === 'error' && (
           <LoadingText>위치 정보를 불러올 수 없습니다.</LoadingText>
-        }
+        )}
 
         {locationStatus === 'success' && dashboardData && (
           <>
             <RentalItemList>
               {localStorage.getItem('accessToken') &&
                 activeRentals.length > 0 &&
-                  activeRentals.map((item, idx) => (
-                    <RentalItemCard key={idx}>
-                      <ItemTitle>{item.productName}</ItemTitle>
-                      <ItemTime>
-                        <p>{`${item.rentalTimeHour}시간 / 대여 중`}</p>
-                        <TimeBar />
-                      </ItemTime>
-                    </RentalItemCard>
+                activeRentals.map((item, idx) => (
+                  <RentalItemCard key={idx}>
+                    <ItemTitle>{item.productName}</ItemTitle>
+                    <ItemTime>
+                      <p>{`${item.rentalTimeHour}시간 / 대여 중`}</p>
+                      <TimeBar />
+                    </ItemTime>
+                  </RentalItemCard>
                 ))}
             </RentalItemList>
 
             <EventBoxWrapper>
               {dashboardData.events.length > 0 ? (
-                <EventSlider index={currentEventIndex} length={dashboardData.events.length}>
-                  {dashboardData.events.map((event, idx) => (
-                    <EventItem
-                      key={idx}
-                      onClick={() => navigate(`/events/${event.id}`)}
-                    >
-                      <img src={event.bannerImage} alt={event.bannerImage} />
-                    </EventItem>
-                  ))}
+                <EventSlider>
+                  <EventItem
+                    onClick={() =>
+                      navigate(`/events/${dashboardData.events[0].id}`)
+                    }
+                  >
+                    <img
+                      src={dashboardData.events[0].bannerImage}
+                      alt="event banner"
+                    />
+                  </EventItem>
                 </EventSlider>
               ) : (
-                <EventItem>
-                  진행 중인 이벤트 없음
-                </EventItem>
+                <EventItem>진행 중인 이벤트 없음</EventItem>
               )}
             </EventBoxWrapper>
-
-            {dashboardData.events.length > 1 && (
-              <PaginationWrapper>
-                {dashboardData.events.map((_, idx) => (
-                  <PaginationDot
-                    key={idx}
-                    active={idx === currentEventIndex}
-                    onClick={() => setCurrentEventIndex(idx)}
-                  />
-                ))}
-              </PaginationWrapper>
-            )}
 
             <SectionTitle>주변 스테이션 찾기</SectionTitle>
             <MapBox onClick={() => navigate('/station-map')}>
@@ -355,29 +319,30 @@ function MainPage() {
       </MainContainer>
       <StyledButton>
         <button
-          style={{backgroundColor: 'var(--side-color-2)'}}
+          style={{ backgroundColor: 'var(--side-color-2)' }}
           onClick={handleReturnClick}
         >
           <span>반납</span>
         </button>
         <button
-          style={{backgroundColor: 'var(--main-color)'}}
+          style={{ backgroundColor: 'var(--main-color)' }}
           onClick={handleRentalClick}
         >
           <span>대여</span>
         </button>
       </StyledButton>
-      
+
       {isOpen && (
-       <Modal
+        <Modal
           title="로그인 페이지 이동"
           onClose={() => setIsOpen(false)}
           buttons={[
-          <ConfirmButton key="confirm"
-            onClick={() => navigate('/login')}>이동</ConfirmButton>,
+            <ConfirmButton key="confirm" onClick={() => navigate('/login')}>
+              이동
+            </ConfirmButton>,
             <CancelButton key="cancel" onClick={() => setIsOpen(false)}>
               취소
-            </CancelButton>
+            </CancelButton>,
           ]}
         >
           <p>로그인이 필요한 기능입니다.</p>

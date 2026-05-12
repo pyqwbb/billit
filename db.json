@@ -1,0 +1,246 @@
+{
+  "me": {
+    "data": {
+      "email": "test@billit.com",
+      "nickname": "테스터",
+      "profileImage": "/images/default-profile.svg",
+      "provider": "GOOGLE"
+    }
+  },
+  "main": {
+    "data": {
+      "latestNotices": [
+        { "id": 1, "title": "BILLIT 카카오 채널 오픈" },
+        { "id": 2, "title": "서비스 점검 안내" }
+      ],
+      "events": [
+        { "id": 1, "bannerImage": "/images/mock/event/event-title.svg" }
+      ]
+    }
+  },
+  "active-rentals": {
+    "data": {
+      "activeRentals": [
+        {
+          "productName": "보조배터리",
+          "rentalTimeHour": 2,
+          "status": "대여중"
+        }
+      ]
+    }
+  },
+  "stations": {
+    "data": {
+      "stations": [
+        {
+          "stationId": 1,
+          "name": "건국대학교 제1학생회관",
+          "latitude": 37.542053,
+          "longitude": 127.078192,
+          "status": "운영 중"
+        },
+        {
+          "stationId": 2,
+          "name": "건국대학교 도서관",
+          "latitude": 37.541,
+          "longitude": 127.079,
+          "status": "운영 중"
+        }
+      ]
+    }
+  },
+  "station-1": {
+    "data": {
+      "stationId": 1,
+      "name": "건국대학교 제1학생회관",
+      "latitude": 37.542053,
+      "longitude": 127.078192,
+      "status": "운영 중",
+      "openTime": "09:00",
+      "closeTime": "22:00",
+      "popularProducts": [
+        { "id": 1, "name": "보조배터리", "pricePerHour": 1000 },
+        { "id": 2, "name": "충전기", "pricePerHour": 500 }
+      ]
+    }
+  },
+  "products": {
+    "data": {
+      "products": [
+        {
+          "id": 1,
+          "name": "보조배터리",
+          "category": "보조배터리",
+          "image": "/images/mock/items/battery.png",
+          "stock": 5,
+          "pricePerHour": 500
+        },
+        {
+          "id": 2,
+          "name": "C타입 충전기",
+          "category": "충전기",
+          "image": "/images/mock/items/ctype.png",
+          "stock": 3,
+          "pricePerHour": 300
+        },
+        {
+          "id": 3,
+          "name": "5핀 충전기",
+          "category": "충전기",
+          "image": "/images/mock/items/5pin.png",
+          "stock": 2,
+          "pricePerHour": 300
+        },
+        {
+          "id": 4,
+          "name": "우산",
+          "category": "기타",
+          "image": "/images/mock/items/umbrella.png",
+          "stock": 2,
+          "pricePerHour": 200
+        },
+        {
+          "id": 5,
+          "name": "멀티탭",
+          "category": "기타",
+          "image": "/images/mock/items/multitap.png",
+          "stock": 1,
+          "pricePerHour": 400
+        }
+      ]
+    }
+  },
+  "products_detail": [
+    {
+      "id": 1,
+      "name": "보조배터리",
+      "category": "보조배터리",
+      "image": "/images/mock/items/battery.png",
+      "stock": 5,
+      "pricePerHour": 500,
+      "description": "대용량 보조배터리입니다. C타입 및 5핀 동시 충전이 가능합니다."
+    },
+    {
+      "id": 2,
+      "name": "C타입 충전기",
+      "category": "충전기",
+      "image": "/images/mock/items/ctype.png",
+      "stock": 3,
+      "pricePerHour": 300,
+      "description": "C타입 고속 충전기입니다. 대부분의 안드로이드 기기와 호환됩니다."
+    },
+    {
+      "id": 3,
+      "name": "5핀 충전기",
+      "category": "충전기",
+      "image": "/images/mock/items/5pin.png",
+      "stock": 2,
+      "pricePerHour": 300,
+      "description": "5핀 충전기입니다. 구형 안드로이드 기기에 사용 가능합니다."
+    },
+    {
+      "id": 4,
+      "name": "우산",
+      "category": "기타",
+      "image": "/images/mock/items/umbrella.png",
+      "stock": 2,
+      "pricePerHour": 200,
+      "description": "갑작스러운 비에도 걱정 없는 자동 우산입니다."
+    },
+    {
+      "id": 5,
+      "name": "멀티탭",
+      "category": "기타",
+      "image": "/images/mock/items/multitap.png",
+      "stock": 1,
+      "pricePerHour": 400,
+      "description": "4구 멀티탭입니다. 노트북, 핸드폰 동시 충전에 유용합니다."
+    }
+  ],
+  "station-products": {
+    "data": {
+      "stationProducts": [
+        {
+          "id": 1,
+          "name": "보조배터리",
+          "category": "보조배터리",
+          "image": "/images/mock/items/battery.png",
+          "stock": 2,
+          "pricePerHour": 500
+        },
+        {
+          "id": 2,
+          "name": "C타입 충전기",
+          "category": "충전기",
+          "image": "/images/mock/items/ctype.png",
+          "stock": 0,
+          "pricePerHour": 300
+        }
+      ]
+    }
+  },
+
+  "withdrawal-reasons": {
+    "data": [
+      { "id": 1, "reason": "사용 빈도가 낮음" },
+      { "id": 2, "reason": "앱 오류가 잦음" },
+      { "id": 3, "reason": "비싼 대여 가격" },
+      { "id": 4, "reason": "타사 서비스 이용" }
+    ]
+  },
+  "rentals": {
+    "data": {
+      "actives": [],
+      "rentals": {
+        "content": [
+          {
+            "id": 1,
+            "status": "반납",
+            "productName": "보조배터리",
+            "stationName": "건국대학교 제1학생회관",
+            "rentalTimeHour": 2,
+            "price": 1000,
+            "expectedReturnTime": "2026-05-11 15:00"
+          }
+        ]
+      }
+    }
+  },
+  "token-refresh": {
+    "accessToken": "mock-access-token"
+  },
+  "events": {
+    "data": {
+      "events": {
+        "content": [
+          {
+            "id": 1,
+            "title": "신규 가입 이벤트",
+            "thumbnail": "/images/mock/event/event-title.svg",
+            "status": "진행중",
+            "startDate": "2099-12-31",
+            "endDate": "2099-12-31"
+          }
+        ],
+        "page": {
+          "totalPages": 1,
+          "totalElements": 1,
+          "size": 10,
+          "number": 0
+        }
+      }
+    }
+  },
+  "events_detail": [
+    {
+      "id": 1,
+      "title": "신규 가입 이벤트",
+      "startDate": "2099-12-31",
+      "endDate": "2099-12-31",
+      "status": "진행중",
+      "images": [
+        { "image": "/images/mock/event/event-content.svg", "order": 1 }
+      ]
+    }
+  ]
+}

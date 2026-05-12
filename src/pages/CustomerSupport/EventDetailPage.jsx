@@ -31,14 +31,15 @@ const InfoBox = styled.div`
 const Status = styled.span`
   font-size: 12px;
   color: black;
-  background-color: ${props => props.status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
+  background-color: ${(props) =>
+    props.status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
   border-radius: 30px;
   margin-left: 8px;
   width: 66px;
   height: 25px;
   text-align: center;
   font-size: 12px;
-  font-family: 'NanumSquareRoundOTFR';  
+  font-family: 'NanumSquareRoundOTFR';
   display: flex;
   align-items: center;
   justify-content: center;
@@ -67,17 +68,17 @@ const NoImageText = styled.div`
 
 function EventDetailPage() {
   const { id } = useParams();
-  const [event, setEvent] = useState({});
+  const [event, setEvent] = useState(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const response = await api.get(`/api/v1/events/${id}`);
-        setEvent(response.data.data);
+        setEvent(response.data);
       } catch (error) {
         console.error('이벤트 정보를 불러오는 데 실패했습니다:', error);
       }
-    }
+    };
     fetchEvent();
   }, [id]);
 
@@ -89,22 +90,22 @@ function EventDetailPage() {
 
   return (
     <>
-    <HeaderGradient title="이벤트"/>
-    <Container>
-      <h2>{event.title}</h2>
-      <InfoBox>
-        {event.startDate} ~ {event.endDate}
-        <Status status={event.status}>{event.status}</Status>
-      </InfoBox>
-      {event.content && <p>{event.content}</p>}
-      {sortedImages.length > 0 ? (
-        sortedImages.map((img, i) => (
-          <Img key={i} src={img.image} alt={`event-image-${i}`} />
-        ))
-      ) : (
-        <NoImageText>등록된 이미지가 없습니다.</NoImageText>
-      )}
-    </Container>
+      <HeaderGradient title="이벤트" />
+      <Container>
+        <h2>{event.title}</h2>
+        <InfoBox>
+          {event.startDate} ~ {event.endDate}
+          <Status status={event.status}>{event.status}</Status>
+        </InfoBox>
+        {event.content && <p>{event.content}</p>}
+        {sortedImages.length > 0 ? (
+          sortedImages.map((img, i) => (
+            <Img key={i} src={img.image} alt={`event-image-${i}`} />
+          ))
+        ) : (
+          <NoImageText>등록된 이미지가 없습니다.</NoImageText>
+        )}
+      </Container>
     </>
   );
 }

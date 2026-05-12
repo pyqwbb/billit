@@ -34,7 +34,7 @@ const FilterButton = styled.button`
   margin-left: 8px;
   font-weight: ${({ $active }) => ($active ? 'bold' : 'normal')};
   font-size: 12px;
-  font-family: 'NanumSquareRoundOTFR';  
+  font-family: 'NanumSquareRoundOTFR';
 `;
 
 const Grid = styled.div`
@@ -51,7 +51,6 @@ const Card = styled.div`
 
 const Thumbnail = styled.img`
   width: 100%;
-  height: 104px;
   object-fit: cover;
   border-radius: 30px;
 `;
@@ -72,7 +71,7 @@ const TitleRow = styled.div`
   overflow: hidden;
 `;
 
-const Content  = styled.div`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -91,14 +90,15 @@ const Content  = styled.div`
 const Status = styled.span`
   font-size: 12px;
   color: black;
-  background-color: ${({ $status }) => $status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
+  background-color: ${({ $status }) =>
+    $status === '진행중' ? '#85FF6A' : 'var(--side-color-2)'};
   border-radius: 30px;
   margin-left: 8px;
   width: 66px;
   height: 25px;
   text-align: center;
   font-size: 12px;
-  font-family: 'NanumSquareRoundOTFR';  
+  font-family: 'NanumSquareRoundOTFR';
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,21 +124,24 @@ function EventsPage() {
   const size = 10;
   const navigate = useNavigate();
 
-  useEffect(() => {  
+  useEffect(() => {
     setEvents([]);
     setPage(0);
     fetchEvents(0, sortAsc);
   }, [sortAsc]);
 
   const fetchEvents = async (pageNumber, isAsc) => {
+    if (pageNumber === 0) return;
     const sort = isAsc ? 'asc' : 'desc';
 
     try {
-      const response = await api.get(`/api/v1/events?page=${pageNumber}&size=${size}&sort=startDate,${sort}`);
+      const response = await api.get(
+        `/api/v1/events?page=${pageNumber}&size=${size}&sort=startDate,${sort}`,
+      );
       const content = response.data?.data?.events?.content || [];
       const pageInfo = response.data?.data?.events?.page;
 
-      setEvents(prev => [...prev, ...content]);
+      setEvents((prev) => [...prev, ...content]);
       setPage(pageNumber + 1);
       setHasMore(pageNumber + 1 < pageInfo.totalPages);
     } catch (error) {
@@ -146,45 +149,64 @@ function EventsPage() {
     }
   };
 
-  const filtered = events.filter(event => filter === '전체' || event.status === filter);
+  const filtered = events.filter(
+    (event) => filter === '전체' || event.status === filter,
+  );
 
   return (
     <>
-    <HeaderGradient title="이벤트" backPath='/mypage'/>
-    <Container>
-      <ControlBox>
-        <SortButton onClick={() => setSortAsc(prev => !prev)}>
-          시작일자 정렬: {sortAsc ? '오름차순 ▲' : '내림차순 ▼'}
-        </SortButton>
-        <FilterButton
-          onClick={() => setFilter(prev => prev === '진행중' ? '전체' : '진행중')}
-          $active={filter === '진행중'}>마감 제외</FilterButton>
-      </ControlBox>
+      <HeaderGradient title="이벤트" backPath="/mypage" />
+      <Container>
+        <ControlBox>
+          <SortButton onClick={() => setSortAsc((prev) => !prev)}>
+            시작일자 정렬: {sortAsc ? '오름차순 ▲' : '내림차순 ▼'}
+          </SortButton>
+          <FilterButton
+            onClick={() =>
+              setFilter((prev) => (prev === '진행중' ? '전체' : '진행중'))
+            }
+            $active={filter === '진행중'}
+          >
+            마감 제외
+          </FilterButton>
+        </ControlBox>
 
-      <Grid>
-        {filtered.map((event) => (
-          <Card key={event.id} onClick={() => navigate(`/events/${event.id}`)}>
-            <Thumbnail src={event.thumbnail} alt="썸네일" />
-            <Info>
-              <Content>
-                <TitleRow>
-                  {event.title}
-                  <Status $status={event.status}>{event.status}</Status>
-                </TitleRow>
-                <p>{event.content}</p>
-              </Content>
-              <div style={{fontFamily: 'NanumSquareRoundOTFR', fontSize: '12px', textAlign: 'right', marginTop: '6px'}}>{event.startDate} ~ {event.endDate}</div>
-            </Info>
-          </Card>
-        ))}
-      </Grid>
+        <Grid>
+          {filtered.map((event) => (
+            <Card
+              key={event.id}
+              onClick={() => navigate(`/events/${event.id}`)}
+            >
+              <Thumbnail src={event.thumbnail} alt="썸네일" />
+              <Info>
+                <Content>
+                  <TitleRow>
+                    {event.title}
+                    <Status $status={event.status}>{event.status}</Status>
+                  </TitleRow>
+                  <p>{event.content}</p>
+                </Content>
+                <div
+                  style={{
+                    fontFamily: 'NanumSquareRoundOTFR',
+                    fontSize: '12px',
+                    textAlign: 'right',
+                    marginTop: '6px',
+                  }}
+                >
+                  {event.startDate} ~ {event.endDate}
+                </div>
+              </Info>
+            </Card>
+          ))}
+        </Grid>
 
-      {hasMore && (
-        <MoreButton onClick={() => fetchEvents(page, sortAsc)}>
-          더보기
-        </MoreButton>
-      )}
-    </Container>
+        {hasMore && (
+          <MoreButton onClick={() => fetchEvents(page, sortAsc)}>
+            더보기
+          </MoreButton>
+        )}
+      </Container>
     </>
   );
 }
