@@ -22,6 +22,7 @@ const NoticeContent = styled.div`
   border-bottom: 1px solid var(--side-color-4);
   font-family: 'NanumSquareRoundOTFR';
   font-size: 16px;
+  white-space: pre-line;
 `;
 
 const NoticeDate = styled.span`
@@ -31,31 +32,34 @@ const NoticeDate = styled.span`
   font-family: 'NanumSquareRoundOTFR';
   font-size: 12px;
 `;
-
 function NoticeDetailPage() {
   const { id } = useParams();
-  const [fetchedNotice, setFetchedNotice] = useState({});
+  const [fetchedNotice, setFetchedNotice] = useState(null);
 
   useEffect(() => {
     const fetchNotice = async () => {
       try {
         const response = await api.get(`/api/v1/notices/${id}`);
-        setFetchedNotice(response.data.data);
+        setFetchedNotice(response.data);
       } catch (error) {
         console.error('Error fetching notice:', error);
       }
-    }
+    };
     fetchNotice();
   }, [id]);
 
+  if (!fetchedNotice) {
+    return null;
+  }
+
   return (
     <>
-    <Header title="공지사항"/>
-    <Container>
-      <NoticeTitle>{fetchedNotice.title}</NoticeTitle>
-      <NoticeContent>{fetchedNotice.content}</NoticeContent>
-      <NoticeDate>{fetchedNotice.createdAt}</NoticeDate>
-    </Container>
+      <Header title="공지사항" />
+      <Container>
+        <NoticeTitle>{fetchedNotice.title}</NoticeTitle>
+        <NoticeContent>{fetchedNotice.content}</NoticeContent>
+        <NoticeDate>{fetchedNotice.createdAt}</NoticeDate>
+      </Container>
     </>
   );
 }

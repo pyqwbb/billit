@@ -46,6 +46,14 @@ export default defineConfig({
           return '/events';
         },
       },
+      '/api/v1/notices': {
+        target: 'http://localhost:4000',
+        rewrite: (path) => {
+          if (/\/api\/v1\/notices\/\d+/.test(path))
+            return path.replace(/^\/api\/v1\/notices\//, '/notices-detail/');
+          return '/notices';
+        },
+      },
       '/api/v1/products': {
         target: 'http://localhost:4000',
         rewrite: (path) => {

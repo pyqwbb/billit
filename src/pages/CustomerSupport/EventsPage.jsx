@@ -125,13 +125,10 @@ function EventsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setEvents([]);
-    setPage(0);
     fetchEvents(0, sortAsc);
   }, [sortAsc]);
 
   const fetchEvents = async (pageNumber, isAsc) => {
-    if (pageNumber === 0) return;
     const sort = isAsc ? 'asc' : 'desc';
 
     try {
@@ -141,9 +138,18 @@ function EventsPage() {
       const content = response.data?.data?.events?.content || [];
       const pageInfo = response.data?.data?.events?.page;
 
-      setEvents((prev) => [...prev, ...content]);
+      if (pageNumber === 0) {
+        setEvents(content);
+      } else {
+        setEvents((prev) => {
+          const existingIds = new Set(prev.map((e) => e.id));
+          const uniqueNewEvents = content.filter((e) => !existingIds.has(e.id));
+          return [...prev, ...uniqueNewEvents];
+        });
+      }
+
       setPage(pageNumber + 1);
-      setHasMore(pageNumber + 1 < pageInfo.totalPages);
+      setHasMore(pageInfo ? pageNumber + 1 < pageInfo.totalPages : false);
     } catch (error) {
       console.error('이벤트 불러오기 실패:', error);
     }

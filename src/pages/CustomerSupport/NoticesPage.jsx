@@ -117,13 +117,18 @@ function NoticesPage() {
       const content = response.data?.data?.noticeInfos?.content || [];
       const pageInfo = response.data?.data?.noticeInfos?.page;
 
-      setNotices((prev) => {
-        const ids = new Set(prev.map((n) => n.id));
-        const newNotices = content.filter((n) => !ids.has(n.id));
-        return pageNumber === 0 ? newNotices : [...prev, ...newNotices];
-      });
+      if (pageNumber === 0) {
+        setNotices(content);
+      } else {
+        setNotices((prev) => {
+          const existingIds = new Set(prev.map((n) => n.id));
+          const uniqueNewNotices = content.filter((n) => !existingIds.has(n.id));
+          return [...prev, ...uniqueNewNotices];
+        });
+      }
+      
       setPage(pageNumber + 1);
-      setHasMore(pageNumber + 1 < pageInfo.totalPages);
+      setHasMore(pageInfo ? pageNumber + 1 < pageInfo.totalPages : false);
     } catch (error) {
       console.error('공지사항 불러오기 실패:', error);
     }
